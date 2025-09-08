@@ -4,7 +4,7 @@ using TMPro; // Optional if you use TextMeshPro
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
-public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour
+public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersistence
 {
     [Header("Movement Settings")]
     public float moveSpeed = 6f;
@@ -97,6 +97,17 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour
         arcRenderer.material = new Material(Shader.Find("Sprites/Default"));
         arcRenderer.material.color = Color.white;
         arcRenderer.enabled = false;
+    }
+    // Load Data Not working properly (Not loading on saved Position), might have another script that overrides it
+    // GET BACK in the future
+    public void LoadData(GameData data)
+    {
+        this.transform.position = data.playerPosition;
+    }
+
+    public void SaveData(ref GameData data)
+    {
+        data.playerPosition = this.transform.position;
     }
 
     void Update()
