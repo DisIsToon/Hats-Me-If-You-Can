@@ -14,8 +14,13 @@ public class DataPersistenceManager : MonoBehaviour
     [SerializeField] private bool useEncryption;
 
     private GameData gameData;
+
     private List<IDataPersistence> dataPersistenceObjects;
+
     private FileDataHandler dataHandler;
+
+    private string selectedProfileId = "test";
+
     public static DataPersistenceManager instance { get; private set; }
 
 
@@ -56,6 +61,13 @@ public class DataPersistenceManager : MonoBehaviour
         SaveGame();
     }
 
+    public void ChangeSelectedProfileId(string newProfileId)
+    {
+        this.selectedProfileId = newProfileId;
+
+        LoadGame();
+    }
+
 
     public void NewGame()
     {
@@ -65,7 +77,7 @@ public class DataPersistenceManager : MonoBehaviour
     public void LoadGame()
     {
         // load any saved data from file using data handler
-        this.gameData = dataHandler.Load();
+        this.gameData = dataHandler.Load(selectedProfileId);
         
         // start a new game if the data is null
         if(this.gameData == null && initializeDataIfNull)
@@ -101,7 +113,7 @@ public class DataPersistenceManager : MonoBehaviour
         }
 
         // save that data to a file using data handler
-        dataHandler.Save(gameData);
+        dataHandler.Save(gameData, selectedProfileId);
     }
 
     private void OnApplicationQuit()
@@ -120,5 +132,10 @@ public class DataPersistenceManager : MonoBehaviour
     public bool HasGameData()
     {
         return gameData != null;
+    }
+
+    public Dictionary<string, GameData> GetAllProfilesGameData()
+    {
+        return dataHandler.LoadAllProfiles(); 
     }
 }

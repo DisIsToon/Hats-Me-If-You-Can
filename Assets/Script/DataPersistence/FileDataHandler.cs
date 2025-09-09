@@ -18,9 +18,9 @@ public class FileDataHandler
         this.useEncryption = useEncryption;
     }
 
-    public GameData Load()
+    public GameData Load(string profileId)
     {
-        string fullpath = Path.Combine(dataDirPath, dataFileName);
+        string fullpath = Path.Combine(dataDirPath, profileId, dataFileName);
         GameData loadedData = null;
         if(File.Exists(fullpath))
         {
@@ -53,9 +53,9 @@ public class FileDataHandler
         return loadedData;
     }
 
-    public void Save(GameData data)
+    public void Save(GameData data, string profileId)
     {   
-        string fullpath = Path.Combine(dataDirPath, dataFileName);
+        string fullpath = Path.Combine(dataDirPath, profileId, dataFileName);
         try
         {
             // Create the directory, the file will be written to if it doesnt already exist
@@ -85,6 +85,42 @@ public class FileDataHandler
         }
     }
 
+    public Dictionary<string, GameData> LoadAllProfiles()
+    {
+        Dictionary<string, GameData> profileDictionary = new Dictionary<string, GameData>();
+
+        // Loop over all dictionary names in the data directory path
+        IEnumerable<DirectoryInfo> dirInfos = new DirectoryInfo(dataDirPath).EnumerateDirectories();
+        foreach(DirectoryInfo dirInfo in dirInfos)
+        {
+            string profileId = dirInfo.Name;
+
+            // defensive programming - check if data file exists 
+            // if it doesnt, then this folder isnst a profile and should be skipped
+            string fullPath = Path.Combine(dataDirPath, profileId, dataFileName);
+            if(!File.Exists(fullPath))
+            {
+                Debug.LogWarning("Skipping directory when loading all profiles because it does not contain data: "
+                    + profileId);
+                continue;
+            }
+
+            // Load the game data for this profile and put it in dictionary
+            GameData profileData = Load(profileId);
+            
+            //ensure the profile data isnt null
+            if(profileData != null)
+            {
+                profileDictionary.Add(profileId, profileData);
+            }
+            else
+            {
+                Debug.LogError("Tried to load profile but something went wrong. ProfileId: " + profileId);
+            }
+        }
+
+        return profileDictionary;
+    }
     // implimentation of XOR encryption
     private string EncryptDecrypt(string data)
     {

@@ -4,10 +4,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MainMenuTest : MonoBehaviour
+public class MainMenuTest : Menu
 {
-    [Header("Menu Buttons")]
+    [Header("Menu Navigation")]
+    [SerializeField] private SaveSlotsMenu saveSlotsMenu;
 
+
+    [Header("Menu Buttons")]
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button continuegameButton;
 
@@ -20,10 +23,8 @@ public class MainMenuTest : MonoBehaviour
     }
     public void OnNewGameClicked()
     {
-        DisableMenuButtons();
-        Debug.Log("New Game CLicked");
-        DataPersistenceManager.instance.NewGame();
-        SceneManager.LoadSceneAsync("TestPlayground");
+        saveSlotsMenu.ActivateMenu();
+        this.DeactivateMenu();
     }
 
     public void OnContinueGameClicked()
@@ -37,5 +38,15 @@ public class MainMenuTest : MonoBehaviour
     {
         newGameButton.interactable = false;
         continuegameButton.interactable = false;
+    }
+
+    public void ActivateMenu()
+    {
+        this.gameObject.SetActive(true);
+    }
+
+    public void DeactivateMenu()
+    {
+        this.gameObject.SetActive(false);
     }
 }

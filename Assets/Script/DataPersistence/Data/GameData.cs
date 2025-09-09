@@ -20,4 +20,10 @@ public class GameData
         playerPosition = new Vector3(16f, -0.8f, -2f);
         potionsCollected = new SerializableDictionary<string, bool>();
     }
+
+    // Public function to get playtime
+    public float GetFinalGamePlayTime()
+    {
+        return playTime;
+    }
 }
