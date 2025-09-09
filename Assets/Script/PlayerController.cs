@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI; // Needed for UI (if using Text)
 using TMPro; // Optional if you use TextMeshPro
 
