@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -57,7 +59,7 @@ public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         switch (buttonFunction)
         {
-            case "NewGame":
+           /* case "NewGame":
                 SceneManager.LoadScene(1);
                 Debug.Log("New Game Started");
                 break;
@@ -65,7 +67,7 @@ public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             case "LoadGame":
                 TogglePanels(loadGamePanel);
                 break;
-
+           */
             case "ShowSettings":
                 TogglePanels(settingsPanel);
                 break;
