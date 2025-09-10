@@ -13,7 +13,7 @@ public class GamePlayTime : MonoBehaviour, IDataPersistence
         this.playTime = data.playTime;
     }
 
-    public void SaveData(ref GameData data)
+    public void SaveData(GameData data)
     {
         data.playTime = this.playTime;
     }

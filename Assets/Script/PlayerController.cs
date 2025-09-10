@@ -104,12 +104,14 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     // GET BACK in the future
     public void LoadData(GameData data)
     {
+        Debug.Log($"Loading player position: {data.playerPosition}");
         this.transform.position = data.playerPosition;
     }
 
-    public void SaveData(ref GameData data)
+    public void SaveData(GameData data)
     {
         data.playerPosition = this.transform.position;
+        Debug.Log($"Saving player position: {data.playerPosition}");
     }
 
     void Update()

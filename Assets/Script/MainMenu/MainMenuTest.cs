@@ -38,6 +38,9 @@ public class MainMenuTest : Menu
     public void OnContinueGameClicked()
     {
         DisableMenuButtons();
+
+        DataPersistenceManager.instance.SaveGame();
+         
         Debug.Log("Load Game Clicked");
         SceneManager.LoadSceneAsync("TestPlayground");
     }

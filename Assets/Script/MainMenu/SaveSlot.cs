@@ -14,6 +14,7 @@ public class SaveSlot : MonoBehaviour
     [SerializeField] private GameObject hasDataContent;
     [SerializeField] private TextMeshProUGUI gamePlayTimeText;
 
+    public bool hasData { get; private set; } = false;
     private Button saveSlotButton;
 
     private void Awake()
@@ -25,11 +26,13 @@ public class SaveSlot : MonoBehaviour
     {
         if (data == null)
         {
+            hasData = false;
             noDataContent.SetActive(true);
             hasDataContent.SetActive(false);
         }
         else
         {
+            hasData = true;
             noDataContent.SetActive(false);
             hasDataContent.SetActive(true);
 
