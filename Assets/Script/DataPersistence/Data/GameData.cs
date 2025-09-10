@@ -6,6 +6,7 @@ using UnityEngine;
 [System.Serializable]
 public class GameData
 {
+    public long lastUpdated;
     public float playTime;
 
     public Vector3 playerPosition;

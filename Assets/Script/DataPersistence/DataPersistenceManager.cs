@@ -19,7 +19,7 @@ public class DataPersistenceManager : MonoBehaviour
 
     private FileDataHandler dataHandler;
 
-    private string selectedProfileId = "test";
+    private string selectedProfileId = "";
 
     public static DataPersistenceManager instance { get; private set; }
 
@@ -36,6 +36,8 @@ public class DataPersistenceManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
 
         this.dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
+
+        this.selectedProfileId = dataHandler.GetMostRecentlyUpdatedProfileId();
     }
 
     private void OnEnable()
@@ -111,6 +113,8 @@ public class DataPersistenceManager : MonoBehaviour
         {
             dataPersistenceObj.SaveData(ref gameData);
         }
+
+        gameData.lastUpdated = System.DateTime.Now.ToBinary();
 
         // save that data to a file using data handler
         dataHandler.Save(gameData, selectedProfileId);
