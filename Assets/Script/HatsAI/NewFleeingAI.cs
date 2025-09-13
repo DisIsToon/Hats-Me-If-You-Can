@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using System.Collections;
 
 public class NewFleeingAI : MonoBehaviour
 {
@@ -19,81 +22,77 @@ public class NewFleeingAI : MonoBehaviour
     public float wanderRadius = 8f;
     public float wanderCooldown = 3f;
     public float spookDuration = 1.5f;
-    public float rotateBeforeWalkTime = 0.5f;
 
-    private float nextWanderTime;
     private bool isFleeing;
     private bool isSpooked;
+    private Coroutine wanderRoutine;
 
     void Awake()
     {
-        animator = GetComponent<Animator>();
-        animator.applyRootMotion = false;
-        animator.updateMode = AnimatorUpdateMode.Normal;
-
         agent = GetComponent<NavMeshAgent>();
-        agent.updatePosition = true;
-        agent.updateRotation = true;
+        animator = GetComponent<Animator>();
+
+        if (animator != null)
+            animator.applyRootMotion = false;
+
+        if (agent != null)
+        {
+            agent.updatePosition = true;
+            agent.updateRotation = true;
+        }
     }
 
     void Start()
     {
-        if (agent == null) agent = GetComponent<NavMeshAgent>();
         if (trail != null) trail.emitting = false;
         if (spookedUI != null) spookedUI.SetActive(false);
 
-        PlayIdleAnimation();
-        StartCoroutine(WanderRoutine());
+        StartWandering();
     }
 
     void Update()
     {
+        if (player == null || agent == null) return;
+
+        // Drive animation based on movement speed
+        if (animator != null)
+            animator.SetFloat("Speed", agent.velocity.magnitude);
+
         float distance = Vector3.Distance(transform.position, player.position);
 
+        // Trigger spook only once if in range
         if (!isSpooked && distance <= detectionRange && !isFleeing)
         {
-            StartCoroutine(SpookAndFlee());
+            StartCoroutine(SpookRoutine());
         }
         else if (isFleeing && distance >= safeDistance)
         {
-            // Stop fleeing, back to wandering
+            // Stop fleeing and resume wandering
             isFleeing = false;
             if (trail != null) trail.emitting = false;
             agent.speed = walkSpeed;
-            PlayIdleAnimation();
-            StartCoroutine(WanderRoutine());
+            StartWandering();
         }
     }
 
-    System.Collections.IEnumerator WanderRoutine()
+    void StartWandering()
+    {
+        if (wanderRoutine != null)
+            StopCoroutine(wanderRoutine);
+
+        wanderRoutine = StartCoroutine(WanderRoutine());
+    }
+
+    IEnumerator WanderRoutine()
     {
         while (!isFleeing && !isSpooked)
         {
-            PlayIdleAnimation();
             yield return new WaitForSeconds(wanderCooldown);
-
-            // Rotate randomly before walking
-            float randomY = Random.Range(0f, 360f);
-            Quaternion targetRotation = Quaternion.Euler(0, randomY, 0);
-            float t = 0f;
-            Quaternion startRotation = transform.rotation;
-
-            while (t < rotateBeforeWalkTime)
-            {
-                t += Time.deltaTime;
-                transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t / rotateBeforeWalkTime);
-                yield return null;
-            }
-
-            // Start walking
             Wander();
-            PlayWalkAnimation();
 
-            // Wait until destination is reached before idling again
+            // Wait until agent reaches destination
             while (!agent.pathPending && agent.remainingDistance > 0.3f && !isFleeing && !isSpooked)
-            {
                 yield return null;
-            }
         }
     }
 
@@ -101,31 +100,46 @@ public class NewFleeingAI : MonoBehaviour
     {
         Vector3 randomDirection = Random.insideUnitSphere * wanderRadius;
         randomDirection += transform.position;
+
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomDirection, out hit, wanderRadius, NavMesh.AllAreas))
         {
+            agent.speed = walkSpeed;
             agent.SetDestination(hit.position);
         }
-        agent.speed = walkSpeed;
     }
 
-    System.Collections.IEnumerator SpookAndFlee()
+    IEnumerator SpookRoutine()
     {
         isSpooked = true;
+        agent.isStopped = true; // freeze agent movement
 
-        // Stop walking
-        agent.ResetPath();
-
-        // Play spook animation and show UI at the same time
-        PlaySpookAnimation();
+        if (animator != null) animator.SetTrigger("Spooked");
         if (spookedUI != null) spookedUI.SetActive(true);
 
-        // Wait for spook animation duration before fleeing
+        // Wait for animation (or fixed duration if you prefer)
         yield return new WaitForSeconds(spookDuration);
 
         if (spookedUI != null) spookedUI.SetActive(false);
 
+        // Resume movement after animation is done
+        agent.isStopped = false;
         isSpooked = false;
+
+        Flee();
+    }
+
+    // Called AFTER spook animation finishes (optional: link from Animator event)
+    public void OnSpookAnimationEnd()
+    {
+       // if (!isFleeing) Flee();
+
+        // This will be called when the spook animation ends
+        Debug.Log("Spook animation finished!");
+
+        // Resume fleeing if needed
+        isSpooked = false;
+        agent.isStopped = false;
         Flee();
     }
 
@@ -134,7 +148,6 @@ public class NewFleeingAI : MonoBehaviour
         isFleeing = true;
         agent.speed = runSpeed;
 
-        PlayRunAnimation();
         if (trail != null) trail.emitting = true;
 
         Vector3 fleeDirection = (transform.position - player.position).normalized * safeDistance;
@@ -144,44 +157,6 @@ public class NewFleeingAI : MonoBehaviour
         if (NavMesh.SamplePosition(newGoal, out hit, safeDistance, NavMesh.AllAreas))
         {
             agent.SetDestination(hit.position);
-        }
-    }
-
-    void PlayIdleAnimation()
-    {
-        if (animator != null)
-        {
-            animator.SetBool("IsWalking", false);
-            animator.SetBool("IsRunning", false);
-            animator.ResetTrigger("Spooked");
-        }
-    }
-
-    void PlayWalkAnimation()
-    {
-        if (animator != null)
-        {
-            animator.SetBool("IsWalking", true);
-            animator.SetBool("IsRunning", false);
-        }
-    }
-
-    void PlayRunAnimation()
-    {
-        if (animator != null)
-        {
-            animator.SetBool("IsWalking", false);
-            animator.SetBool("IsRunning", true);
-        }
-    }
-
-    void PlaySpookAnimation()
-    {
-        if (animator != null)
-        {
-            animator.SetBool("IsWalking", false);
-            animator.SetBool("IsRunning", false);
-            animator.SetTrigger("Spooked");
         }
     }
 }
