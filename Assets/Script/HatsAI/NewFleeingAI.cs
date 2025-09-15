@@ -13,13 +13,14 @@ public class NewFleeingAI : MonoBehaviour
     public Animator animator;
     public GameObject spookedUI;
     public TrailRenderer trail;
+    public ParticleSystem glitterParticles;
 
     [Header("AI Settings")]
     public float detectionRange = 10f;
-    public float safeDistance = 15f;
-    public float walkSpeed = 2f;
-    public float runSpeed = 6f;
-    public float wanderRadius = 8f;
+    public float safeDistance = 5f;
+    public float walkSpeed = 1f;
+    public float runSpeed = 3f;
+    public float wanderRadius = 1f;
     public float wanderCooldown = 3f;
     public float spookDuration = 1.5f;
 
@@ -52,6 +53,7 @@ public class NewFleeingAI : MonoBehaviour
     {
         if (trail != null) trail.emitting = false;
         if (spookedUI != null) spookedUI.SetActive(false);
+        if (glitterParticles != null) glitterParticles.Stop();
 
         StartWandering();
     }
@@ -72,16 +74,23 @@ public class NewFleeingAI : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, player.position);
 
+        if (agent.velocity.magnitude <= 0.05f) // basically standing still
+        {
+            if (glitterParticles.isPlaying) glitterParticles.Stop();
+        }
         // Trigger spook only once if in range
         if (!isSpooked && distance <= detectionRange && !isFleeing)
         {
+            Debug.Log("Spook Trigger");
             StartCoroutine(SpookRoutine());
         }
         else if (isFleeing && distance >= safeDistance)
         {
+            Debug.Log("Stop Fleing Start Wandering");
             // Stop fleeing and resume wandering
             isFleeing = false;
             if (trail != null) trail.emitting = false;
+            if (glitterParticles != null) glitterParticles.Stop();
             agent.speed = walkSpeed;
             StartWandering();
         }
@@ -89,7 +98,7 @@ public class NewFleeingAI : MonoBehaviour
 
     void StartWandering()
     {
-      
+        Debug.Log("Start Wandering");
         if (wanderRoutine != null)
             StopCoroutine(wanderRoutine);
 
@@ -98,8 +107,10 @@ public class NewFleeingAI : MonoBehaviour
 
     IEnumerator WanderRoutine()
     {
+        Debug.Log("WanderRoutine");
         while (!isFleeing && !isSpooked)
         {
+            Debug.Log("WanderRoutine2");
             yield return new WaitForSeconds(wanderCooldown);
             Wander();
 
@@ -113,10 +124,11 @@ public class NewFleeingAI : MonoBehaviour
     {
         Vector3 randomDirection = Random.insideUnitSphere * wanderRadius;
         randomDirection += transform.position;
-
+        Debug.Log("Wander");
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomDirection, out hit, wanderRadius, NavMesh.AllAreas))
         {
+            Debug.Log("Wander2");
             agent.speed = walkSpeed;
             agent.SetDestination(hit.position);
             Debug.Log("Agent speed? " + agent.speed);
@@ -128,7 +140,7 @@ public class NewFleeingAI : MonoBehaviour
         isSpooked = true;
         agent.isStopped = true; // freeze agent movement
 
-        Debug.Log("Agent stopped? " + agent.isStopped + " | Velocity: " + agent.velocity);
+        Debug.Log("SpookRoutine");
 
 
         if (animator != null) animator.SetTrigger("Spooked");
@@ -158,18 +170,19 @@ public class NewFleeingAI : MonoBehaviour
         isSpooked = false;
         agent.isStopped = false;
         Flee();
+        Debug.Log("Spook End");
     }
 
     void Flee()
     {
         isFleeing = true;
         agent.speed = runSpeed;
-
+        Debug.Log("Flee");
         Debug.Log("Agent stopped when fleeing? " + agent.isStopped + " | Velocity: " + agent.velocity);
         Debug.Log("Agent speed? " + agent.speed );
 
         if (trail != null) trail.emitting = true;
-
+        if (glitterParticles != null) glitterParticles.Play(); // 🔹 Start glitter
         Vector3 fleeDirection = (transform.position - player.position).normalized * safeDistance;
         Vector3 newGoal = transform.position + fleeDirection;
 
