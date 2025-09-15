@@ -29,11 +29,17 @@ public class NewFleeingAI : MonoBehaviour
 
     void Awake()
     {
+    
+
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
 
         if (animator != null)
+        {
             animator.applyRootMotion = false;
+            // Force model to stick to root
+            animator.transform.localPosition = Vector3.zero;
+            animator.transform.localRotation = Quaternion.identity;
+        }
 
         if (agent != null)
         {
@@ -56,7 +62,13 @@ public class NewFleeingAI : MonoBehaviour
 
         // Drive animation based on movement speed
         if (animator != null)
+        {
             animator.SetFloat("Speed", agent.velocity.magnitude);
+            animator.applyRootMotion = false; // force OFF
+            animator.transform.localPosition = Vector3.zero; // lock model to root
+            animator.transform.localRotation = Quaternion.identity;
+        }
+            
 
         float distance = Vector3.Distance(transform.position, player.position);
 
@@ -77,6 +89,7 @@ public class NewFleeingAI : MonoBehaviour
 
     void StartWandering()
     {
+      
         if (wanderRoutine != null)
             StopCoroutine(wanderRoutine);
 
@@ -106,6 +119,7 @@ public class NewFleeingAI : MonoBehaviour
         {
             agent.speed = walkSpeed;
             agent.SetDestination(hit.position);
+            Debug.Log("Agent speed? " + agent.speed);
         }
     }
 
@@ -113,6 +127,9 @@ public class NewFleeingAI : MonoBehaviour
     {
         isSpooked = true;
         agent.isStopped = true; // freeze agent movement
+
+        Debug.Log("Agent stopped? " + agent.isStopped + " | Velocity: " + agent.velocity);
+
 
         if (animator != null) animator.SetTrigger("Spooked");
         if (spookedUI != null) spookedUI.SetActive(true);
@@ -147,6 +164,9 @@ public class NewFleeingAI : MonoBehaviour
     {
         isFleeing = true;
         agent.speed = runSpeed;
+
+        Debug.Log("Agent stopped when fleeing? " + agent.isStopped + " | Velocity: " + agent.velocity);
+        Debug.Log("Agent speed? " + agent.speed );
 
         if (trail != null) trail.emitting = true;
 
