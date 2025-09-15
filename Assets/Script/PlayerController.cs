@@ -6,8 +6,7 @@ using TMPro; // Optional if you use TextMeshPro
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
-public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersistence
-{
+public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersistence {
     [Header("Movement Settings")]
     public float moveSpeed = 6f;
     public float sprintSpeed = 10f;
@@ -31,6 +30,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
 
     [Header("References")]
     public Transform cameraTransform;
+    public bool shouldFaceMoveDirection = true;
 
     [Header("Item Holding & Throwing")]
     public Transform handPosition;
@@ -69,8 +69,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     Rigidbody heldRb;
     Collider heldCol;
 
-    void Start()
-    {
+    void Start() {
         rb = GetComponent<Rigidbody>();
         col = GetComponent<CapsuleCollider>();
         currentStamina = maxStamina;
@@ -79,8 +78,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         originalCenter = col.center;
 
         // Spawn item
-        if (itemPrefab && handPosition)
-        {
+        if (itemPrefab && handPosition) {
             heldItem = Instantiate(itemPrefab, handPosition);
             heldItem.transform.localPosition = normalHoldOffset;
             heldItem.transform.localRotation = Quaternion.identity;
@@ -100,43 +98,37 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         arcRenderer.material.color = Color.white;
         arcRenderer.enabled = false;
     }
-    // Load Data Not working properly (Not loading on saved Position), might have another script that overrides it
-    // GET BACK in the future
-    public void LoadData(GameData data)
-    {
+
+    // Load Data
+    public void LoadData(GameData data) {
         Debug.Log($"Loading player position: {data.playerPosition}");
         this.transform.position = data.playerPosition;
     }
 
-    public void SaveData(GameData data)
-    {
+    public void SaveData(GameData data) {
         data.playerPosition = this.transform.position;
         Debug.Log($"Saving player position: {data.playerPosition}");
     }
 
-    void Update()
-    {
+    void Update() {
+        // Ground check
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundMask);
         if (isGrounded) jumpCount = 0;
 
         // Crouch
         isCrouching = Input.GetKey(KeyCode.C);
-        animator.SetBool(crouchParam, isCrouching);
+        if (animator) animator.SetBool(crouchParam, isCrouching);
 
-        if (isCrouching)
-        {
+        if (isCrouching) {
             col.height = originalHeight * 0.5f;
             col.center = originalCenter - new Vector3(0, originalHeight * 0.25f, 0);
-        }
-        else
-        {
+        } else {
             col.height = originalHeight;
             col.center = originalCenter;
         }
 
         // Jump
-        if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps && !isCrouching)
-        {
+        if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps && !isCrouching) {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             jumpCount++;
@@ -155,58 +147,53 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
 
         // Animator speed
         Vector3 flatVel = rb.linearVelocity; flatVel.y = 0;
-        animator.SetFloat(speedParam, flatVel.magnitude);
+        if (animator) animator.SetFloat(speedParam, flatVel.magnitude);
 
         // Aiming
         isAiming = Input.GetMouseButton(1);
-        if (heldItem)
-        {
+        if (heldItem) {
             Vector3 targetOffset = isAiming ? aimHoldOffset : normalHoldOffset;
             heldItem.transform.localPosition = Vector3.Lerp(heldItem.transform.localPosition, targetOffset, Time.deltaTime * aimSmoothSpeed);
         }
 
         // Show arc while aiming
-        if (isAiming && heldItem)
-        {
+        if (isAiming && heldItem) {
             arcRenderer.enabled = true;
             DrawThrowArc();
-        }
-        else
-        {
+        } else {
             arcRenderer.enabled = false;
         }
 
         // Throw
-        if (Input.GetMouseButtonDown(0) && heldItem)
-        {
+        if (Input.GetMouseButtonDown(0) && heldItem) {
             ThrowHeldItem();
         }
     }
 
-    void FixedUpdate()
-    {
+    void FixedUpdate() {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
         float speed = isCrouching ? crouchSpeed : (isSprinting ? sprintSpeed : moveSpeed);
 
+        // Movement relative to camera
         Vector3 fwd = cameraTransform.forward; fwd.y = 0; fwd.Normalize();
         Vector3 right = cameraTransform.right; right.y = 0; right.Normalize();
         Vector3 move = (right * x + fwd * z).normalized;
 
+        // Apply velocity change
         Vector3 targetVel = move * speed;
         Vector3 velChange = targetVel - new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
         rb.AddForce(velChange, ForceMode.VelocityChange);
 
-        if (move.sqrMagnitude > 0.001f)
-        {
+        // Rotate towards move direction if needed
+        if (shouldFaceMoveDirection && move.sqrMagnitude > 0.001f) {
             Quaternion targetRot = Quaternion.LookRotation(move);
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, 10f * Time.deltaTime));
         }
     }
 
-    void ThrowHeldItem()
-    {
+    void ThrowHeldItem() {
         heldItem.transform.SetParent(null);
         heldRb.isKinematic = false;
         heldRb.useGravity = true;
@@ -222,24 +209,20 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         arcRenderer.enabled = false;
     }
 
-    void DrawThrowArc()
-    {
+    void DrawThrowArc() {
         if (!heldItem || !heldRb) return;
 
         Vector3[] points = new Vector3[arcResolution];
         Vector3 startPos = handPosition.position + transform.forward * 0.1f;
         Vector3 startVel = transform.forward * (isAiming ? throwForce * 1.2f : throwForce);
 
-        for (int i = 0; i < arcResolution; i++)
-        {
+        for (int i = 0; i < arcResolution; i++) {
             float t = i * arcTimeStep;
             Vector3 point = startPos + startVel * t + 0.5f * Physics.gravity * t * t;
             points[i] = point;
 
-            if (i > 0)
-            {
-                if (Physics.Linecast(points[i - 1], points[i], out RaycastHit hit, arcCollisionMask))
-                {
+            if (i > 0) {
+                if (Physics.Linecast(points[i - 1], points[i], out RaycastHit hit, arcCollisionMask)) {
                     points[i] = hit.point;
                     for (int j = i + 1; j < arcResolution; j++)
                         points[j] = hit.point;
@@ -254,8 +237,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
 
     public bool IsCrouching() => isCrouching;
 
-    public void SetHidden(bool hidden)
-    {
+    public void SetHidden(bool hidden) {
         isHidden = hidden;
         Debug.Log("Hidden: " + isHidden);
         Renderer rend = GetComponentInChildren<Renderer>();
