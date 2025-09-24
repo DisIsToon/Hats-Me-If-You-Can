@@ -165,9 +165,17 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         }
 
         // Throw
-        if (Input.GetMouseButtonDown(0) && heldItem) {
-            ThrowHeldItem();
+        if (Input.GetMouseButtonDown(0) && heldItem)
+        {
+            if (DialogSystem.Instance.dialogUIActive == false)
+            {
+                ThrowHeldItem();
+            }
         }
+        
+        
+
+        
     }
 
     void FixedUpdate() {

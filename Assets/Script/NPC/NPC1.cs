@@ -9,17 +9,17 @@ public class NPC1 : MonoBehaviour
 {
     [Header("References")]
     public Transform player;          // Assign player in inspector (optional if Player has tag "Player")
-    public GameObject pressEUI;       // UI prompt ("Press E")
+    public GameObject pressFUI;       // UI prompt ("Press F")
     public GameObject dialogUI;       // Dialog panel UI
 
     [Header("Settings")]
-    public float interactionRange = 3f; // Distance for interaction
+    public float interactionRange = 6f; // Distance for interaction
 
     private bool inRange = false;
 
     void Start()
     {
-        if (pressEUI != null) pressEUI.SetActive(false);
+        if (pressFUI != null) pressFUI.SetActive(false);
         if (dialogUI != null) dialogUI.SetActive(false);
 
         // Fallback: find player by tag if not assigned in inspector
@@ -41,22 +41,22 @@ public class NPC1 : MonoBehaviour
         {
             inRange = true;
 
-            // Show "Press E" only if dialog UI is not active (or dialogUI is null)
-            if (pressEUI != null && (dialogUI == null || !dialogUI.activeSelf))
-                pressEUI.SetActive(true);
+            // Show "Press F" only if dialog UI is not active (or dialogUI is null)
+            if (pressFUI != null && (dialogUI == null || !dialogUI.activeSelf))
+                pressFUI.SetActive(true);
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.F))
             {
                 LookAtPlayer();
                 if (dialogUI != null) dialogUI.SetActive(true);
-                if (pressEUI != null) pressEUI.SetActive(false);
+                if (pressFUI != null) pressFUI.SetActive(false);
             }
         }
         else
         {
             inRange = false;
 
-            if (pressEUI != null) pressEUI.SetActive(false);
+            if (pressFUI != null) pressFUI.SetActive(false);
 
             // Optional: auto-close dialog when walking away
             if (dialogUI != null && dialogUI.activeSelf)
