@@ -165,16 +165,16 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         }
 
         // Throw
-        if (Input.GetMouseButtonDown(0) && heldItem)
+        if (Input.GetMouseButtonDown(0) &&
+                heldItem &&
+                DialogSystem.Instance.dialogUIActive == false &&
+                CraftingSystem.Instance.isOpen == false &&
+                InventorySystem.Instance.isOpen == false &&
+                HatalougeManager.Instance.isOpen == false)
         {
-            if (DialogSystem.Instance.dialogUIActive == false)
-            {
-                ThrowHeldItem();
-            }
+            
+            ThrowHeldItem();
         }
-        
-        
-
         
     }
 

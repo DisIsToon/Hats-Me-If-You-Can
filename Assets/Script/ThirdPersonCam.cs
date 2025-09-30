@@ -21,11 +21,11 @@ public class ThirdPersonCam : MonoBehaviour
     private void Update()
     {
         //Rotate orientation
-        if(DialogSystem.Instance.dialogUIActive == false)
-        {
+        //if(DialogSystem.Instance.dialogUIActive == false)
+        //{
             Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
             orientation.forward = viewDir.normalized;
-        }
+        //}
            
         
 

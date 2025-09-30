@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: facff60231ca9c34f8e5886b5242d39c, type: 3}
+  m_Name: Gobsu_Q1
+  m_EditorClassIdentifier: 
+  initialDialog:
+  - "Hey, \nI didn't expect to meet any Goblin out here. \nI'm Gobsu, I am a member
+    of Korara Tribe."
+  - "I'm am supposed to Hunt food to Prove myself as a qualified warrior.  \nBut
+    i didn't know that Hunting was so hard.\n"
+  - "I'm trying to hunt for 2 days already.  \nBut I haven't caught anything yet.\nNow
+    I'm too Hungry to move."
+  - 'Please can you give me some food?
+
+
+'
+  acceptOption: Sure, I will help you.
+  acceptAnswer: "Ohhh! Thank you! \nIf you can bring me 4 Raw Meat, it will be enough
+    to feed me."
+  declineOption: I'm sorry, I can't hunt as well.
+  declineAnswer: 'Oh well, I guess this is where I dIe. '
+  comebackAfterDecline: Ugh.... Im..soo...h..ungry...
+  comebackInProgress: It is still not enough, make sure to sprint to chase them easily.
+  comebackCompleted: "Ohhh! My savior! \n"
+  finalWords: Nom! Nom! Nom! Nom!
+  coinReward: 5
+  humanReputationReward: -20
+  goblinReputationReward: 20
+  rewardItem1: Wood
+  rewardItem2: Wood
+  firstRequirmentItem: Wood
+  firstRequirementAmount: 2
+  secondRequirmentItem: 
+  secondRequirementAmount: 0
+  hasCheckpoints: 0
+  checkpoints: []

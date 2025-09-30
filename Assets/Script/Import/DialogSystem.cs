@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
 public class DialogSystem : MonoBehaviour
 {
     public static DialogSystem Instance { get; set; }
