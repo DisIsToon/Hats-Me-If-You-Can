@@ -50,12 +50,7 @@ public class EquippableItem : MonoBehaviour
     // NEED TO MAKE ONE FOR COLLIDER INSTEAD 
     public void GetHit()
     {
-        GameObject selectedStone = SelectionManager.Instance.selectedStone;
 
-        if (selectedStone != null)
-        {
-            //selectedStone.GetComponent<MinableStone>().GetHit();
-        }
     }
 
     IEnumerator SwingSoundDelay()

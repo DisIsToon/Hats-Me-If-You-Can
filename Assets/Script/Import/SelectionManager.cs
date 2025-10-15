@@ -21,16 +21,6 @@ public class SelectionManager : MonoBehaviour
     public bool handIsVisible;
     public bool willTalk;
 
-    public GameObject selectedTree;
-    public GameObject selectedStone;
-    public GameObject selectedIron;
-    public GameObject selectedCoal;
-    public GameObject selectedEnemy;
-    public GameObject selectedHumanEnemy;
-    public GameObject selectedGoblinEnemy;
-    public GameObject selectedAnimal;
-    public GameObject selectedCampFire;
-
 
     private CraftingSystem craftingSystem; // Reference to the CraftingSystemScript
 
@@ -38,6 +28,10 @@ public class SelectionManager : MonoBehaviour
     {
         onTarget = false;
         craftingSystem = FindObjectOfType<CraftingSystem>(); // Find the CraftingSystemScript in the scene
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
     }
 
     private void Awake()
@@ -56,40 +50,18 @@ public class SelectionManager : MonoBehaviour
     void Update()
     {
         
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        if (DialogSystem.Instance.dialogUIActive == true ||
+            CraftingSystem.Instance.isOpen == true ||
+            InventorySystem.Instance.isOpen == true ||
+            HatalougeManager.Instance.isOpen == true)
         {
-            var selectionTransform = hit.transform;
-
-            InteractableObject interactable = selectionTransform.GetComponent<InteractableObject>();
-
-            // ...... NPC ...... \\
-            NPC npc = selectionTransform.GetComponent<NPC>();
-
-            if (npc && npc.playerInRange)
-            {
-                interaction_Info_UI.SetActive(true);
-                helpTalkUI.SetActive(true);
-                willTalk = true; 
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+     
 
 
-                if(DialogSystem.Instance.dialogUIActive)
-                {
-                    interaction_Info_UI.SetActive(false);
-                    centerDotImage.gameObject.SetActive(false);
-
-                }
-            }
-            else
-            {
-                interaction_Info_UI.SetActive(false);
-                helpTalkUI.SetActive(false);
-                willTalk = false;
-            }
-
-            // interactbale \\
-           if(pickableItemDetected == true)
+        if (pickableItemDetected == true)
             {
                 helpPickUpDetectUI.SetActive(true);
 
@@ -99,82 +71,7 @@ public class SelectionManager : MonoBehaviour
                 helpPickUpDetectUI.SetActive(false);
             }
           
-               /*
-                if (interactable && interactable.playerInRange)
-                {
-                    onTarget = true;
-                    selectedObject = interactable.gameObject; 
 
-                    interaction_text.text = interactable.GetItemName();
-                    interaction_Info_UI.SetActive(true);
-                    helpPickUpUI.SetActive(true);
-
-                    if(interactable.CompareTag("pickable"))
-                    {
-                        centerDotImage.gameObject.SetActive(false);
-                        handIcon.gameObject.SetActive(true);
-
-                        handIsVisible = true;
-                    }
-                    else
-                    {
-                        handIcon.gameObject.SetActive(false); 
-                        centerDotImage.gameObject.SetActive(true);
-                
-                        handIsVisible = false;
-                    }
-                    }
-               */
-            else 
-            {
-                onTarget = false;
-                // interaction_Info_UI.SetActive(false);
-                handIcon.gameObject.SetActive(false); 
-                centerDotImage.gameObject.SetActive(true);
-                handIsVisible = false;
-                willTalk = false;
-            }
-            /* // ...... CampFire ...... \\
-            Campfire interactableCampfire = selectionTransform.GetComponent<Campfire>();
-
-            if (interactableCampfire && interactableCampfire.playerInRange)
-            {
-                selectedCampFire = interactableCampfire.gameObject;
-                campfireInteractionUIHolder.gameObject.SetActive(true);
-
-                // Check if the player presses the 'F' key to open the food crafting UI
-                if (Input.GetKeyDown(KeyCode.F))
-                {
-                    craftingSystem.ToggleFoodScreen(); // Toggle the food screen UI when pressing F
-                    Cursor.lockState = CursorLockMode.None;
-                    Cursor.visible = true;
-
-                    DisableSelection();
-                }
-            }
-            else
-            {
-                if (selectedCampFire != null)
-                {
-                    selectedCampFire = null;
-                    campfireInteractionUIHolder.gameObject.SetActive(false);
-                    craftingSystem.CloseFoodScreen(); // Close the food screen UI if the campfire is not selected
-                    Cursor.lockState = CursorLockMode.Locked; // Lock the cursor again
-                    Cursor.visible = false; // Hide the cursor again
-                    EnableSelection(); // Re-enable the selection mechanism
-                }
-            }*/
-
-        }
-        else 
-        { 
-            onTarget = false;
-            interaction_Info_UI.SetActive(false);
-            handIcon.gameObject.SetActive(false); 
-            centerDotImage.gameObject.SetActive(true);
-
-            handIsVisible = false;
-        }
     }
 
     public void DisableSelection()

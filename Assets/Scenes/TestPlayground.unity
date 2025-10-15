@@ -11831,6 +11831,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HelpTalkUI
       objectReference: {fileID: 0}
+    - target: {fileID: 8909547651619054639, guid: 6c487e7f9df704647b9fd918bdaf53b3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13084,7 +13088,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 928933792}
-  - component: {fileID: 928933793}
   - component: {fileID: 928933794}
   m_Layer: 5
   m_Name: DialogSystem
@@ -13113,18 +13116,6 @@ RectTransform:
   m_AnchoredPosition: {x: 325.94998, y: -97.932434}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &928933793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 928933791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05222ea3ebc99b844a593697c66378fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &928933794
 MonoBehaviour:
   m_ObjectHideFlags: 0

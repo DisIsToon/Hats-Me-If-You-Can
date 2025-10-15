@@ -97,11 +97,11 @@ public class QuestManager : MonoBehaviour
             Debug.Log("Q is pressed");
             questMenu.SetActive(true);
 
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            //Cursor.lockState = CursorLockMode.None;
+            //Cursor.visible = true;
 
-            SelectionManager.Instance.DisableSelection();
-            SelectionManager.Instance.GetComponent<SelectionManager>().enabled = false;
+            //SelectionManager.Instance.DisableSelection();
+            //SelectionManager.Instance.GetComponent<SelectionManager>().enabled = false;
 
             isQuestMenuOpen = true;
 
@@ -112,11 +112,11 @@ public class QuestManager : MonoBehaviour
 
             if (!CraftingSystem.Instance.isOpen || !InventorySystem.Instance.isOpen)
             {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
+                //Cursor.lockState = CursorLockMode.Locked;
+                //Cursor.visible = false;
 
-                SelectionManager.Instance.EnableSelection();
-                SelectionManager.Instance.GetComponent<SelectionManager>().enabled = true;
+                //SelectionManager.Instance.EnableSelection();
+                //SelectionManager.Instance.GetComponent<SelectionManager>().enabled = true;
             }
 
             isQuestMenuOpen = false;

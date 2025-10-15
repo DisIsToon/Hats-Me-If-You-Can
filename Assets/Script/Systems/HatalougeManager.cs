@@ -93,7 +93,13 @@ public class HatalougeManager : MonoBehaviour
         {
             isOpen = true;
             OpenHatalouge();
+            if (Input.GetKeyDown(KeyCode.H) && isOpen)
+            {
+                isOpen = false;
+                CloseHatalouge();
+            }
         }
+
 
         // ESC key closes the whole Hatalouge
         if (Input.GetKeyDown(KeyCode.Escape) && isOpen)
@@ -106,11 +112,11 @@ public class HatalougeManager : MonoBehaviour
 
     public void OpenHatalouge()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        //Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
 
-        SelectionManager.Instance.DisableSelection();
-        SelectionManager.Instance.GetComponent<SelectionManager>().enabled = false;
+        //SelectionManager.Instance.DisableSelection();
+        //SelectionManager.Instance.GetComponent<SelectionManager>().enabled = false;
 
         
 
@@ -123,11 +129,11 @@ public class HatalougeManager : MonoBehaviour
 
     public void CloseHatalouge()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
 
-        SelectionManager.Instance.EnableSelection();
-        SelectionManager.Instance.GetComponent<SelectionManager>().enabled = true;
+        //SelectionManager.Instance.EnableSelection();
+        //SelectionManager.Instance.GetComponent<SelectionManager>().enabled = true;
 
         
 
