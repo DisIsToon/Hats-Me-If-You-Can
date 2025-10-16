@@ -91,22 +91,19 @@ public class HatalougeManager : MonoBehaviour
         // H key opens the Hatalouge if not active
         if (Input.GetKeyDown(KeyCode.H) && !isOpen)
         {
-            isOpen = true;
+            
             OpenHatalouge();
-            if (Input.GetKeyDown(KeyCode.H) && isOpen)
-            {
-                isOpen = false;
-                CloseHatalouge();
-            }
+            isOpen = true;
         }
-
 
         // ESC key closes the whole Hatalouge
-        if (Input.GetKeyDown(KeyCode.Escape) && isOpen)
+        else if (Input.GetKeyDown(KeyCode.H) && isOpen)
         {
-            isOpen = false;
+            
             CloseHatalouge();
+            isOpen = false;
         }
+
         
     }
 

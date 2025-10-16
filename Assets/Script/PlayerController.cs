@@ -170,10 +170,13 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
                 DialogSystem.Instance.dialogUIActive == false &&
                 CraftingSystem.Instance.isOpen == false &&
                 InventorySystem.Instance.isOpen == false &&
+                QuestManager.Instance.isQuestMenuOpen == false &&
                 HatalougeManager.Instance.isOpen == false)
         {
             
             ThrowHeldItem();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
         
     }

@@ -30,7 +30,7 @@ public class QuestManager : MonoBehaviour
     public GameObject activeQuestPrefab;
     public GameObject completedQuestPrefabs;
 
-    public TextMeshProUGUI coinText; // Add this line
+    //public TextMeshProUGUI coinText; // Add this line
 
     public GameObject questMenuContent;
 
@@ -164,7 +164,7 @@ public class QuestManager : MonoBehaviour
             qRow.isActive = true;
             qRow.isTracking = true;
 
-            qRow.coinAmount.text = $"{activeQuest.info.coinReward}";
+            //qRow.coinAmount.text = $"{activeQuest.info.coinReward}";
 
             if (activeQuest.info.rewardItem1 != "")
             {
@@ -201,7 +201,7 @@ public class QuestManager : MonoBehaviour
             qRow.isActive = false;
             qRow.isTracking = false;
 
-            qRow.coinAmount.text = $"{completedQuest.info.coinReward}";
+            //qRow.coinAmount.text = $"{completedQuest.info.coinReward}";
 
             if (completedQuest.info.rewardItem1 != "")
             {

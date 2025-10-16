@@ -29,6 +29,7 @@ public class NPC : MonoBehaviour
     public bool firstTimeInteraction = true;
     public int currentDialog;
 
+    public GameObject MainScreen;
 
 
     void Start()
@@ -419,6 +420,7 @@ public class NPC : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
+   
         }
     }
 
@@ -427,12 +429,13 @@ public class NPC : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-
+            MainScreen.SetActive(true);
             if (pressFUI != null) pressFUI.SetActive(false);
 
             // Optional: close dialog when leaving range
             if (dialogUI != null && dialogUI.activeSelf)
-                dialogUI.SetActive(false);
+                
+            dialogUI.SetActive(false);
         }
     }
 

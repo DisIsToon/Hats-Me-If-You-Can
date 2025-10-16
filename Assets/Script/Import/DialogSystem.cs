@@ -19,6 +19,8 @@ public class DialogSystem : MonoBehaviour
 
     public bool dialogUIActive;
 
+    public GameObject MainScreen;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -38,15 +40,17 @@ public class DialogSystem : MonoBehaviour
 
     public void OpenDialogUI()
     {
+        MainScreen.SetActive(false);
         dialogUI.gameObject.SetActive(true);
         dialogUIActive = true;
-
+        
         //Cursor.lockState = CursorLockMode.None;
         //Cursor.visible = true;
     }
 
     public void CloseDialogUI()
     {
+        MainScreen.SetActive(true);
         dialogUI.gameObject.SetActive(false);
         dialogUIActive = false;
 

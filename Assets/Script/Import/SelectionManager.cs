@@ -53,6 +53,7 @@ public class SelectionManager : MonoBehaviour
         if (DialogSystem.Instance.dialogUIActive == true ||
             CraftingSystem.Instance.isOpen == true ||
             InventorySystem.Instance.isOpen == true ||
+            QuestManager.Instance.isQuestMenuOpen == true ||
             HatalougeManager.Instance.isOpen == true)
         {
             Cursor.lockState = CursorLockMode.None;
