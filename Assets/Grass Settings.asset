@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba26ecd83a424a149a3bf3f6391d239b, type: 3}
+  m_Name: Grass Settings
+  m_EditorClassIdentifier: 
+  shaderToUse: {fileID: 7200000, guid: 836fc6320144e454b9706d1f18cd5c76, type: 3}
+  materialToUse: {fileID: 2100000, guid: d5e074426e7cb114385a8ff833f8fdca, type: 2}
+  grassRandomHeightMin: 1.72
+  grassRandomHeightMax: 0.2
+  bladeRadius: 0.2
+  bladeForwardAmount: 0.38
+  bladeCurveAmount: 2
+  bottomWidth: 0.1
+  MinWidth: 0.01
+  MinHeight: 0.01
+  MaxWidth: 1
+  MaxHeight: 1
+  windSpeed: 2
+  windStrength: 0.05
+  allowedBladesPerVertex: 4
+  allowedSegmentsPerBlade: 4
+  affectStrength: 1
+  topTint: {r: 0.3485226, g: 0.8301887, b: 0.68198377, a: 1}
+  bottomTint: {r: 0.14386791, g: 0.14386791, b: 0.5, a: 1}
+  drawBounds: 1
+  minFadeDistance: 46.3
+  maxDrawDistance: 125
+  cullingTreeDepth: 4
+  castShadow: 2
