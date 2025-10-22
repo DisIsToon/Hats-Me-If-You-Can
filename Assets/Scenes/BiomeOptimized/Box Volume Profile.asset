@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1704598007194276936
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f56032ed2fe864e8516cf117e9eb3e, type: 3}
+  m_Name: GradientFogVolumeComponent
+  m_EditorClassIdentifier: 
+  active: 1
+  Enabled:
+    m_OverrideState: 1
+    m_Value: 1
+  OverwriteSkybox:
+    m_OverrideState: 1
+    m_Value: 1
+  FogAmount:
+    m_OverrideState: 1
+    m_Value: 141.2
+  FogOffset:
+    m_OverrideState: 1
+    m_Value: -0.22
+  GradientTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: d7b9c4a7919e4e9498f0fddc7bfb5fbf, type: 3}
+    dimension: 1
+  FogIntensity:
+    m_OverrideState: 1
+    m_Value: 0.95
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Box Volume Profile
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -1704598007194276936}
