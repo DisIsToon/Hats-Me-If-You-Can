@@ -171,6 +171,8 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
                 CraftingSystem.Instance.isOpen == false &&
                 InventorySystem.Instance.isOpen == false &&
                 QuestManager.Instance.isQuestMenuOpen == false &&
+                CardsController.Instance.isOpen == false &&
+                PuzzleManagerUI.Instance.isOpen == false &&
                 HatalougeManager.Instance.isOpen == false)
         {
             
