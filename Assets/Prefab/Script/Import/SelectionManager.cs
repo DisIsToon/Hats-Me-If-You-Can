@@ -54,6 +54,8 @@ public class SelectionManager : MonoBehaviour
             CraftingSystem.Instance.isOpen == true ||
             InventorySystem.Instance.isOpen == true ||
             QuestManager.Instance.isQuestMenuOpen == true ||
+            PuzzleManagerUI.Instance.isOpen == true ||
+            CardsController.Instance.isOpen == true ||
             HatalougeManager.Instance.isOpen == true)
         {
             Cursor.lockState = CursorLockMode.None;

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CardsController : MonoBehaviour
 {
+    public static CardsController Instance { get; set; }
+
     [SerializeField] Card cardPrefab;
     [SerializeField] Transform gridTransform;
     [SerializeField] Sprite[] sprites;
@@ -19,6 +21,18 @@ public class CardsController : MonoBehaviour
     Card secondSelected;
 
     int matchCounts;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     private void Start()
     {

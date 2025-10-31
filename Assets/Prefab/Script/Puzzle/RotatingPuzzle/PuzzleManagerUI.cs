@@ -3,12 +3,27 @@ using System.Collections;
 
 public class PuzzleManagerUI : MonoBehaviour
 {
+    public static PuzzleManagerUI Instance { get; set; }
+
     public GameObject rotatingPuzzleScreen;
     public GameObject solvedPopup;
     public GameObject completePuzzlePopup;
     public bool isOpen;
 
     public RotatingRingUI[] rings;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     void Start()
     {
         rotatingPuzzleScreen.SetActive(false);
