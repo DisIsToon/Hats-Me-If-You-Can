@@ -73,11 +73,12 @@ public class RotatingRingUI : MonoBehaviour
     void CheckCorrectRotation()
     {
         float z = rectTransform.localEulerAngles.z;
-        float normalized = NormalizeAngle(z);
+        float mod360 = Mathf.Repeat(z, 360f);
 
-        // ✅ Correct if rotation is near 0°, 360°, or 720° (multiple of 360)
-        float mod360 = Mathf.Abs(z % 360f);
-        isCorrect = (Mathf.Approximately(mod360, 0f) || Mathf.Approximately(mod360, 360f));
+        // ✅ Allow small tolerance (e.g. ±2°)
+        bool nearZero = Mathf.Abs(mod360 - 0f) < 2f || Mathf.Abs(mod360 - 360f) < 2f;
+
+        isCorrect = nearZero;
 
         if (isCorrect)
         {
