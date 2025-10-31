@@ -1,82 +1,73 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class PuzzleManagerUI : MonoBehaviour
 {
-    [Header("Puzzle Setup")]
+    public GameObject rotatingPuzzleScreen;
+    public GameObject solvedPopup;
+    public GameObject completePuzzlePopup;
+    public bool isOpen;
+
     public RotatingRingUI[] rings;
-    public GameObject solvedPanel;
-
-    [Header("Trigger Settings")]
-    public KeyCode triggerKey = KeyCode.P;
-
-    private bool isSolved = false;
-    private bool isOpen = false;
-
-    private void Start()
+    void Start()
     {
-        gameObject.SetActive(false);
-
-        foreach (var ring in rings)
+        rotatingPuzzleScreen.SetActive(false);
+        isOpen = false;
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
         {
-            ring.OnSnapped += CheckPuzzleSolved;
-            ring.OnRingSolved += HandleRingSolved;
+            Debug.Log("p is pressed");
+        }
+        if (Input.GetKeyDown(KeyCode.P) && !isOpen)
+        {
+            Debug.Log("p is pressed, inventory open");
+            rotatingPuzzleScreen.SetActive(true);
+            isOpen = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.P) && isOpen)
+        {
+            Debug.Log("p is pressed, inventory closed");
+            rotatingPuzzleScreen.SetActive(false);
+
+            isOpen = false;
         }
     }
 
-    private void Update()
+    public void OnRingSolved(RotatingRingUI ring)
     {
-        if (Input.GetKeyDown(triggerKey))
-        {
-            if (isOpen)
-                ClosePuzzle();
-            else
-                OpenPuzzle();
-        }
+        if (solvedPopup)
+            StartCoroutine(ShowSolvedPopup());
+
+        CheckIfAllSolved();
     }
 
-    private void HandleRingSolved(RotatingRingUI ring)
+    IEnumerator ShowSolvedPopup()
     {
-        Debug.Log($"✅ Ring {ring.name} locked in correct position.");
-        CheckPuzzleSolved();
+        solvedPopup.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        solvedPopup.SetActive(false);
     }
 
-    private void CheckPuzzleSolved()
+    IEnumerator ShowCompletePuzzlePopup()
     {
-        if (isSolved) return;
+        completePuzzlePopup.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        completePuzzlePopup.SetActive(false);
+        rotatingPuzzleScreen.SetActive(false);
+        Debug.Log("Quest Pass rcv!");
+    }
 
-        foreach (var ring in rings)
+    void CheckIfAllSolved()
+    {
+        foreach (var r in rings)
         {
-            if (!ring.IsLocked())
+            if (!r.isCorrect)
                 return;
         }
 
-        PuzzleSolved();
+        Debug.Log("✅ All Rings Solved!");
+        StartCoroutine(ShowCompletePuzzlePopup());
     }
-
-    private void PuzzleSolved()
-    {
-        isSolved = true;
-        Debug.Log("🎉 Puzzle Fully Solved!");
-
-        if (solvedPanel != null)
-            solvedPanel.SetActive(true);
-    }
-
-    public void OpenPuzzle()
-    {
-        isOpen = true;
-        gameObject.SetActive(true);
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-    }
-
-    public void ClosePuzzle()
-    {
-        isOpen = false;
-        gameObject.SetActive(false);
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    public bool IsOpen() => isOpen;
 }
