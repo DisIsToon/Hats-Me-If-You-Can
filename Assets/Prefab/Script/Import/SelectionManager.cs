@@ -49,7 +49,21 @@ public class SelectionManager : MonoBehaviour
  
     void Update()
     {
-        
+        if (DialogSystem.Instance == null)
+            Debug.LogWarning("DialogSystem.Instance is NULL!");
+        if (CraftingSystem.Instance == null)
+            Debug.LogWarning("CraftingSystem.Instance is NULL!");
+        if (InventorySystem.Instance == null)
+            Debug.LogWarning("InventorySystem.Instance is NULL!");
+        if (QuestManager.Instance == null)
+            Debug.LogWarning("QuestManager.Instance is NULL!");
+        if (PuzzleManagerUI.Instance == null)
+            Debug.LogWarning("PuzzleManagerUI.Instance is NULL!");
+        if (CardsController.Instance == null)
+            Debug.LogWarning("CardsController.Instance is NULL!");
+        if (HatalougeManager.Instance == null)
+            Debug.LogWarning("HatalougeManager.Instance is NULL!");
+
         if (DialogSystem.Instance.dialogUIActive == true ||
             CraftingSystem.Instance.isOpen == true ||
             InventorySystem.Instance.isOpen == true ||
