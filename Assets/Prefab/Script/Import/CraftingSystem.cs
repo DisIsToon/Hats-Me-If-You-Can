@@ -9,6 +9,8 @@ public class CraftingSystem : MonoBehaviour
     public GameObject craftingScreenUI;
     public GameObject inventoryScreenUI;
 
+    private bool canCraft = false;
+
     public List<string>inventoryItemList = new List<string>();
 
     //Craft Tools Buttons
@@ -118,7 +120,7 @@ public class CraftingSystem : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.C) && !isOpen)
+        if (Input.GetKeyDown(KeyCode.C) && canCraft && !isOpen)
         {
             RefreshNeededItem();
             craftingScreenUI.SetActive(true);
@@ -149,6 +151,10 @@ public class CraftingSystem : MonoBehaviour
         
             isOpen = false;
         }
+    }
+    public void SetCanCraft(bool value)
+    {
+        canCraft = value; 
     }
 
     public void RefreshNeededItem()
