@@ -1,12 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // Needed for UI (if using Text)
-using TMPro; // Optional if you use TextMeshPro
+using UnityEngine.UI;
+using TMPro;
 
+/// <summary>
+/// Rigidbody-based character with sprint, crouch, double jump, stamina,
+/// and item holding / aiming / throwing with arc preview & landing marker.
+/// Includes High Arc (Lob) mode toggle for taller, longer throws.
+/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
-public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersistence {
+public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersistence
+{
+    #region Inspector - Movement
     [Header("Movement Settings")]
     public float moveSpeed = 6f;
     public float sprintSpeed = 10f;
@@ -22,36 +29,67 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     public Transform groundCheck;
     public float groundCheckRadius = 0.3f;
     public LayerMask groundMask;
+    [Tooltip("Extra grace time after leaving ground where jump still counts.")]
+    public float coyoteTime = 0.1f;
+    #endregion
 
+    #region Inspector - Animation
     [Header("Animation")]
     public Animator animator;
     public string speedParam = "Speed";
     public string crouchParam = "IsCrouching";
 
+    [Header("Animation Tuning")]
+    [Tooltip("Speeds below this are treated as 0 (prevents jitter causing walk).")]
+    public float speedDeadzone = 0.15f;
+    [Tooltip("Multiplies the speed value sent to the Animator to hit thresholds.")]
+    public float speedMultiplier = 2.0f;
+    #endregion
+
+    #region Inspector - Camera
     [Header("References")]
     public Transform cameraTransform;
     public bool shouldFaceMoveDirection = true;
+    #endregion
 
+    #region Inspector - Item & Throw
     [Header("Item Holding & Throwing")]
     public Transform handPosition;
     public GameObject itemPrefab;
     public float throwForce = 10f;
+    [Range(0f, 60f)]
+    [Tooltip("Default elevation angle (degrees) applied to planar forward for normal throws.")]
+    public float throwElevationAngle = 18f;
+
     public Vector3 normalHoldOffset = Vector3.zero;
     public Vector3 aimHoldOffset = new Vector3(0f, 0.1f, 0.4f);
-    public float aimSmoothSpeed = 5f;
+    public float aimSmoothSpeed = 10f;
 
     [Header("Throw Arc Settings")]
     public LayerMask arcCollisionMask;
-    public int arcResolution = 30;
-    public float arcTimeStep = 0.1f;
+    public int arcResolution = 60;         // up from 30 for longer arcs
+    public float arcTimeStep = 0.04f;      // smaller step for smoother curve
     public float lineWidth = 0.05f;
 
-    private bool canInteract = false;
+    [Header("Landing Marker")]
+    public GameObject landingMarkerPrefab; // optional
+    public float landingMarkerScale = 0.25f;
 
+    [Header("High Arc / Lob Mode")]
+    public bool enableHighArc = true;
+    public KeyCode toggleHighArcKey = KeyCode.V;   // press V to toggle
+    [Range(0f, 80f)] public float lobElevationAngle = 38f;
+    public float lobForceMultiplier = 1.4f;        // extra oomph in lob mode
+    #endregion
+
+    #region Private Cached
     Rigidbody rb;
     CapsuleCollider col;
     LineRenderer arcRenderer;
+    GameObject landingMarker;
+    #endregion
 
+    #region Private State
     float originalHeight;
     Vector3 originalCenter;
 
@@ -61,15 +99,21 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     int jumpCount;
     const int maxJumps = 2;
     float currentStamina;
+    float lastGroundedTime;
 
-    bool isHidden = false;
     bool isAiming;
+    bool isHidden;
+
+    bool isHighArc = false; // current toggle state
 
     GameObject heldItem;
     Rigidbody heldRb;
     Collider heldCol;
+    #endregion
 
-    void Start() {
+    #region Unity - Init
+    void Start()
+    {
         rb = GetComponent<Rigidbody>();
         col = GetComponent<CapsuleCollider>();
         currentStamina = maxStamina;
@@ -77,8 +121,9 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         originalHeight = col.height;
         originalCenter = col.center;
 
-        // Spawn item
-        if (itemPrefab && handPosition) {
+        // Spawn held item
+        if (itemPrefab && handPosition)
+        {
             heldItem = Instantiate(itemPrefab, handPosition);
             heldItem.transform.localPosition = normalHoldOffset;
             heldItem.transform.localRotation = Quaternion.identity;
@@ -90,171 +135,333 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
             if (heldCol) heldCol.enabled = false;
         }
 
-        // Arc Renderer Setup
+        // Arc Renderer
         arcRenderer = gameObject.AddComponent<LineRenderer>();
         arcRenderer.positionCount = arcResolution;
         arcRenderer.startWidth = arcRenderer.endWidth = lineWidth;
         arcRenderer.material = new Material(Shader.Find("Sprites/Default"));
         arcRenderer.material.color = Color.white;
         arcRenderer.enabled = false;
+
+        // Landing marker
+        landingMarker = landingMarkerPrefab ? Instantiate(landingMarkerPrefab)
+                                            : CreateDefaultLandingMarker();
+        landingMarker.SetActive(false);
+    }
+    #endregion
+
+    #region Data Persistence
+    public void LoadData(GameData data)
+    {
+        transform.position = data.playerPosition;
     }
 
-    // Load Data
-    public void LoadData(GameData data) {
-        Debug.Log($"Loading player position: {data.playerPosition}");
-        this.transform.position = data.playerPosition;
+    public void SaveData(GameData data)
+    {
+        data.playerPosition = transform.position;
     }
+    #endregion
 
-    public void SaveData(GameData data) {
-        data.playerPosition = this.transform.position;
-        Debug.Log($"Saving player position: {data.playerPosition}");
-    }
+    #region Unity - Update
+    void Update()
+    {
+        HandleGroundCheck();
+        HandleCrouch();
+        HandleJump();
+        HandleFallBoost();
+        HandleStamina();
 
-    void Update() {
-        // Ground check
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundMask);
-        if (isGrounded) jumpCount = 0;
-
-        // Crouch
-        isCrouching = Input.GetKey(KeyCode.C);
-        if (animator) animator.SetBool(crouchParam, isCrouching);
-
-        if (isCrouching) {
-            col.height = originalHeight * 0.5f;
-            col.center = originalCenter - new Vector3(0, originalHeight * 0.25f, 0);
-        } else {
-            col.height = originalHeight;
-            col.center = originalCenter;
-        }
-
-        // Jump
-        if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps && !isCrouching) {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            jumpCount++;
-        }
-
-        // Fall boost
-        if (!isGrounded && rb.linearVelocity.y < 0)
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * 3f * Time.deltaTime;
-
-        // Stamina
-        isSprinting = Input.GetKey(KeyCode.LeftShift) && currentStamina > 0 && !isCrouching;
-        if (isSprinting && rb.linearVelocity.magnitude > 0.1f)
-            currentStamina = Mathf.Max(0, currentStamina - staminaDrainRate * Time.deltaTime);
-        else if (!isSprinting && isGrounded)
-            currentStamina = Mathf.Min(maxStamina, currentStamina + staminaRegenRate * Time.deltaTime);
-
-        // Animator speed
-        Vector3 flatVel = rb.linearVelocity; flatVel.y = 0;
-        if (animator) animator.SetFloat(speedParam, flatVel.magnitude);
-
-        // Aiming
-        isAiming = Input.GetMouseButton(1);
-        if (heldItem) {
-            Vector3 targetOffset = isAiming ? aimHoldOffset : normalHoldOffset;
-            heldItem.transform.localPosition = Vector3.Lerp(heldItem.transform.localPosition, targetOffset, Time.deltaTime * aimSmoothSpeed);
-        }
-
-        // Show arc while aiming
-        if (isAiming && heldItem) {
-            arcRenderer.enabled = true;
-            DrawThrowArc();
-        } else {
-            arcRenderer.enabled = false;
-        }
-
-        // Throw
-        if (Input.GetMouseButtonDown(0) &&
-                heldItem &&
-                DialogSystem.Instance.dialogUIActive == false &&
-                CraftingSystem.Instance.isOpen == false &&
-                InventorySystem.Instance.isOpen == false &&
-                QuestManager.Instance.isQuestMenuOpen == false &&
-                CardsController.Instance.isOpen == false &&
-                PuzzleManagerUI.Instance.isOpen == false &&
-                HatalougeManager.Instance.isOpen == false)
+        // Toggle high-arc (lob) mode
+        if (enableHighArc && Input.GetKeyDown(toggleHighArcKey))
         {
-            
+            isHighArc = !isHighArc;
+        }
+
+        // --- Animator movement speed (with dead-zone + scaling) ---
+        if (animator)
+        {
+            Vector3 flatVel = rb.linearVelocity;
+            flatVel.y = 0f;
+            float s = flatVel.magnitude;
+
+            // Dead-zone to prevent micro movement from triggering Walk
+            if (s < speedDeadzone) s = 0f;
+
+            // Scale up so it reliably crosses thresholds in transitions/blend trees
+            s *= speedMultiplier;
+
+            animator.SetFloat(speedParam, s);
+            // Debug.Log($"Speed sent: {s}");
+        }
+
+        // Aiming & item offset
+        isAiming = Input.GetMouseButton(1);
+        if (heldItem)
+        {
+            Vector3 targetOffset = isAiming ? aimHoldOffset : normalHoldOffset;
+            heldItem.transform.localPosition = Vector3.Lerp(
+                heldItem.transform.localPosition, targetOffset, Time.deltaTime * aimSmoothSpeed);
+        }
+
+        // Arc preview
+        if (isAiming && heldItem)
+        {
+            arcRenderer.enabled = true;
+            DrawThrowArcAndMarker();
+        }
+        else
+        {
+            arcRenderer.enabled = false;
+            if (landingMarker) landingMarker.SetActive(false);
+        }
+
+        // Throw (respecting UI gates)
+        if (Input.GetMouseButtonDown(0) &&
+            heldItem &&
+            DialogSystem.Instance.dialogUIActive == false &&
+            CraftingSystem.Instance.isOpen == false &&
+            InventorySystem.Instance.isOpen == false &&
+            QuestManager.Instance.isQuestMenuOpen == false &&
+            CardsController.Instance.isOpen == false &&
+            PuzzleManagerUI.Instance.isOpen == false &&
+            HatalougeManager.Instance.isOpen == false)
+        {
             ThrowHeldItem();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        
     }
 
-    void FixedUpdate() {
+    void FixedUpdate()
+    {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
-
         float speed = isCrouching ? crouchSpeed : (isSprinting ? sprintSpeed : moveSpeed);
 
-        // Movement relative to camera
-        Vector3 fwd = cameraTransform.forward; fwd.y = 0; fwd.Normalize();
-        Vector3 right = cameraTransform.right; right.y = 0; right.Normalize();
-        Vector3 move = (right * x + fwd * z).normalized;
+        // Camera-relative movement
+        Vector3 forward = cameraTransform ? cameraTransform.forward : transform.forward;
+        Vector3 right = cameraTransform ? cameraTransform.right : transform.right;
+        forward.y = 0; right.y = 0;
+        forward.Normalize(); right.Normalize();
 
-        // Apply velocity change
+        Vector3 move = (right * x + forward * z);
+        if (move.sqrMagnitude > 1f) move.Normalize();
+
         Vector3 targetVel = move * speed;
-        Vector3 velChange = targetVel - new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        Vector3 planarVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        Vector3 velChange = targetVel - planarVel;
+
         rb.AddForce(velChange, ForceMode.VelocityChange);
 
-        // Rotate towards move direction if needed
-        if (shouldFaceMoveDirection && move.sqrMagnitude > 0.001f) {
+        if (shouldFaceMoveDirection && move.sqrMagnitude > 0.001f)
+        {
             Quaternion targetRot = Quaternion.LookRotation(move);
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, 10f * Time.deltaTime));
         }
     }
+    #endregion
 
-    void ThrowHeldItem() {
+    #region Movement Helpers
+    void HandleGroundCheck()
+    {
+        bool groundedNow = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundMask);
+        if (groundedNow)
+        {
+            isGrounded = true;
+            lastGroundedTime = Time.time;
+            jumpCount = 0;
+        }
+        else
+        {
+            isGrounded = (Time.time - lastGroundedTime) <= coyoteTime;
+        }
+    }
+
+    void HandleCrouch()
+    {
+        isCrouching = Input.GetKey(KeyCode.C);
+        if (animator) animator.SetBool(crouchParam, isCrouching);
+
+        if (isCrouching)
+        {
+            col.height = Mathf.Max(0.5f, originalHeight * 0.5f);
+            col.center = originalCenter - new Vector3(0, originalHeight * 0.25f, 0);
+        }
+        else
+        {
+            col.height = originalHeight;
+            col.center = originalCenter;
+        }
+    }
+
+    void HandleJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps && !isCrouching)
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            jumpCount++;
+        }
+    }
+
+    void HandleFallBoost()
+    {
+        if (!isGrounded && rb.linearVelocity.y < 0)
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * 3f * Time.deltaTime;
+    }
+
+    void HandleStamina()
+    {
+        Vector3 flatVel = rb.linearVelocity; flatVel.y = 0;
+        bool moving = flatVel.sqrMagnitude > 0.01f;
+
+        isSprinting = Input.GetKey(KeyCode.LeftShift) && currentStamina > 0 && !isCrouching;
+        if (isSprinting && moving)
+            currentStamina = Mathf.Max(0, currentStamina - staminaDrainRate * Time.deltaTime);
+        else if (!isSprinting && isGrounded)
+            currentStamina = Mathf.Min(maxStamina, currentStamina + staminaRegenRate * Time.deltaTime);
+    }
+    #endregion
+
+    #region Throw + Arc
+    void ThrowHeldItem()
+    {
+        if (!heldItem || !heldRb) return;
+
+        // Detach & enable physics
         heldItem.transform.SetParent(null);
         heldRb.isKinematic = false;
         heldRb.useGravity = true;
-        heldCol.enabled = true;
+        if (heldCol) heldCol.enabled = true;
 
-        float finalForce = isAiming ? throwForce * 1.2f : throwForce;
-        Vector3 throwDirection = (transform.forward + transform.up * 0.2f).normalized;
-        heldRb.AddForce(throwDirection * finalForce, ForceMode.Impulse);
+        float force = GetCurrentThrowForce();
+        Vector3 throwDir = GetThrowDirection();
+        heldRb.AddForce(throwDir * force, ForceMode.Impulse);
 
+        // Clear state & visuals
         heldItem = null;
         heldRb = null;
         heldCol = null;
         arcRenderer.enabled = false;
+        if (landingMarker) landingMarker.SetActive(false);
     }
 
-    void DrawThrowArc() {
-        if (!heldItem || !heldRb) return;
+    float GetCurrentThrowForce()
+    {
+        float f = isAiming ? throwForce * 1.2f : throwForce;
+        if (isHighArc) f *= lobForceMultiplier;
+        return f;
+    }
+
+    Vector3 GetThrowDirection()
+    {
+        // Use planar forward so camera pitch doesn't force downward throws
+        Vector3 planarForward = cameraTransform
+            ? Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up).normalized
+            : Vector3.ProjectOnPlane(transform.forward, Vector3.up).normalized;
+
+        Vector3 right = cameraTransform ? cameraTransform.right : transform.right;
+
+        // Pick elevation based on current mode
+        float elevation = isHighArc ? lobElevationAngle : throwElevationAngle;
+        Vector3 dir = Quaternion.AngleAxis(elevation, right) * planarForward;
+
+        // Ensure a minimum upward pitch so it always arcs up first
+        const float minPitchDeg = 10f; // a bit higher to reinforce "high"
+        float minY = Mathf.Sin(minPitchDeg * Mathf.Deg2Rad);
+        if (dir.y < minY) dir.y = minY;
+
+        return dir.normalized;
+    }
+
+    void DrawThrowArcAndMarker()
+    {
+        if (!heldItem || !handPosition) return;
+
+        Vector3 startPos = handPosition.position + (transform.forward * 0.08f);
+        float force = GetCurrentThrowForce();
+
+        Vector3 throwDir = GetThrowDirection();
+        Vector3 startVel = throwDir * force;
 
         Vector3[] points = new Vector3[arcResolution];
-        Vector3 startPos = handPosition.position + transform.forward * 0.1f;
-        Vector3 startVel = transform.forward * (isAiming ? throwForce * 1.2f : throwForce);
+        bool hitFound = false;
+        RaycastHit hitInfo = default;
 
-        for (int i = 0; i < arcResolution; i++) {
+        Vector3 lastPoint = startPos;
+        for (int i = 0; i < arcResolution; i++)
+        {
             float t = i * arcTimeStep;
-            Vector3 point = startPos + startVel * t + 0.5f * Physics.gravity * t * t;
+            Vector3 point = startPos + startVel * t + 0.5f * Physics.gravity * (t * t);
             points[i] = point;
 
-            if (i > 0) {
-                if (Physics.Linecast(points[i - 1], points[i], out RaycastHit hit, arcCollisionMask)) {
+            if (i > 0)
+            {
+                if (Physics.Linecast(lastPoint, point, out RaycastHit hit, arcCollisionMask, QueryTriggerInteraction.Ignore))
+                {
                     points[i] = hit.point;
-                    for (int j = i + 1; j < arcResolution; j++)
-                        points[j] = hit.point;
+                    for (int j = i + 1; j < arcResolution; j++) points[j] = hit.point;
+                    hitFound = true;
+                    hitInfo = hit;
                     break;
                 }
             }
+            lastPoint = point;
         }
 
         arcRenderer.positionCount = arcResolution;
         arcRenderer.SetPositions(points);
+
+        if (landingMarker)
+        {
+            landingMarker.SetActive(hitFound);
+            if (hitFound)
+            {
+                landingMarker.transform.position = hitInfo.point + hitInfo.normal * 0.01f;
+                landingMarker.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+            }
+        }
+    }
+    #endregion
+
+    #region Utils
+    GameObject CreateDefaultLandingMarker()
+    {
+        GameObject ring = new GameObject("LandingMarker_Auto");
+        var lr = ring.AddComponent<LineRenderer>();
+        lr.loop = true;
+        lr.widthMultiplier = 0.02f;
+        lr.material = new Material(Shader.Find("Sprites/Default"));
+        lr.material.color = new Color(1, 1, 1, 0.9f);
+        int segs = 40;
+        lr.positionCount = segs;
+        float r = landingMarkerScale;
+        for (int i = 0; i < segs; i++)
+        {
+            float a = (i / (float)segs) * Mathf.PI * 2f;
+            lr.SetPosition(i, new Vector3(Mathf.Cos(a) * r, 0, Mathf.Sin(a) * r));
+        }
+        return ring;
     }
 
     public bool IsCrouching() => isCrouching;
 
-    public void SetHidden(bool hidden) {
+    public void SetHidden(bool hidden)
+    {
         isHidden = hidden;
-        Debug.Log("Hidden: " + isHidden);
         Renderer rend = GetComponentInChildren<Renderer>();
-        if (rend != null)
-            rend.material.color = hidden ? Color.gray : Color.white;
+        if (rend) rend.material.color = hidden ? Color.gray : Color.white;
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmosSelected()
+    {
+        if (groundCheck)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
+    }
+#endif
+    #endregion
 }

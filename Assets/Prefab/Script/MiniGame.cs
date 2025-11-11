@@ -6,11 +6,12 @@ using TMPro;
 public class MiniGame : MonoBehaviour
 {
     [Header("Refs")]
-    public RectTransform meter;       // Tall meter area
-    public RectTransform marker;      // Moving bar
-    public List<RectTransform> safeZones; // Green zones (children of meter)
-    public Image progressFill;        // Image with Fill Method = Vertical
-    public TMP_Text resultText;       // Optional
+    public RectTransform meter;
+    public RectTransform marker;
+    public List<RectTransform> safeZones;
+    public Image progressFill;
+    public TMP_Text resultText;
+    public TMP_Text timerText; // Optional text for showing time
 
     [Header("Tuning")]
     public float markerSpeed = 400f;
@@ -20,16 +21,21 @@ public class MiniGame : MonoBehaviour
     public float winThreshold = 1.0f;
     public bool autoStart = true;
 
+    [Header("Timer Settings")]
+    public float timeLimit = 10f; // total time before fail
+    float timer = 0f;
+
     float dir = 1f;
     float progress = 0f;
     bool playing = false;
-
+    bool frozen = false; // freeze progress after fill
     float minY, maxY;
 
     void Awake()
     {
         if (progressFill) progressFill.fillAmount = 0f;
         if (resultText) resultText.text = "";
+        if (timerText) timerText.text = "";
     }
 
     void OnEnable()
@@ -49,8 +55,13 @@ public class MiniGame : MonoBehaviour
 
         dir = Random.value < 0.5f ? -1f : 1f;
         progress = 0f;
+        timer = timeLimit;
+        frozen = false;
+
         if (progressFill) progressFill.fillAmount = 0f;
         if (resultText) resultText.text = "";
+        if (timerText) timerText.text = Mathf.CeilToInt(timer).ToString("0");
+
         playing = true;
     }
 
@@ -58,16 +69,27 @@ public class MiniGame : MonoBehaviour
     {
         if (!playing) return;
 
+        // Timer countdown
+        timer -= Time.unscaledDeltaTime;
+        if (timerText) timerText.text = Mathf.CeilToInt(timer).ToString("0");
+
+        if (timer <= 0f)
+        {
+            Fail();
+            return;
+        }
+
+        // Marker motion
         var pos = marker.anchoredPosition;
         pos.y += dir * markerSpeed * Time.unscaledDeltaTime;
-
         if (pos.y >= maxY) { pos.y = maxY; dir = -1f; }
         if (pos.y <= minY) { pos.y = minY; dir = 1f; }
-
         marker.anchoredPosition = pos;
 
+        if (frozen) return; // stop updating progress if frozen
+
         bool inZone = IsMarkerInAnyZone();
-        bool engaging = Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0);
+        bool engaging = Input.GetKey(KeyCode.Space);
 
         float delta = Time.unscaledDeltaTime;
         if (engaging && inZone) progress += fillGainPerSec * delta;
@@ -76,7 +98,11 @@ public class MiniGame : MonoBehaviour
         progress = Mathf.Clamp01(progress);
         if (progressFill) progressFill.fillAmount = progress;
 
-        if (progress >= winThreshold) Win();
+        if (progress >= winThreshold)
+        {
+            frozen = true; // freeze progress
+            Win();
+        }
     }
 
     bool IsMarkerInAnyZone()
@@ -88,7 +114,6 @@ public class MiniGame : MonoBehaviour
         {
             float zy = z.anchoredPosition.y;
             float zHalf = z.rect.height * 0.5f;
-
             bool overlap = (markerY + halfH) >= (zy - zHalf) && (markerY - halfH) <= (zy + zHalf);
             if (overlap) return true;
         }
@@ -99,12 +124,11 @@ public class MiniGame : MonoBehaviour
     {
         playing = false;
         if (resultText) resultText.text = "Success!";
-        // Optional callback
     }
 
     public void Fail()
     {
         playing = false;
-        if (resultText) resultText.text = "Failed!";
+        if (resultText) resultText.text = "Time's up!";
     }
 }

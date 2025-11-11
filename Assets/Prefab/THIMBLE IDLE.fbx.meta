@@ -1,0 +1,311 @@
+fileFormatVersion: 2
+guid: edae5a12add44b447aa9609eecc64744
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects: {}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Idle
+      takeName: THIMBLE IDLE|metarig.001Action.001
+      internalID: -3087594043698657736
+      firstFrame: 0
+      lastFrame: 240
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: THIMBLE IDLE(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: DRESS.003
+      parentName: THIMBLE IDLE(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: THIMBLE BODY.002
+      parentName: THIMBLE IDLE(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: THIMBLE IDLE
+      parentName: THIMBLE IDLE(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 164.92215, y: 164.92215, z: 164.92215}
+    - name: 1.001
+      parentName: THIMBLE IDLE
+      position: {x: -3.10576e-12, y: 0.0005991559, z: 0.0056408965}
+      rotation: {x: 0.80332994, y: -0.000000070993245, z: -0.0000000957644, w: 0.5955343}
+      scale: {x: 1, y: 0.9999997, z: 0.9999997}
+    - name: 2
+      parentName: 1.001
+      position: {x: -4.440892e-18, y: 0.0014228416, z: 1.862645e-10}
+      rotation: {x: -0.13024521, y: 4.6185278e-14, z: 0.000000031052878, w: 0.9914819}
+      scale: {x: 1, y: 1, z: 1.0000001}
+    - name: 3
+      parentName: 2
+      position: {x: -9.436896e-18, y: 0.0054264516, z: -2.0954757e-11}
+      rotation: {x: -0.035588454, y: 0.00000011913376, z: 0.000000004242462, w: 0.9993666}
+      scale: {x: 1, y: 1.0000002, z: 1.0000002}
+    - name: 4
+      parentName: 3
+      position: {x: -8.585192e-20, y: 0.0015971274, z: 0}
+      rotation: {x: -0.0073889373, y: -0.000000119206035, z: 8.808332e-10, w: 0.99997276}
+      scale: {x: 1, y: 0.9999998, z: 0.99999976}
+    - name: 5
+      parentName: 4
+      position: {x: 1.2767564e-17, y: 0.0011458099, z: 4.6566126e-11}
+      rotation: {x: 0.0452342, y: -3.552713e-14, z: -0.0000000107846665, w: 0.99897647}
+      scale: {x: 1, y: 0.9999998, z: 0.9999999}
+    - name: 6
+      parentName: 5
+      position: {x: 3.8857806e-18, y: 0.0069479514, z: 9.313226e-12}
+      rotation: {x: -0.007043063, y: -0.001106504, z: 0.57694715, w: 0.8167504}
+      scale: {x: 1.0000006, y: 1, z: 1}
+    - name: spine.006
+      parentName: 6
+      position: {x: -0.000000001428998, y: 0.0026196544, z: -2.3283064e-12}
+      rotation: {x: -0.013619504, y: -0.00000009848734, z: -0.45823961, w: 0.8887244}
+      scale: {x: 0.9999999, y: 0.9999999, z: 1.0000002}
+    - name: spine.006_end
+      parentName: spine.006
+      position: {x: -0, y: 0.00567207, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: 7
+      parentName: 5
+      position: {x: 3.8857806e-18, y: 0.0069479514, z: 9.313226e-12}
+      rotation: {x: -0.0064363084, y: 0.0011290476, z: -0.5887012, w: 0.8083243}
+      scale: {x: 0.99999994, y: 1.0000001, z: 1.0000004}
+    - name: spine.008
+      parentName: 7
+      position: {x: 4.93892e-10, y: 0.002594109, z: 5.820766e-11}
+      rotation: {x: -0.013860625, y: -0.000000052386877, z: 0.4523222, w: 0.8917469}
+      scale: {x: 1, y: 1.0000006, z: 1.0000004}
+    - name: spine.008_end
+      parentName: spine.008
+      position: {x: -0, y: 0.005704269, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: 8
+      parentName: 4
+      position: {x: -0.0001991751, y: 0.00061066775, z: 0.0008417268}
+      rotation: {x: 0.6449001, y: -0.3491454, z: -0.45087093, w: -0.50883865}
+      scale: {x: 0.99999994, y: 0.9999999, z: 1}
+    - name: 9
+      parentName: 8
+      position: {x: -0.00005047578, y: 0.0032864746, z: 0.000020271244}
+      rotation: {x: -0.21227299, y: 0.75542945, z: -0.05257333, w: -0.61765885}
+      scale: {x: 1.0000001, y: 1.0000005, z: 1.0000004}
+    - name: 10
+      parentName: 9
+      position: {x: -8.6613e-10, y: 0.002153024, z: -5.5879353e-11}
+      rotation: {x: -0.015920093, y: 0.08751572, z: 0.021380099, w: 0.99580646}
+      scale: {x: 1.000001, y: 1.0000011, z: 1.0000001}
+    - name: 11
+      parentName: 10
+      position: {x: -7.497147e-10, y: 0.0033823152, z: -5.5879353e-11}
+      rotation: {x: 0.017791014, y: -0.00910327, z: -0.0053956253, w: 0.9997857}
+      scale: {x: 1.0000017, y: 1.0000017, z: 1}
+    - name: 11_end
+      parentName: 11
+      position: {x: -0, y: 0.001263214, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: 12
+      parentName: 4
+      position: {x: 0.00019917551, y: 0.00061066775, z: 0.00084172655}
+      rotation: {x: 0.64490014, y: 0.34914526, z: 0.45087075, w: -0.50883883}
+      scale: {x: 1.0000002, y: 1.0000002, z: 1.0000005}
+    - name: 13
+      parentName: 12
+      position: {x: 0.00005047541, y: 0.003286475, z: 0.000020272533}
+      rotation: {x: -0.21227294, y: -0.7554295, z: 0.052573297, w: -0.61765903}
+      scale: {x: 1.0000008, y: 1.0000008, z: 1.0000005}
+    - name: 14
+      parentName: 13
+      position: {x: 0.0000000014877878, y: 0.0021530255, z: -3.7252902e-11}
+      rotation: {x: -0.01591994, y: -0.087515816, z: -0.021380033, w: 0.9958064}
+      scale: {x: 1.000001, y: 1.0000008, z: 0.9999996}
+    - name: 15
+      parentName: 14
+      position: {x: 0.0000000019231812, y: 0.0033823168, z: -1.8626451e-11}
+      rotation: {x: 0.017790709, y: 0.009103121, z: 0.005395347, w: 0.9997858}
+      scale: {x: 1.0000005, y: 1.0000007, z: 0.9999999}
+    - name: 15_end
+      parentName: 15
+      position: {x: -0, y: 0.001263214, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: 16
+      parentName: 1.001
+      position: {x: -3.1086245e-17, y: 1.8626451e-11, z: 7.4505804e-11}
+      rotation: {x: -0.33262292, y: 0.6401379, z: 0.56276876, w: 0.4035799}
+      scale: {x: 1.0000005, y: 1.0000001, z: 0.99999994}
+    - name: 16_end
+      parentName: 16
+      position: {x: -0, y: 0.0022994846, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: 17
+      parentName: 1.001
+      position: {x: 6.211489e-12, y: 1.8626451e-11, z: 7.4505804e-11}
+      rotation: {x: 0.33262312, y: 0.640138, z: 0.5627684, w: -0.40358034}
+      scale: {x: 1.0000004, y: 0.99999994, z: 1.0000005}
+    - name: 17_end
+      parentName: 17
+      position: {x: -0, y: 0.0022994846, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: 18
+      parentName: 1.001
+      position: {x: -0.0020720195, y: -0.00029942335, z: 0.0005778164}
+      rotation: {x: 0.9743899, y: 0.024147317, z: -0.0007273489, w: 0.2235634}
+      scale: {x: 1, y: 1, z: 0.9999991}
+    - name: 19
+      parentName: 18
+      position: {x: 2.6804628e-10, y: 0.0022515457, z: -2.910383e-11}
+      rotation: {x: 0.12800479, y: -0.0016182179, z: 0.02410398, w: 0.99147934}
+      scale: {x: 1, y: 1.000001, z: 1.000001}
+    - name: 19_end
+      parentName: 19
+      position: {x: -0, y: 0.0026229422, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: 20
+      parentName: 1.001
+      position: {x: 0.0020720197, y: -0.00029942332, z: 0.0005778154}
+      rotation: {x: 0.9743899, y: -0.024147233, z: 0.0007273703, w: 0.2235634}
+      scale: {x: 0.9999999, y: 1.0000005, z: 1.0000015}
+    - name: 21
+      parentName: 20
+      position: {x: 8.1490724e-11, y: 0.0022515461, z: 9.3132255e-12}
+      rotation: {x: 0.12800479, y: 0.0016182396, z: -0.024103934, w: 0.99147934}
+      scale: {x: 1, y: 1.0000004, z: 1.0000008}
+    - name: 21_end
+      parentName: 21
+      position: {x: -0, y: 0.0026229422, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
