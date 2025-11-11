@@ -6080,20 +6080,17 @@ MonoBehaviour:
   alertRange: 10
   leashRadius: 30
   homePosition: {x: 0, y: 0, z: 0}
-  cruiseSpeed: 200
-  sprintSpeed: 500
-  acceleration: 200
+  runSpeed: 500
+  tiredSpeed: 5
+  acceleration: 500
   angularSpeed: 1000
-  burstDuration: 0.9
-  restBetweenBursts: 0.35
-  burstsUntilTired: 3
-  tiredDuration: 1.25
+  runDuration: 4
+  tiredDuration: 2
   zigzagAmplitude: 2
   zigzagFrequency: 2.5
-  repathInterval: 0.2
-  minTargetDelta: 0.5
   fleeStep: 6
   baseOffset: 0.45
+  drawGizmos: 1
 --- !u!1001 &2088392246
 PrefabInstance:
   m_ObjectHideFlags: 0

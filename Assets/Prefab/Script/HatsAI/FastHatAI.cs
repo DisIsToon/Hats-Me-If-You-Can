@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent), typeof(Collider))]
@@ -8,53 +8,43 @@ public class FastHatAI : MonoBehaviour
     public Transform player;
 
     [Header("Awareness")]
-    public float alertRange = 10f;
-    public float leashRadius = 30f;
+    public float alertRange = 7f;       // how close player must be before FastHat starts running
+    public float leashRadius = 12f;     // how far FastHat can move from home
     public Vector3 homePosition;
 
-    [Header("Movement (fast)")]
-    public float cruiseSpeed = 4.5f;   // idle/roam
-    public float sprintSpeed = 12f;    // burst speed
-    public float acceleration = 70f;   // strong accel
-    public float angularSpeed = 900f;  // turns fast
+    [Header("Movement Speeds")]
+    public float runSpeed = 11f;        // fast sprint speed
+    public float tiredSpeed = 4f;       // slow catchable speed
+    public float acceleration = 60f;
+    public float angularSpeed = 900f;
 
-    [Header("Bursts")]
-    public float burstDuration = 1.1f;     // sprint window
-    public float restBetweenBursts = 0.15f;
-    public int burstsUntilTired = 2;
-    public float tiredDuration = 0.9f;     // brief “catchable” slow
+    [Header("Behavior Timing")]
+    public float runDuration = 1.4f;    // how long he runs
+    public float tiredDuration = 0.8f;  // how long heâ€™s tired
+    public float zigzagAmplitude = 1.5f;
+    public float zigzagFrequency = 3.5f;
+    public float fleeStep = 3.5f;       // how far each target jump is while fleeing
 
-    [Header("Zigzag")]
-    public float zigzagAmplitude = 2.0f;
-    public float zigzagFrequency = 2.5f;
+    [Header("Ground Offset Fix")]
+    public float baseOffset = 0.45f;    // lifts agent so it doesnâ€™t clip ground
 
-    [Header("Pathing")]
-    public float repathInterval = 0.2f; // rate-limit SetDestination
-    public float minTargetDelta = 0.5f; // only update if far enough
-    public float fleeStep = 8f;         // step distance per burst
+    [Header("Debug")]
+    public bool drawGizmos = true;
 
-    [Header("Ground Visual Fix (Option 1)")]
-    public float baseOffset = 0.45f;    // lifts the agent so mesh doesn’t clip
-
-    NavMeshAgent agent;
-    float burstTimer, restTimer, repathTimer;
-    int burstsInCycle;
-    bool fleeing, tired;
-    Vector3 fleeDirCached;
-    Vector3 lastIssuedDest;
+    private NavMeshAgent agent;
+    private bool isRunning = false;
+    private bool isTired = false;
+    private float stateTimer = 0f;
+    private Vector3 lastDirection;
+    private Vector3 lastDestination;
 
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-
-        // Fast, responsive agent
-        agent.speed = cruiseSpeed;
         agent.acceleration = acceleration;
         agent.angularSpeed = angularSpeed;
         agent.autoBraking = false;
         agent.stoppingDistance = 0.15f;
-
-        // Visual anti-clipping (Option 1)
         agent.baseOffset = baseOffset;
 
         if (homePosition == Vector3.zero)
@@ -63,123 +53,130 @@ public class FastHatAI : MonoBehaviour
 
     void Start()
     {
-        // Ensure we’re on the NavMesh
+        // Snap to NavMesh
         if (NavMesh.SamplePosition(transform.position, out var hit, 2f, NavMesh.AllAreas))
             agent.Warp(hit.position);
+
+        StartRunning(); // start the infinite run/tired loop
     }
 
     void Update()
     {
         if (!player) return;
 
-        repathTimer -= Time.deltaTime;
+        stateTimer -= Time.deltaTime;
 
-        float dist = Vector3.Distance(transform.position, player.position);
-        fleeing = dist <= alertRange && !tired;
-
-        if (tired)
+        if (isRunning)
         {
-            agent.speed = cruiseSpeed * 0.6f;
-            return;
+            RunLogic();
+
+            // when run timer ends â†’ go tired
+            if (stateTimer <= 0f)
+                StartTired();
         }
+        else if (isTired)
+        {
+            // tired = slow wander but still watch player
+            TiredLogic();
 
-        if (fleeing) DoFleeLogic();
-        else RoamNearHome();
-
-        // Unstick if turning in place
-        if (agent.hasPath && agent.velocity.sqrMagnitude < 0.001f)
-            agent.ResetPath();
+            // when tired timer ends â†’ go back to running
+            if (stateTimer <= 0f)
+                StartRunning();
+        }
     }
 
-    void DoFleeLogic()
+    // --------------------
+    // STATE LOGIC
+    // --------------------
+
+    void StartRunning()
     {
-        // Start burst
-        if (burstTimer <= 0f && restTimer <= 0f)
+        isRunning = true;
+        isTired = false;
+        stateTimer = runDuration;
+        agent.speed = runSpeed;
+    }
+
+    void StartTired()
+    {
+        isRunning = false;
+        isTired = true;
+        stateTimer = tiredDuration;
+        agent.speed = tiredSpeed;
+    }
+
+    void RunLogic()
+    {
+        float dist = Vector3.Distance(transform.position, player.position);
+        if (dist <= alertRange)
         {
-            burstTimer = burstDuration;
-            burstsInCycle++;
-            agent.speed = sprintSpeed;
+            Vector3 awayDir = (transform.position - player.position);
+            awayDir.y = 0f;
+            if (awayDir.sqrMagnitude < 0.01f) awayDir = transform.forward;
+            awayDir.Normalize();
 
-            Vector3 away = transform.position - player.position;
-            away.y = 0f;
-            if (away.sqrMagnitude < 0.0001f) away = transform.forward;
-            fleeDirCached = away.normalized;
-        }
-
-        // During burst
-        if (burstTimer > 0f)
-        {
-            burstTimer -= Time.deltaTime;
-
-            Vector3 lateral = Vector3.Cross(Vector3.up, fleeDirCached);
+            // add zigzag for more life
+            Vector3 lateral = Vector3.Cross(Vector3.up, awayDir).normalized;
             float sway = Mathf.Sin(Time.time * zigzagFrequency) * zigzagAmplitude;
-            Vector3 desired = transform.position + fleeDirCached * fleeStep + lateral * sway;
+            Vector3 moveDir = (awayDir + lateral * sway * 0.2f).normalized;
 
-            // Keep within leash
-            if (Vector3.Distance(homePosition, desired) > leashRadius)
+            Vector3 target = transform.position + moveDir * fleeStep;
+
+            // stay near home
+            if (Vector3.Distance(homePosition, target) > leashRadius)
             {
                 Vector3 back = (homePosition - transform.position).normalized;
-                desired = transform.position + back * fleeStep;
+                target = transform.position + back * fleeStep;
             }
 
-            TrySetDestination(desired);
-
-            if (burstTimer <= 0f)
-            {
-                restTimer = restBetweenBursts;
-                agent.speed = cruiseSpeed;
-            }
+            SetDestinationSafe(target);
+            lastDirection = moveDir;
         }
-        else if (restTimer > 0f)
+        else
         {
-            restTimer -= Time.deltaTime;
-
-            Vector3 drift = transform.position + fleeDirCached * Mathf.Max(2f, fleeStep * 0.3f);
-            TrySetDestination(drift);
-
-            if (restTimer <= 0f && burstsInCycle >= burstsUntilTired)
-            {
-                burstsInCycle = 0;
-                StartCoroutine(TiredWindow());
-            }
+            // if player far, idle near home
+            RoamNearHome();
         }
     }
 
-    System.Collections.IEnumerator TiredWindow()
+    void TiredLogic()
     {
-        tired = true;
-        float t = tiredDuration;
-        float prev = agent.speed;
-        agent.speed = cruiseSpeed * 0.5f;
-        while (t > 0f) { t -= Time.deltaTime; yield return null; }
-        tired = false;
-        agent.speed = prev;
+        // small slow movement in last known direction
+        Vector3 target = transform.position + lastDirection * (fleeStep * 0.5f);
+        SetDestinationSafe(target);
     }
 
     void RoamNearHome()
     {
-        agent.speed = cruiseSpeed;
-
         if (!agent.hasPath || agent.remainingDistance < 0.5f)
         {
-            Vector2 rnd = Random.insideUnitCircle * Mathf.Min(leashRadius * 0.4f, 6f);
+            Vector2 rnd = Random.insideUnitCircle * Mathf.Min(leashRadius * 0.4f, 4f);
             Vector3 goal = homePosition + new Vector3(rnd.x, 0f, rnd.y);
-            TrySetDestination(goal, force: true);
+            SetDestinationSafe(goal);
         }
     }
 
-    void TrySetDestination(Vector3 desired, bool force = false)
+    void SetDestinationSafe(Vector3 target)
     {
-        if (!force && repathTimer > 0f) return;
-
-        if (NavMesh.SamplePosition(desired, out var hit, 2f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(target, out var hit, 2f, NavMesh.AllAreas))
         {
-            if (force || Vector3.Distance(lastIssuedDest, hit.position) > minTargetDelta)
+            if (Vector3.Distance(lastDestination, hit.position) > 0.2f)
             {
                 agent.SetDestination(hit.position);
-                lastIssuedDest = hit.position;
-                repathTimer = repathInterval;
+                lastDestination = hit.position;
             }
         }
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmosSelected()
+    {
+        if (!drawGizmos) return;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, alertRange);
+
+        Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.4f);
+        Gizmos.DrawWireSphere(homePosition == Vector3.zero ? transform.position : homePosition, leashRadius);
+    }
+#endif
 }
