@@ -1,64 +1,133 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 public class CRBarrierSystem : MonoBehaviour
 {
+    [Header("Message Object Settings")]
+    public GameObject messageObject;      // Message when ShyHat not captured
+    public GameObject messageObject2;     // Message when ShyHat captured
+    public float fadeDuration = 1f;
+    public float showTime = 2f;
 
-    [Header("References")]
-    public GameObject barrierObject;        // The physical barrier (wall, collider, etc.)
-    public GameObject messageUI;            // The UI text or panel (e.g. "A force is stopping you")
+    [Header("Mini Game")]
+    public GameObject barrierGameScreen;  // Assign your BarrierGameScreen (ClickerBarrier root)
+    public ClickerBarrier clickerGame; // Reference to ClickerBarrier script
 
-    [Header("Settings")]
-    public bool barrierRemoved = false;     // This will be set true externally when condition is met
+    private bool isShowing = false;
+    private BoxCollider boxCollider;
+    private MeshRenderer meshRenderer;
+    private GameTracker gt;
 
-    private bool playerInRange = false;
-
-    void Start()
+    private void Start()
     {
-        // Make sure message UI is hidden initially
-        if (messageUI != null)
-            messageUI.SetActive(false);
-
-        // Make sure barrier is active at start
-        if (barrierObject != null)
-            barrierObject.SetActive(true);
-    }
-        
-    void Update()
-    {
-        // When the bool becomes true, remove the barrier
-        if (barrierRemoved && barrierObject.activeSelf)
+        gt = FindObjectOfType<GameTracker>();
+        if (gt == null)
         {
-            barrierObject.SetActive(false);
-            if (messageUI != null)
-                messageUI.SetActive(false);
+            Debug.LogError("GameTracker not found!");
         }
 
-        // Optionally hide the message if player walks away
-        if (!playerInRange && messageUI.activeSelf)
-            messageUI.SetActive(false);
+        boxCollider = GetComponent<BoxCollider>();
+        meshRenderer = GetComponent<MeshRenderer>();
+
+        if (messageObject) messageObject.SetActive(false);
+        if (messageObject2) messageObject2.SetActive(false);
+        if (barrierGameScreen) barrierGameScreen.SetActive(false);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Player Collided");
-            playerInRange = true;
+        if (!collision.gameObject.CompareTag("Player") || isShowing) return;
 
-            // Only show message if barrier still exists
-            if (!barrierRemoved && messageUI != null)
-                messageUI.SetActive(true);
+        if (gt != null && gt.jumpHatCaptured)
+        {
+            // Show message 2 then start mini game
+            StartCoroutine(ShowAndStartGame(messageObject2));
+        }
+        else
+        {
+            // Just show regular message
+            StartCoroutine(ShowAndFade(messageObject));
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private IEnumerator ShowAndFade(GameObject msgObj)
     {
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = false;
+        if (msgObj == null) yield break;
+        isShowing = true;
+        msgObj.SetActive(true);
 
-            if (messageUI != null)
-                messageUI.SetActive(false);
+        yield return new WaitForSeconds(showTime);
+
+        float elapsed = 0f;
+        Image img = msgObj.GetComponent<Image>();
+        SpriteRenderer sr = msgObj.GetComponent<SpriteRenderer>();
+
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
+
+            if (img)
+            {
+                Color c = img.color; c.a = alpha; img.color = c;
+            }
+            else if (sr)
+            {
+                Color c = sr.color; c.a = alpha; sr.color = c;
+            }
+
+            yield return null;
+        }
+
+        msgObj.SetActive(false);
+        isShowing = false;
+    }
+
+    private IEnumerator ShowAndStartGame(GameObject msgObj)
+    {
+        if (msgObj == null) yield break;
+
+        isShowing = true;
+        msgObj.SetActive(true);
+
+        yield return new WaitForSeconds(showTime);
+
+        // Hide message and open the Clicker mini-game
+        msgObj.SetActive(false);
+        isShowing = false;
+
+
+        if (clickerGame == null)
+        {
+            Debug.Log("Clicker Game is null");
+        }
+        if (barrierGameScreen != null)
+        {
+            barrierGameScreen.SetActive(true);
+        }
+
+        if (clickerGame != null)
+        {
+            clickerGame.BarrierGameScreen = barrierGameScreen;
+            clickerGame.StartGame(); // <---- Start the mini-game
+            StartCoroutine(WaitForVictory());
+        }
+    }
+
+    private IEnumerator WaitForVictory()
+    {
+        // Wait until ClickerBarrierTMP sets its gameEnded = true
+        while (!clickerGame.gameEnded)
+        {
+            yield return null;
+        }
+
+        // When ended, check if victory
+        if (clickerGame.victoryScreen.activeSelf)
+        {
+            // Disable barrier visuals and collision
+            if (boxCollider) boxCollider.enabled = false;
+            if (meshRenderer) meshRenderer.enabled = false;
         }
     }
 }

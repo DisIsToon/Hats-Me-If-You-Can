@@ -5,18 +5,18 @@ using System.Collections;
 public class WinterBarrierSystem : MonoBehaviour
 {
     [Header("Message Object Settings")]
-    public GameObject messageObject;     // Optional UI/2D message
-    public GameObject messageObject2;    // UI to show if ShyHat is captured
+    public GameObject messageObject;      // Message when ShyHat not captured
+    public GameObject messageObject2;     // Message when ShyHat captured
     public float fadeDuration = 1f;
     public float showTime = 2f;
 
-    private bool isShowing = false;
-    private Image uiImage;
-    private SpriteRenderer spriteRenderer;
+    [Header("Mini Game")]
+    public GameObject barrierGameScreen;  // Assign your BarrierGameScreen (ClickerBarrier root)
+    public ClickerBarrier clickerGame; // Reference to ClickerBarrier script
 
+    private bool isShowing = false;
     private BoxCollider boxCollider;
     private MeshRenderer meshRenderer;
-
     private GameTracker gt;
 
     private void Start()
@@ -24,95 +24,111 @@ public class WinterBarrierSystem : MonoBehaviour
         gt = FindObjectOfType<GameTracker>();
         if (gt == null)
         {
-            Debug.LogError("GameTracker not found in the scene!");
+            Debug.LogError("GameTracker not found!");
         }
 
         boxCollider = GetComponent<BoxCollider>();
         meshRenderer = GetComponent<MeshRenderer>();
 
-        if (messageObject != null)
-        {
-            uiImage = messageObject.GetComponent<Image>();
-            spriteRenderer = messageObject.GetComponent<SpriteRenderer>();
-            messageObject.SetActive(false);
-        }
-
-        if (messageObject2 != null)
-        {
-            // Deactivate second message initially
-            if (messageObject2.TryGetComponent(out Image img))
-                img.color = new Color(img.color.r, img.color.g, img.color.b, 0f);
-            if (messageObject2.TryGetComponent(out SpriteRenderer sr))
-                sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 0f);
-            messageObject2.SetActive(false);
-        }
+        if (messageObject) messageObject.SetActive(false);
+        if (messageObject2) messageObject2.SetActive(false);
+        if (barrierGameScreen) barrierGameScreen.SetActive(false);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player") && !isShowing && gt != null)
+        if (!collision.gameObject.CompareTag("Player") || isShowing) return;
+
+        if (gt != null && gt.shyHatCaptured)
         {
-            if (gt.shyHatCaptured)
-            {
-                // Show the second message and disable barrier after fade
-                StartCoroutine(ShowAndFade(messageObject2, true));
-            }
-            else
-            {
-                // Show normal message if ShyHat is not captured
-                StartCoroutine(ShowAndFade(messageObject, false));
-            }
+            // Show message 2 then start mini game
+            StartCoroutine(ShowAndStartGame(messageObject2));
+        }
+        else
+        {
+            // Just show regular message
+            StartCoroutine(ShowAndFade(messageObject));
         }
     }
 
-    private IEnumerator ShowAndFade(GameObject msgObj, bool disableBarrierAfter)
+    private IEnumerator ShowAndFade(GameObject msgObj)
+    {
+        if (msgObj == null) yield break;
+        isShowing = true;
+        msgObj.SetActive(true);
+
+        yield return new WaitForSeconds(showTime);
+
+        float elapsed = 0f;
+        Image img = msgObj.GetComponent<Image>();
+        SpriteRenderer sr = msgObj.GetComponent<SpriteRenderer>();
+
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
+
+            if (img)
+            {
+                Color c = img.color; c.a = alpha; img.color = c;
+            }
+            else if (sr)
+            {
+                Color c = sr.color; c.a = alpha; sr.color = c;
+            }
+
+            yield return null;
+        }
+
+        msgObj.SetActive(false);
+        isShowing = false;
+    }
+
+    private IEnumerator ShowAndStartGame(GameObject msgObj)
     {
         if (msgObj == null) yield break;
 
         isShowing = true;
         msgObj.SetActive(true);
 
-        // Set full alpha initially
-        SetAlpha(msgObj, 1f);
-
-        // Wait for showTime
         yield return new WaitForSeconds(showTime);
 
-        // Fade out over fadeDuration
-        float elapsed = 0f;
-        while (elapsed < fadeDuration)
+        // Hide message and open the Clicker mini-game
+        msgObj.SetActive(false);
+        isShowing = false;
+
+
+        if (clickerGame == null)
         {
-            elapsed += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
-            SetAlpha(msgObj, alpha);
+            Debug.Log("Clicker Game is null");
+        }
+        if (barrierGameScreen != null)
+        {
+            barrierGameScreen.SetActive(true);
+        }
+
+        if (clickerGame != null)
+        {
+            clickerGame.BarrierGameScreen = barrierGameScreen;
+            clickerGame.StartGame(); // <---- Start the mini-game
+            StartCoroutine(WaitForVictory());
+        }
+    }
+
+    private IEnumerator WaitForVictory()
+    {
+        // Wait until ClickerBarrierTMP sets its gameEnded = true
+        while (!clickerGame.gameEnded)
+        {
             yield return null;
         }
 
-        msgObj.SetActive(false);
-
-        // Disable barrier components if required
-        if (disableBarrierAfter)
+        // When ended, check if victory
+        if (clickerGame.victoryScreen.activeSelf)
         {
-            if (boxCollider != null) boxCollider.enabled = false;
-            if (meshRenderer != null) meshRenderer.enabled = false;
-        }
-
-        isShowing = false;
-    }
-
-    private void SetAlpha(GameObject msgObj, float alpha)
-    {
-        if (msgObj.TryGetComponent(out Image img))
-        {
-            Color c = img.color;
-            c.a = alpha;
-            img.color = c;
-        }
-        else if (msgObj.TryGetComponent(out SpriteRenderer sr))
-        {
-            Color c = sr.color;
-            c.a = alpha;
-            sr.color = c;
+            // Disable barrier visuals and collision
+            if (boxCollider) boxCollider.enabled = false;
+            if (meshRenderer) meshRenderer.enabled = false;
         }
     }
 }

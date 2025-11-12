@@ -12,12 +12,18 @@ public class SelectionManager : MonoBehaviour
     public GameObject selectedObject;
     public GameObject interaction_Info_UI;
     public GameObject helpPickUpDetectUI;
+    public GameObject helpPickUpNotesUI;
+    public GameObject helpInteractCauldronUI;
+    public GameObject helpInteractNpcUI;
     public GameObject helpTalkUI;
 
     public Image centerDotImage;
     public Image handIcon;
 
     public bool pickableItemDetected;
+    public bool readableNoteDetected;
+    public bool cauldronDetected;
+    public bool interactableNpcDetected;
     public bool handIsVisible;
     public bool willTalk;
 
@@ -75,20 +81,49 @@ public class SelectionManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-     
-
-
+        // Item
         if (pickableItemDetected == true)
-            {
-                helpPickUpDetectUI.SetActive(true);
+        {
+            helpPickUpDetectUI.SetActive(true);
 
-            }
-            else if(pickableItemDetected == false)
-            {
-                helpPickUpDetectUI.SetActive(false);
-            }
-          
+        }
+        else if(pickableItemDetected == false)
+        {
+            helpPickUpDetectUI.SetActive(false);
+        }
 
+        // Notes
+        if (readableNoteDetected == true)
+        {
+            helpPickUpNotesUI.SetActive(true);
+
+        }
+        else if (readableNoteDetected == false)
+        {
+            helpPickUpNotesUI.SetActive(false);
+        }
+
+        // Cauldron
+        if (cauldronDetected == true)
+        {
+            helpInteractCauldronUI.SetActive(true);
+
+        }
+        else if (cauldronDetected == false)
+        {
+            helpInteractCauldronUI.SetActive(false);
+        }
+
+        //NPC
+        if (interactableNpcDetected == true)
+        {
+            helpInteractNpcUI.SetActive(true);
+
+        }
+        else if (interactableNpcDetected == false)
+        {
+            helpInteractNpcUI.SetActive(false);
+        }
     }
 
     public void DisableSelection()

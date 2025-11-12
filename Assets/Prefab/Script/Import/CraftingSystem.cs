@@ -120,7 +120,7 @@ public class CraftingSystem : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.C) && canCraft && !isOpen)
+        if (Input.GetKeyDown(KeyCode.E) && canCraft && !isOpen)
         {
             RefreshNeededItem();
             craftingScreenUI.SetActive(true);
@@ -134,7 +134,7 @@ public class CraftingSystem : MonoBehaviour
             isOpen = true;
  
         }
-        else if (Input.GetKeyDown(KeyCode.C) && isOpen)
+        else if (Input.GetKeyDown(KeyCode.E) && isOpen)
         {
             RefreshNeededItem();
             craftingScreenUI.SetActive(false);
