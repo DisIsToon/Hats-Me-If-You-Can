@@ -23,6 +23,8 @@ public class InteractableCauldron : MonoBehaviour
         {
             SelectionManager.Instance.cauldronDetected = false;
             playerInRange = false;
+            CraftingSystem.Instance.CraftingScreenOff();
+
         }
     }
 }

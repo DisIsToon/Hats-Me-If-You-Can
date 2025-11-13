@@ -122,6 +122,7 @@ public class CraftingSystem : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E) && canCraft && !isOpen)
         {
+            SelectionManager.Instance.cauldronDetected = false;
             RefreshNeededItem();
             craftingScreenUI.SetActive(true);
             inventoryScreenUI.SetActive(true);
@@ -155,6 +156,15 @@ public class CraftingSystem : MonoBehaviour
     public void SetCanCraft(bool value)
     {
         canCraft = value; 
+    }
+
+    public void CraftingScreenOff()
+    {
+        RefreshNeededItem();
+        craftingScreenUI.SetActive(false);
+        inventoryScreenUI.SetActive(false);
+
+        isOpen = false;
     }
 
     public void RefreshNeededItem()

@@ -224,6 +224,8 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
             QuestManager.Instance.isQuestMenuOpen == false &&
             CardsController.Instance.isOpen == false &&
             PuzzleManagerUI.Instance.isOpen == false &&
+            NPC.Instance.isTalkingWithPlayer == false &&
+            Notes.Instance.activeNote == false &&
             HatalougeManager.Instance.isOpen == false)
         {
             ThrowHeldItem();

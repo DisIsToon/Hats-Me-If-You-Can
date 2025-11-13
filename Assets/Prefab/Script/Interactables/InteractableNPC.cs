@@ -23,6 +23,7 @@ public class InteractableNPC : MonoBehaviour
         {
             SelectionManager.Instance.interactableNpcDetected = false;
             playerInRange = false;
+            NPC.Instance.CloseDialogUI();
         }
     }
 }

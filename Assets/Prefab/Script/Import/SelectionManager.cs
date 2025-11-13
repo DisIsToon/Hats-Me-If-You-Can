@@ -76,6 +76,8 @@ public class SelectionManager : MonoBehaviour
             QuestManager.Instance.isQuestMenuOpen == true ||
             PuzzleManagerUI.Instance.isOpen == true ||
             CardsController.Instance.isOpen == true ||
+            NPC.Instance.isTalkingWithPlayer == true ||
+            Notes.Instance.activeNote == true ||
             HatalougeManager.Instance.isOpen == true)
         {
             Cursor.lockState = CursorLockMode.None;

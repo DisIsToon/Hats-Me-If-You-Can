@@ -30,7 +30,18 @@ public class NPC : MonoBehaviour
     public int currentDialog;
 
     public GameObject MainScreen;
-
+    public static NPC Instance { get; set; }
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     void Start()
     {
@@ -60,9 +71,10 @@ public class NPC : MonoBehaviour
         if (pressFUI != null && (dialogUI == null || !dialogUI.activeSelf))
             pressFUI.SetActive(true);
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             //LookAtPlayer();
+            SelectionManager.Instance.interactableNpcDetected = false;
             StartConversation();
             //if (dialogUI != null) dialogUI.SetActive(true);
             if (pressFUI != null) pressFUI.SetActive(false);
@@ -346,7 +358,7 @@ public class NPC : MonoBehaviour
 
     }
 
-    private void CloseDialogUI()
+    public void CloseDialogUI()
     {
         optionButton1Text.text = "[Close]";
         optionButton1.onClick.RemoveAllListeners();
@@ -431,7 +443,7 @@ public class NPC : MonoBehaviour
             playerInRange = false;
             MainScreen.SetActive(true);
             if (pressFUI != null) pressFUI.SetActive(false);
-
+            isTalkingWithPlayer = false;
             // Optional: close dialog when leaving range
             if (dialogUI != null && dialogUI.activeSelf)
                 

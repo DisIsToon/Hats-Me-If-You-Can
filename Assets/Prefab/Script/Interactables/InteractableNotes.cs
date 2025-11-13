@@ -21,7 +21,8 @@ public class InteractableNotes : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             SelectionManager.Instance.readableNoteDetected = false;
-            playerInRange = false;
+            playerInRange = false; 
+            Notes.Instance.CloseDialog();
         }
     }
 }
