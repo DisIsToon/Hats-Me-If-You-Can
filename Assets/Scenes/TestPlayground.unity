@@ -1322,7 +1322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1133490225}
-  detectRange: 5
+  detectRange: 10
   hopForwardForce: 6.5
   hopUpForce: 5.5
   extraGravity: 15
@@ -6085,7 +6085,7 @@ MonoBehaviour:
   acceleration: 500
   angularSpeed: 1000
   runDuration: 4
-  tiredDuration: 2
+  tiredDuration: 5
   zigzagAmplitude: 2
   zigzagFrequency: 2.5
   fleeStep: 6
@@ -11800,6 +11800,10 @@ PrefabInstance:
     - target: {fileID: 899483251654955731, guid: ebb49f2619352d141844fc18096cb8c3, type: 3}
       propertyPath: staminaRegenRate
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 899483251654955731, guid: ebb49f2619352d141844fc18096cb8c3, type: 3}
+      propertyPath: toggleHighArcKey
+      value: 118
       objectReference: {fileID: 0}
     - target: {fileID: 899483251654955731, guid: ebb49f2619352d141844fc18096cb8c3, type: 3}
       propertyPath: arcCollisionMask.m_Bits
