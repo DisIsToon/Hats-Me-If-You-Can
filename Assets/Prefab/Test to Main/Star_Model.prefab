@@ -17,9 +17,11 @@ GameObject:
   - component: {fileID: 5413753353671696812}
   - component: {fileID: 3123881136171248992}
   - component: {fileID: 7349501543848444580}
+  - component: {fileID: 5307912345928857288}
+  - component: {fileID: -1838173804801586100}
   m_Layer: 0
   m_Name: Star_Model
-  m_TagString: Throwable
+  m_TagString: PickableItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -152,7 +154,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.15, y: 0.15, z: 0.15}
+  m_Size: {x: 0.12, y: 0.12, z: 0.12}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &5413753353671696812
 Animator:
@@ -4976,6 +4978,54 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!135 &5307912345928857288
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139320028775267015}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.015950207
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &-1838173804801586100
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139320028775267015}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &7648327766045947572
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5035,6 +5085,14 @@ PrefabInstance:
     - target: {fileID: 267288157557683657, guid: 2b49b3310fa2b344e9f8951124904db1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 762106330393189175, guid: 2b49b3310fa2b344e9f8951124904db1, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3809912270967891689, guid: 2b49b3310fa2b344e9f8951124904db1, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3860087733720398486, guid: 2b49b3310fa2b344e9f8951124904db1, type: 3}
       propertyPath: m_Name
