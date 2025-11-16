@@ -69,6 +69,7 @@ public class ItemSpawnerManager : MonoBehaviour
 
     private void TrySpawnOne()
     {
+        Debug.Log("Trying to Spawn");
         // lock in case other code reads/writes simultaneously (defensive)
         lock (spawnLock)
         {
