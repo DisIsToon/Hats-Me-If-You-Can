@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TestShyHatBarrier : MonoBehaviour
 {
@@ -12,18 +12,22 @@ public class TestShyHatBarrier : MonoBehaviour
             Debug.LogError("GameTracker not found in the scene!");
     }
 
-    private void OnTriggerEnter(Collider other)
+    // ⭐ CALL THIS FROM SHYHATMINIGAME AFTER SUCCESS ⭐
+    public void CaptureShyHat()
     {
-        if (other.CompareTag("Player") && gt != null)
+        if (gt == null)
         {
-            Debug.Log("Player collided with ShyHat");
-
-            // Record capture in GameTracker
-            gt.CaptureHat("ShyHat");
-
-            // Optional: disable or destroy the hat so it can't be collected again
-            gameObject.SetActive(false);
-            // or: Destroy(gameObject);
+            Debug.LogWarning("GameTracker not found when calling CaptureShyHat.");
+            return;
         }
+
+        Debug.Log("ShyHat captured (triggered by minigame).");
+
+        // Record capture in GameTracker
+        gt.CaptureHat("ShyHat");
+
+        // Disable or remove the hat/barrier
+        gameObject.SetActive(false);
+        // Or Destroy(gameObject);
     }
 }

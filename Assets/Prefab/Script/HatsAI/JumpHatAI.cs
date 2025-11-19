@@ -1,200 +1,219 @@
 using UnityEngine;
+using System.Collections;
 
-[RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class JumpHatAI : MonoBehaviour
 {
-    [Header("References")]
+    [Header("Jump Points (in order)")]
+    [Tooltip("Empty GameObjects in the scene that the hat will jump between.")]
+    public Transform[] jumpPoints;
+
+    [Header("Player Detection")]
     public Transform player;
+    [Tooltip("How close the player must be to make the hat jump.")]
+    public float detectDistance = 8f;
+    public bool requirePlayerToJump = true;   // if false, it just loops jumps forever
 
-    [Header("Detection")]
-    public float detectRange = 6f;       // starts fleeing when player is within this range
+    [Header("Jump Settings")]
+    [Tooltip("How long one jump takes (seconds).")]
+    public float jumpDuration = 0.7f;
 
-    [Header("Hop Forces")]
-    public float hopForwardForce = 6.5f; // forward impulse along ground
-    public float hopUpForce = 5.5f;      // upward impulse
-    public float extraGravity = 15f;     // extra downward accel for snappy landings
+    [Tooltip("Maximum height of the jump above the line between two points.")]
+    public float jumpHeight = 2f;
 
-    [Header("Cadence")]
-    public float minHopInterval = 0.35f; // min time between hops (only when grounded)
-    public float maxHopInterval = 0.55f; // max time between hops
-    public float minFleeBurst = 2;       // min # consecutive hops when fleeing
-    public float maxFleeBurst = 4;       // max # consecutive hops when fleeing
+    [Tooltip("How long to wait after each landing before starting the next jump.")]
+    public float waitAtPoint = 0.2f;
 
-    [Header("Grounding")]
-    public float groundCheckRadius = 0.2f;
-    public float groundCheckOffset = 0.05f;
-    public LayerMask groundMask = ~0;    // set to your ground layers
+    [Header("Loop Options")]
+    [Tooltip("If true, 0→1→2→...→0.")]
+    public bool loop = true;
 
-    [Header("Steering & Look")]
-    public float turnSpeed = 12f;        // how fast the frog rotates to face direction
-    public float obstacleProbeDistance = 1.0f; // probe ahead to avoid walls
-    public float obstacleSideProbeAngle = 25f; // try angled directions if blocked
-    public float obstacleProbeRadius = 0.2f;
+    [Tooltip("If true, 0→1→2→1→0→1... (overrides loop).")]
+    public bool pingPong = false;
 
-    [Header("Idle Hops (optional)")]
-    public bool idleMicroHops = false;   // tiny ambient hops when player is far
-    public float idleHopForwardForce = 1.2f;
-    public float idleHopUpForce = 0.9f;
+    [Header("Visual")]
+    [Tooltip("Rotate to face the direction of the jump.")]
+    public bool rotateTowardsNextPoint = true;
+    public float rotationSpeed = 10f;
 
-    Rigidbody rb;
-    float hopCooldown;
-    bool isFleeing;
-    int hopsRemainingInBurst;
+    private int currentIndex = 0;
+    private bool goingForward = true;
+    private bool isJumping = false;
 
-    void Awake()
+    void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        rb.interpolation = RigidbodyInterpolation.Interpolate; // smoother motion
+        // Auto-find player if not assigned
+        if (player == null)
+        {
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null) player = p.transform;
+        }
+
+        if (jumpPoints == null || jumpPoints.Length < 2)
+        {
+            Debug.LogWarning("JumpHatAI: Need at least 2 jump points for jumping to work.");
+            enabled = false;
+            return;
+        }
+
+        // Start at the first point
+        transform.position = jumpPoints[0].position;
+
+        StartCoroutine(JumpLoop());
     }
 
-    void Update()
+    IEnumerator JumpLoop()
     {
-        if (!player) return;
-
-        float dist = Vector3.Distance(transform.position, player.position);
-        bool shouldFlee = dist <= detectRange;
-
-        if (shouldFlee && !isFleeing)
+        while (true)
         {
-            // start a flee burst (2�4 hops by default)
-            isFleeing = true;
-            hopsRemainingInBurst = Random.Range((int)minFleeBurst, (int)maxFleeBurst + 1);
-        }
-        else if (!shouldFlee && isFleeing)
-        {
-            // end fleeing when player leaves range
-            isFleeing = false;
-            hopsRemainingInBurst = 0;
-        }
-
-        // Smoothly face current horizontal velocity, if any
-        Vector3 v = rb.linearVelocity; v.y = 0f;
-        if (v.sqrMagnitude > 0.01f)
-        {
-            Quaternion targetRot = Quaternion.LookRotation(v.normalized, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * turnSpeed);
-        }
-    }
-
-    void FixedUpdate()
-    {
-        // Add extra gravity for crisp landings
-        rb.AddForce(Vector3.down * extraGravity, ForceMode.Acceleration);
-
-        // Reduce cooldown over time
-        if (hopCooldown > 0f)
-            hopCooldown -= Time.fixedDeltaTime;
-
-        // Only initiate a hop when grounded and cooldown is done
-        if (IsGrounded() && hopCooldown <= 0f)
-        {
-            if (isFleeing)
+            int nextIndex = GetNextIndex();
+            if (nextIndex == currentIndex)
             {
-                Vector3 dir = AwayFromPlayerOnPlane();
+                // No valid next index; stop the loop
+                yield break;
+            }
 
-                // Avoid obstacles directly ahead
-                dir = AdjustDirectionForObstacles(dir);
-
-                DoHop(dir, hopForwardForce, hopUpForce);
-                hopsRemainingInBurst = Mathf.Max(0, hopsRemainingInBurst - 1);
-
-                // If burst done but still fleeing, start a new burst soon
-                if (hopsRemainingInBurst == 0)
+            // 🔹 Wait for player to come close (if required)
+            if (requirePlayerToJump)
+            {
+                // Wait until we have a player and they are within range
+                while (!IsPlayerInRange())
                 {
-                    hopCooldown = Random.Range(minHopInterval, maxHopInterval);
-                    if (IsPlayerStillClose()) // recheck; if close, chain bursts
-                        hopsRemainingInBurst = Random.Range((int)minFleeBurst, (int)maxFleeBurst + 1);
+                    yield return null;
+                }
+            }
+
+            // Small delay before jumping (optional)
+            if (waitAtPoint > 0f)
+                yield return new WaitForSeconds(waitAtPoint);
+
+            // Perform the jump
+            yield return StartCoroutine(JumpToPoint(jumpPoints[currentIndex], jumpPoints[nextIndex]));
+
+            currentIndex = nextIndex;
+        }
+    }
+
+    IEnumerator JumpToPoint(Transform from, Transform to)
+    {
+        isJumping = true;
+
+        Vector3 startPos = from.position;
+        Vector3 endPos = to.position;
+
+        float elapsed = 0f;
+
+        while (elapsed < jumpDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / jumpDuration);
+
+            // Horizontal interpolation
+            Vector3 basePos = Vector3.Lerp(startPos, endPos, t);
+
+            // Vertical arc using a sine curve (0→1→0)
+            float arc = Mathf.Sin(t * Mathf.PI) * jumpHeight;
+            basePos.y += arc;
+
+            transform.position = basePos;
+
+            // Optional rotation towards movement direction
+            if (rotateTowardsNextPoint)
+            {
+                Vector3 direction = (endPos - startPos);
+                direction.y = 0f; // keep rotation flat
+                if (direction.sqrMagnitude > 0.001f)
+                {
+                    Quaternion targetRot = Quaternion.LookRotation(direction.normalized);
+                    transform.rotation = Quaternion.Slerp(
+                        transform.rotation,
+                        targetRot,
+                        rotationSpeed * Time.deltaTime
+                    );
+                }
+            }
+
+            yield return null;
+        }
+
+        // Snap to exact end position
+        transform.position = endPos;
+        isJumping = false;
+    }
+
+    bool IsPlayerInRange()
+    {
+        if (player == null) return false;
+
+        Vector3 diff = player.position - transform.position;
+        diff.y = 0f;
+        return diff.magnitude <= detectDistance;
+    }
+
+    int GetNextIndex()
+    {
+        if (pingPong)
+        {
+            if (goingForward)
+            {
+                if (currentIndex >= jumpPoints.Length - 1)
+                {
+                    goingForward = false;
+                    currentIndex = jumpPoints.Length - 1;
+                    return currentIndex - 1;
                 }
                 else
                 {
-                    // quick cadence during a burst
-                    hopCooldown = Random.Range(minHopInterval, maxHopInterval) * 0.6f;
+                    return currentIndex + 1;
                 }
             }
-            else if (idleMicroHops)
+            else
             {
-                // tiny ambient hop in a gently random direction
-                Vector3 dir = Random.onUnitSphere; dir.y = 0f; dir.Normalize();
-                DoHop(dir, idleHopForwardForce, idleHopUpForce);
-                hopCooldown = Random.Range(0.9f, 1.4f);
+                if (currentIndex <= 0)
+                {
+                    goingForward = true;
+                    currentIndex = 0;
+                    return currentIndex + 1;
+                }
+                else
+                {
+                    return currentIndex - 1;
+                }
             }
+        }
+        else if (loop)
+        {
+            int next = currentIndex + 1;
+            if (next >= jumpPoints.Length)
+                next = 0;
+            return next;
+        }
+        else
+        {
+            int next = currentIndex + 1;
+            if (next >= jumpPoints.Length)
+                return currentIndex; // stay there, loop will end
+            return next;
         }
     }
 
-    void DoHop(Vector3 flatDir, float forwardForce, float upForce)
-    {
-        // Clear any downward velocity for consistent takeoff
-        Vector3 vel = rb.linearVelocity;
-        if (vel.y < 0f) vel.y = 0f;
-        rb.linearVelocity = vel;
-
-        // Compose impulse: forward + up
-        Vector3 impulse = flatDir.normalized * forwardForce + Vector3.up * upForce;
-        rb.AddForce(impulse, ForceMode.VelocityChange);
-    }
-
-    Vector3 AwayFromPlayerOnPlane()
-    {
-        Vector3 away = (transform.position - player.position);
-        away.y = 0f;
-        if (away.sqrMagnitude < 0.0001f) away = transform.forward; // fallback
-        return away.normalized;
-    }
-
-    Vector3 AdjustDirectionForObstacles(Vector3 dir)
-    {
-        Vector3 origin = GroundProbeOrigin();
-
-        // direct path
-        if (!Physics.SphereCast(origin, obstacleProbeRadius, dir, out _, obstacleProbeDistance, groundMask, QueryTriggerInteraction.Ignore))
-            return dir;
-
-        // try slight left/right angles
-        Quaternion left = Quaternion.AngleAxis(-obstacleSideProbeAngle, Vector3.up);
-        Quaternion right = Quaternion.AngleAxis(obstacleSideProbeAngle, Vector3.up);
-        Vector3 leftDir = left * dir;
-        Vector3 rightDir = right * dir;
-
-        bool leftClear = !Physics.SphereCast(origin, obstacleProbeRadius, leftDir, out _, obstacleProbeDistance, groundMask, QueryTriggerInteraction.Ignore);
-        bool rightClear = !Physics.SphereCast(origin, obstacleProbeRadius, rightDir, out _, obstacleProbeDistance, groundMask, QueryTriggerInteraction.Ignore);
-
-        if (leftClear && rightClear)
-            return (Random.value < 0.5f) ? leftDir : rightDir;
-        if (leftClear) return leftDir;
-        if (rightClear) return rightDir;
-
-        // fall back: 180� (straight opposite of blockage)
-        return -dir;
-    }
-
-    bool IsGrounded()
-    {
-        Vector3 origin = GroundProbeOrigin();
-        return Physics.CheckSphere(origin, groundCheckRadius, groundMask, QueryTriggerInteraction.Ignore);
-    }
-
-    Vector3 GroundProbeOrigin()
-    {
-        // slightly above bottom of collider
-        float offset = groundCheckOffset;
-        return transform.position + Vector3.down * ((GetComponent<Collider>().bounds.extents.y) - offset);
-    }
-
-    bool IsPlayerStillClose()
-    {
-        if (!player) return false;
-        return Vector3.Distance(transform.position, player.position) <= detectRange;
-    }
-
-#if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectRange);
+        if (jumpPoints == null || jumpPoints.Length == 0) return;
 
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(GroundProbeOrigin(), groundCheckRadius);
+        Gizmos.color = Color.magenta;
+        for (int i = 0; i < jumpPoints.Length; i++)
+        {
+            if (jumpPoints[i] == null) continue;
+            Gizmos.DrawSphere(jumpPoints[i].position, 0.2f);
+
+            if (i < jumpPoints.Length - 1 && jumpPoints[i + 1] != null)
+            {
+                Gizmos.DrawLine(jumpPoints[i].position, jumpPoints[i + 1].position);
+            }
+        }
+
+        // Draw detection radius
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, detectDistance);
     }
-#endif
 }
