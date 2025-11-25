@@ -31,6 +31,9 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     public LayerMask groundMask;
     [Tooltip("Extra grace time after leaving ground where jump still counts.")]
     public float coyoteTime = 0.1f;
+
+    [Header("NPC Interaction")]
+    public NPC currentInteractingNPC;
     #endregion
 
     #region Inspector - Animation
@@ -224,9 +227,9 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
             QuestManager.Instance.isQuestMenuOpen == false &&
             CardsController.Instance.isOpen == false &&
             PuzzleManagerUI.Instance.isOpen == false &&
-            NPC.Instance.isTalkingWithPlayer == false &&
+            (currentInteractingNPC == null || currentInteractingNPC.isTalkingWithPlayer == false) &&
             Notes.Instance.activeNote == false &&
-            HatalougeManager.Instance.isOpen == false)
+            NewHatalougeManager.Instance.isOpen == false)
         {
             ThrowHeldItem();
             Cursor.lockState = CursorLockMode.None;
@@ -466,4 +469,20 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     }
 #endif
     #endregion
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("NPC"))
+        {
+            currentInteractingNPC = other.GetComponent<NPC>();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("NPC") && currentInteractingNPC != null)
+        {
+            currentInteractingNPC = null;
+        }
+    }
 }

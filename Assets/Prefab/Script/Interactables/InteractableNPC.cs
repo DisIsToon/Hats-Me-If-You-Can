@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class InteractableNPC : MonoBehaviour
 {
     public bool playerInRange;
+
+    // Reference to the specific NPC this interactable is linked to
+    public NPC npc;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -23,7 +25,12 @@ public class InteractableNPC : MonoBehaviour
         {
             SelectionManager.Instance.interactableNpcDetected = false;
             playerInRange = false;
-            NPC.Instance.CloseDialogUI();
+
+            if (npc != null)
+            {
+                npc.CloseDialogUI();
+            }
         }
     }
 }
+    

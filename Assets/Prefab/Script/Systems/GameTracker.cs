@@ -1,16 +1,25 @@
 using UnityEngine;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameTracker : MonoBehaviour
 {
     [Header("Player Reference")]
     public GameObject player;  // Assign your Player here
 
-    // --- Hats ---
+    [Header("Hats")]
     public bool shyHatCaptured = false;
     public bool fastHatCaptured = false;
     public bool jumpHatCaptured = false;
 
-    // --- Potions ---
+    [Header("Area Triggers")]
+    public GameObject triggerForest;
+    public GameObject triggerCastle;
+    public GameObject triggerWinter;
+
+    [Header("Potions")]
     public bool cakePotionUnlocked = false;
     public bool cottonCrazePotionUnlocked = false;
     public bool mirrorPotionUnlocked = false;
@@ -30,19 +39,41 @@ public class GameTracker : MonoBehaviour
         {
             case "ShyHat":
                 shyHatCaptured = true;
+                NewHatalougeManager.Instance.DiscoverShyHat();
                 Debug.Log("ShyHat captured!");
                 break;
             case "FastHat":
                 fastHatCaptured = true;
+                NewHatalougeManager.Instance.DiscoverFastHat();
                 Debug.Log("FastHat captured!");
                 break;
             case "JumpHat":
                 jumpHatCaptured = true;
+                NewHatalougeManager.Instance.DiscoverLazyHat();
                 Debug.Log("JumpHat captured!");
                 break;
             default:
                 Debug.LogWarning("Unknown hat: " + hatName);
                 break;
+        }
+    }
+
+    public void CheckPlayerInTrigger(GameObject trigger)
+    {
+        if (trigger == triggerForest)
+        {
+            Debug.Log("Player entered Forest!");
+            NewHatalougeManager.Instance.ReachForest();
+        }
+        else if (trigger == triggerCastle)
+        {
+            Debug.Log("Player entered Castle!");
+            NewHatalougeManager.Instance.ReachCastle();
+        }
+        else if (trigger == triggerWinter)
+        {
+            Debug.Log("Player entered Winter!");
+            NewHatalougeManager.Instance.ReachWinter();
         }
     }
 

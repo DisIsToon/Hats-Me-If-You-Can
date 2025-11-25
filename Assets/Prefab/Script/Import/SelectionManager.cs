@@ -27,7 +27,8 @@ public class SelectionManager : MonoBehaviour
     public bool handIsVisible;
     public bool willTalk;
 
-
+    bool anyNpcTalking = false;
+    
     private CraftingSystem craftingSystem; // Reference to the CraftingSystemScript
 
     private void Start()
@@ -55,6 +56,15 @@ public class SelectionManager : MonoBehaviour
  
     void Update()
     {
+        foreach (var npc in NPC.allNPCs)
+        {
+            if (npc.isTalkingWithPlayer)
+            {
+                anyNpcTalking = true;
+                break;
+            }
+        }
+
         if (DialogSystem.Instance == null)
             Debug.LogWarning("DialogSystem.Instance is NULL!");
         if (CraftingSystem.Instance == null)
@@ -67,7 +77,7 @@ public class SelectionManager : MonoBehaviour
             Debug.LogWarning("PuzzleManagerUI.Instance is NULL!");
         if (CardsController.Instance == null)
             Debug.LogWarning("CardsController.Instance is NULL!");
-        if (HatalougeManager.Instance == null)
+        if (NewHatalougeManager.Instance == null)
             Debug.LogWarning("HatalougeManager.Instance is NULL!");
 
         if (DialogSystem.Instance.dialogUIActive == true ||
@@ -76,9 +86,9 @@ public class SelectionManager : MonoBehaviour
             QuestManager.Instance.isQuestMenuOpen == true ||
             PuzzleManagerUI.Instance.isOpen == true ||
             CardsController.Instance.isOpen == true ||
-            NPC.Instance.isTalkingWithPlayer == true ||
+            anyNpcTalking ||
             Notes.Instance.activeNote == true ||
-            HatalougeManager.Instance.isOpen == true)
+            NewHatalougeManager.Instance.isOpen == true)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
