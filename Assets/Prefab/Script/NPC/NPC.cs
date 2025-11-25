@@ -8,9 +8,12 @@ using UnityEngine.UI;
 public class NPC : MonoBehaviour
 {
     [Header("References")]
-    public GameObject pressFUI;   // UI prompt ("Press F")
-    public GameObject dialogUI;   // Dialog panel UI
+    public GameObject pressFUI;   
+    public GameObject dialogUI;   
     public GameObject MainScreen;
+
+    [Header("NPC Name")]
+    public string npcName;   
 
     [Header("NPC & Quest Data")]
     public List<Quest> quests;
@@ -50,27 +53,44 @@ public class NPC : MonoBehaviour
 
     void Start()
     {
-        // Initialize references from DialogSystem
-        if (DialogSystem.Instance != null)
+        if (DialogSystem.Instance == null)
         {
-            npcDialogText = DialogSystem.Instance.dialogText;
-            optionButton1 = DialogSystem.Instance.option1BTN;
-            optionButton1Text = DialogSystem.Instance.option1BTN.transform.Find("Text(TMP)").GetComponent<TextMeshProUGUI>();
-            optionButton2 = DialogSystem.Instance.option2BTN;
-            optionButton2Text = DialogSystem.Instance.option2BTN.transform.Find("Text(TMP)").GetComponent<TextMeshProUGUI>();
-        }
-        else
-        {
-            Debug.LogError("DialogSystem.Instance is null. Make sure DialogSystem exists in the scene.");
+            Debug.LogError("DialogSystem.Instance is NULL! Make sure DialogSystem exists in the scene.");
+            return;
         }
 
+        npcDialogText = DialogSystem.Instance.dialogText;
+
+        optionButton1 = DialogSystem.Instance.option1BTN;
+        optionButton2 = DialogSystem.Instance.option2BTN;
+
+        // --- OPTION BUTTON 1 ---
+        Transform child1 = optionButton1.transform.Find("Text(TMP)");
+        if (child1 != null)
+            optionButton1Text = child1.GetComponent<TextMeshProUGUI>();
+        else
+            optionButton1Text = optionButton1.GetComponentInChildren<TextMeshProUGUI>();
+
+        if (optionButton1Text == null)
+            Debug.LogError("NPC ERROR: optionButton1Text NOT FOUND. Check the button hierarchy.");
+
+        // --- OPTION BUTTON 2 ---
+        Transform child2 = optionButton2.transform.Find("Text(TMP)");
+        if (child2 != null)
+            optionButton2Text = child2.GetComponent<TextMeshProUGUI>();
+        else
+            optionButton2Text = optionButton2.GetComponentInChildren<TextMeshProUGUI>();
+
+        if (optionButton2Text == null)
+            Debug.LogError("NPC ERROR: optionButton2Text NOT FOUND. Check the button hierarchy.");
+
+        // Hide UI
         if (pressFUI != null) pressFUI.SetActive(false);
         if (dialogUI != null) dialogUI.SetActive(false);
 
-        // Find player automatically
+        // Find player
         GameObject found = GameObject.FindGameObjectWithTag("Player");
         if (found != null) player = found.transform;
-        else Debug.LogWarning("NPCInteraction: No GameObject with tag 'Player' found.");
     }
 
     void Update()
@@ -86,11 +106,33 @@ public class NPC : MonoBehaviour
             StartConversation();
             if (pressFUI != null) pressFUI.SetActive(false);
         }
+
+        if (npcName == "Lira" &&
+            QuestManager.Instance.liraPuzzleQuest.accepted &&
+            QuestManager.Instance.puzzleComplete &&
+            !QuestManager.Instance.liraPuzzleQuest.isCompleted)
+        {
+            CompleteLiraQuest();
+            return;
+        }
+    }
+
+    void CompleteLiraQuest()
+    {
+        QuestManager.Instance.liraPuzzleQuest.isCompleted = true;
+        QuestManager.Instance.winterForestPass = true;
+
+        DialogSystem.Instance.OpenDialogUI();
+        DialogSystem.Instance.dialogText.text = "You solved it! Thank you so much.\nHere, take this. You can now pass through the Winter Forest.";
+
+        QuestManager.Instance.puzzleObject.SetActive(false);
     }
 
     public void StartConversation()
     {
         isTalkingWithPlayer = true;
+
+        DialogSystem.Instance.ShowNPCImage(npcName);
 
         if (firstTimeInteraction)
         {
@@ -256,6 +298,8 @@ public class NPC : MonoBehaviour
 
     public void CloseDialogUI()
     {
+        DialogSystem.Instance.HideAllPortraits();
+
         optionButton1Text.text = "[Close]";
         optionButton1.onClick.RemoveAllListeners();
         optionButton1.onClick.AddListener(() =>
@@ -308,6 +352,7 @@ public class NPC : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            DialogSystem.Instance.HideAllPortraits();
             playerInRange = false;
             MainScreen.SetActive(true);
             if (pressFUI != null) pressFUI.SetActive(false);
