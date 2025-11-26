@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,9 +20,19 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    [Header("Quest State Bools")]
+    public bool liraQuestAccepted = false;
+    public bool mallowQuestAccepted = false;
+    public bool tulipQuestAccepted = false;
+
     [Header("Quests")]
     public List<Quest> allActiveQuests;
     public List<Quest> allCompletedQuests;
+
+    [Header("Active Quest")]
+    public QuestInfo activeQuest;
+    public bool questAccepted;
+    public bool questCompleted;
 
     [Header("Quest Menu UI")]
     public GameObject questMenu;
@@ -37,14 +47,14 @@ public class QuestManager : MonoBehaviour
     public List<Quest> allTrackedQuests;
 
     [Header("Special Objects / Rewards")]
-    public GameObject puzzleObject;          // Appears when Lira quest is accepted
-    public bool puzzleComplete = false;      // Set true when puzzle is solved
-    public bool winterForestPass = false;    // Reward for completing Lira quest
-    public Quest liraPuzzleQuest;            // Reference to Lira's quest
+    public GameObject puzzleObject;
+    public bool puzzleComplete = false;
+    public bool winterForestPass = false;
+    public Quest liraPuzzleQuest;
 
     private void Start()
     {
-        // Initialize Lira's puzzle quest
+        // Initialize Lira puzzle quest
         liraPuzzleQuest = new Quest();
         liraPuzzleQuest.questName = "Fix the Ancient Puzzle";
         liraPuzzleQuest.questGiver = "Lira";
@@ -53,21 +63,131 @@ public class QuestManager : MonoBehaviour
         liraPuzzleQuest.isCompleted = false;
     }
 
+    public void SetLiraPuzzleComplete()
+    {
+        puzzleComplete = true;
+    }
+
+    // ======================================================
+    //   REQUIREMENTS
+    // ======================================================
+
+    public bool CanStartQuest(QuestInfo quest)
+    {
+        // --- BOOL requirement ---
+        if (quest.requireBoolToStart && quest.boolRequirementName != "")
+        {
+            if (!CheckBoolRequirement(quest.boolRequirementName))
+                return false;
+        }
+
+        // --- ITEM requirements ---
+        if (!CheckItemRequirement(quest.firstRequirmentItem, quest.firstRequirementAmount))
+            return false;
+
+        if (!CheckItemRequirement(quest.secondRequirmentItem, quest.secondRequirementAmount))
+            return false;
+
+        return true;
+    }
+
+    private bool CheckItemRequirement(string item, int amount)
+    {
+        if (string.IsNullOrEmpty(item) || amount <= 0)
+            return true;
+
+        return InventorySystem.Instance.CheckItemAmount(item) >= amount;
+    }
+
+    private bool CheckBoolRequirement(string flagName)
+    {
+        GameTracker t = GameTracker.Instance;
+
+        switch (flagName)
+        {
+            case "OpenedFrozenGate": return t.openedFrozenGate;
+        }
+
+        Debug.LogWarning("Bool requirement flag not found: " + flagName);
+        return false;
+    }
+
+    // ======================================================
+    //   START QUEST
+    // ======================================================
+
+    public void AcceptQuest(QuestInfo quest)
+    {
+        activeQuest = quest;
+        questAccepted = true;
+        questCompleted = false;
+
+        RefreshTrackerList();
+    }
+
+
+    // ======================================================
+    //   COMPLETE QUEST + REWARDS
+    // ======================================================
+
+    public void CompleteQuest()
+    {
+        if (activeQuest == null)
+            return;
+
+        // Remove items required (optional)
+        if (activeQuest.firstRequirementAmount > 0)
+            InventorySystem.Instance.RemoveItem(activeQuest.firstRequirmentItem, activeQuest.firstRequirementAmount);
+
+        if (activeQuest.secondRequirementAmount > 0)
+            InventorySystem.Instance.RemoveItem(activeQuest.secondRequirmentItem, activeQuest.secondRequirementAmount);
+
+
+        // Coin reward
+        if (activeQuest.coinReward > 0)
+            Debug.Log("Give coin reward here");
+        // Add your currency system if you have one.
+
+
+        // Item rewards
+        if (!string.IsNullOrEmpty(activeQuest.rewardItem1))
+            InventorySystem.Instance.AddToInventory(activeQuest.rewardItem1);
+
+        if (!string.IsNullOrEmpty(activeQuest.rewardItem2))
+            InventorySystem.Instance.AddToInventory(activeQuest.rewardItem2);
+
+
+        // Bool reward
+        if (activeQuest.giveBoolReward && activeQuest.boolRewardName != "")
+            ApplyBoolReward(activeQuest.boolRewardName);
+
+
+        questCompleted = true;
+
+        RefreshTrackerList();
+    }
+
+    private void ApplyBoolReward(string flagName)
+    {
+        GameTracker t = GameTracker.Instance;
+
+        switch (flagName)
+        {
+            case "OpenedFrozenGate": t.openedFrozenGate = true; break;
+
+            default:
+                Debug.LogWarning("Bool reward flag not found: " + flagName);
+                break;
+        }
+    }
+    
     #region Quest Menu Toggle
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            if (!isQuestMenuOpen)
-            {
-                questMenu.SetActive(true);
-                isQuestMenuOpen = true;
-            }
-            else
-            {
-                questMenu.SetActive(false);
-                isQuestMenuOpen = false;
-            }
+            questMenu.SetActive(!isQuestMenuOpen);
+            isQuestMenuOpen = !isQuestMenuOpen;
         }
     }
     #endregion
@@ -93,16 +213,12 @@ public class QuestManager : MonoBehaviour
 
     public void RefreshTrackerList()
     {
-        // Clear previous tracker UI
         foreach (Transform child in questTrackerContent.transform)
-        {
             Destroy(child.gameObject);
-        }
 
-        // Create new tracker UI
         foreach (Quest trackedQuest in allTrackedQuests)
         {
-            GameObject trackerPrefab = Instantiate(trackerRowPrefab, Vector3.zero, Quaternion.identity);
+            GameObject trackerPrefab = Instantiate(trackerRowPrefab);
             trackerPrefab.transform.SetParent(questTrackerContent.transform, false);
 
             TrackerRow tRow = trackerPrefab.GetComponent<TrackerRow>();
@@ -116,12 +232,14 @@ public class QuestManager : MonoBehaviour
 
             if (!string.IsNullOrEmpty(req2))
             {
-                tRow.requirements.text = $"{req1} " + InventorySystem.Instance.CheckItemAmount(req1) + "/" + req1Amount + "\n" +
-                                         $"{req2} " + InventorySystem.Instance.CheckItemAmount(req2) + "/" + req2Amount;
+                tRow.requirements.text =
+                    $"{req1} {InventorySystem.Instance.CheckItemAmount(req1)}/{req1Amount}\n" +
+                    $"{req2} {InventorySystem.Instance.CheckItemAmount(req2)}/{req2Amount}";
             }
             else
             {
-                tRow.requirements.text = $"{req1} " + InventorySystem.Instance.CheckItemAmount(req1) + "/" + req1Amount;
+                tRow.requirements.text =
+                    $"{req1} {InventorySystem.Instance.CheckItemAmount(req1)}/{req1Amount}";
             }
         }
     }
@@ -130,17 +248,30 @@ public class QuestManager : MonoBehaviour
     #region Add / Complete Quests
     public void AddActiveQuest(Quest quest)
     {
-        if (!allActiveQuests.Contains(quest))
-        {
-            allActiveQuests.Add(quest);
-            TrackQuest(quest);
-            RefreshQuestList();
+        if (allActiveQuests.Contains(quest))
+            return;
 
-            // Special logic: Lira's puzzle quest activates puzzle object
-            if (quest.questGiver == "Lira")
-            {
-                puzzleObject.SetActive(true);
-            }
+        allActiveQuests.Add(quest);
+        TrackQuest(quest);
+        RefreshQuestList();
+
+        string npcName = DialogSystem.Instance.GetSpeakerName();
+
+        // --------------------
+        // Assign correct quest bool
+        // --------------------
+        if (npcName == "Lira")
+        {
+            liraQuestAccepted = true;
+            puzzleObject.SetActive(true);     // activate puzzle
+        }
+        else if (npcName == "Mallow")
+        {
+            mallowQuestAccepted = true;
+        }
+        else if (npcName == "Tulip")
+        {
+            tulipQuestAccepted = true;
         }
     }
 
@@ -154,20 +285,24 @@ public class QuestManager : MonoBehaviour
 
         UnTrackQuest(quest);
         RefreshQuestList();
+
+        string npcName = DialogSystem.Instance.GetSpeakerName();
+
+        // Reward only for Lira
+        if (npcName == "Lira" && puzzleComplete)
+        {
+            winterForestPass = true;
+        }
     }
 
     public void RefreshQuestList()
     {
-        // Clear previous UI
         foreach (Transform child in questMenuContent.transform)
-        {
             Destroy(child.gameObject);
-        }
 
-        // Active Quests
         foreach (Quest activeQuest in allActiveQuests)
         {
-            GameObject questPrefab = Instantiate(activeQuestPrefab, Vector3.zero, Quaternion.identity);
+            GameObject questPrefab = Instantiate(activeQuestPrefab);
             questPrefab.transform.SetParent(questMenuContent.transform, false);
 
             QuestRow qRow = questPrefab.GetComponent<QuestRow>();
@@ -182,26 +317,19 @@ public class QuestManager : MonoBehaviour
                 qRow.firstReward.sprite = GetSpriteForItem(activeQuest.info.rewardItem1);
                 qRow.firstRewardAmount.text = "";
             }
-            else
-            {
-                qRow.firstReward.gameObject.SetActive(false);
-            }
+            else qRow.firstReward.gameObject.SetActive(false);
 
             if (!string.IsNullOrEmpty(activeQuest.info?.rewardItem2))
             {
                 qRow.secondReward.sprite = GetSpriteForItem(activeQuest.info.rewardItem2);
                 qRow.secondRewardAmount.text = "";
             }
-            else
-            {
-                qRow.secondReward.gameObject.SetActive(false);
-            }
+            else qRow.secondReward.gameObject.SetActive(false);
         }
 
-        // Completed Quests
         foreach (Quest completedQuest in allCompletedQuests)
         {
-            GameObject questPrefab = Instantiate(completedQuestPrefabs, Vector3.zero, Quaternion.identity);
+            GameObject questPrefab = Instantiate(completedQuestPrefabs);
             questPrefab.transform.SetParent(questMenuContent.transform, false);
 
             QuestRow qRow = questPrefab.GetComponent<QuestRow>();
@@ -215,20 +343,14 @@ public class QuestManager : MonoBehaviour
                 qRow.firstReward.sprite = GetSpriteForItem(completedQuest.info.rewardItem1);
                 qRow.firstRewardAmount.text = "";
             }
-            else
-            {
-                qRow.firstReward.gameObject.SetActive(false);
-            }
+            else qRow.firstReward.gameObject.SetActive(false);
 
             if (!string.IsNullOrEmpty(completedQuest.info?.rewardItem2))
             {
                 qRow.secondReward.sprite = GetSpriteForItem(completedQuest.info.rewardItem2);
                 qRow.secondRewardAmount.text = "";
             }
-            else
-            {
-                qRow.secondReward.gameObject.SetActive(false);
-            }
+            else qRow.secondReward.gameObject.SetActive(false);
         }
     }
     #endregion

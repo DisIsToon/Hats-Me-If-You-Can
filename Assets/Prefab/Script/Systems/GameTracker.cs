@@ -6,13 +6,17 @@ using UnityEngine.UI;
 
 public class GameTracker : MonoBehaviour
 {
+    public static GameTracker Instance { get; set; }
+
     [Header("Player Reference")]
     public GameObject player;  // Assign your Player here
 
-    [Header("Hats")]
+    [Header("Hats/Bools")]
     public bool shyHatCaptured = false;
     public bool fastHatCaptured = false;
     public bool jumpHatCaptured = false;
+    public bool openedFrozenGate = false;
+    public bool puzzleComplete = false;
 
     [Header("Area Triggers")]
     public GameObject triggerForest;
@@ -26,12 +30,34 @@ public class GameTracker : MonoBehaviour
     public bool starPotionUnlocked = false;
     public bool herbPotionUnlocked = false;
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     private void Start()
     {
         if (player == null)
             Debug.LogError("Player GameObject not assigned in GameManager!");
     }
 
+    public void SetPuzzleComplete(bool value)
+    {
+        puzzleComplete = value;
+        Debug.Log("Puzzle Complete Status Updated: " + value);
+    }
+
+    public bool IsPuzzleComplete()
+    {
+        return puzzleComplete;
+    }
     // --- Capture a hat ---
     public void CaptureHat(string hatName)
     {

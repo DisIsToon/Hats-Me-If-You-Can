@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using TMPro;    
 using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/QuestInfo", order = 1)]
@@ -35,12 +35,20 @@ public class QuestInfo : ScriptableObject
     public string rewardItem1;
     public string rewardItem2;
 
+    public string boolRewardName;
+    public bool giveBoolReward;
+
+
     [Header("Requirements")]
     public string firstRequirmentItem;
     public int firstRequirementAmount;
 
+
     public string secondRequirmentItem;
     public int secondRequirementAmount;
+
+    public string boolRequirementName;
+    public bool requireBoolToStart;
 
     public bool hasCheckpoints;
     public List<Checkpoints> checkpoints;

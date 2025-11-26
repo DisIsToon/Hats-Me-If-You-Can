@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: facff60231ca9c34f8e5886b5242d39c, type: 3}
-  m_Name: Quest_Lira
+  m_Name: liraPuzzleQuest
   m_EditorClassIdentifier: 
   initialDialog:
   - "Mmph\u2014! Oh! Hello there!"
@@ -36,9 +36,13 @@ MonoBehaviour:
   coinReward: 0
   rewardItem1: 
   rewardItem2: 
+  boolRewardName: OpenedFrozenGate
+  giveBoolReward: 0
   firstRequirmentItem: 
   firstRequirementAmount: 0
   secondRequirmentItem: 
   secondRequirementAmount: 0
+  boolRequirementName: puzzleComplete
+  requireBoolToStart: 0
   hasCheckpoints: 0
   checkpoints: []

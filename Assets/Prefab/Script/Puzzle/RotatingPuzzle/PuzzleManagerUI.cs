@@ -17,6 +17,7 @@ public class PuzzleManagerUI : MonoBehaviour
     private bool canPlayPuzzle = false;
     public RotatingRingUI[] rings;
     public GameObject mainScreen;
+    public bool puzzleComplete;
 
     [Header("Fade Setting")]
     public CanvasGroup fadePanel;   // The black overlay
@@ -42,6 +43,7 @@ public class PuzzleManagerUI : MonoBehaviour
 
         fadePanel.alpha = 0;
     }
+
 
     IEnumerator Fade(float start, float end)
     {
@@ -135,10 +137,15 @@ public class PuzzleManagerUI : MonoBehaviour
 
     IEnumerator ShowCompletePuzzlePopup()
     {
+        QuestManager.Instance.SetLiraPuzzleComplete();
         completePuzzlePopup.SetActive(true);
+        puzzleComplete = true;
+        GameTracker.Instance.SetPuzzleComplete(true);
         yield return new WaitForSeconds(1f);
+        PuzzleScreenOff();
         completePuzzlePopup.SetActive(false);
         rotatingPuzzleScreen.SetActive(false);
+
         Debug.Log("Quest Pass rcv!");
     }
 

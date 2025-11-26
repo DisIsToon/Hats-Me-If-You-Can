@@ -22,7 +22,6 @@ public class InteractablePuzzle : MonoBehaviour
         {
             SelectionManager.Instance.puzzleDetected = false;
             playerInRange = false;
-            PuzzleManagerUI.Instance.PuzzleScreenOff();
 
         }
     }

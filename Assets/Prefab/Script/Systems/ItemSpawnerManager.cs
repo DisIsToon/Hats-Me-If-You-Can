@@ -42,12 +42,12 @@ public class ItemSpawnerManager : MonoBehaviour
     {
         if (index < 0 || index >= isOccupied.Length)
         {
-            Debug.LogWarning($"SetOccupied: index {index} out of range.");
+            //Debug.LogWarning($"SetOccupied: index {index} out of range.");
             return;
         }
 
         isOccupied[index] = state;
-        Debug.Log($"SetOccupied: spawner[{index}] = {state}");
+        //Debug.Log($"SetOccupied: spawner[{index}] = {state}");
         // we DO NOT restart timer here; FixedUpdate loop handles continuous attempts
     }
 
@@ -69,7 +69,7 @@ public class ItemSpawnerManager : MonoBehaviour
 
     private void TrySpawnOne()
     {
-        Debug.Log("Trying to Spawn");
+        //Debug.Log("Trying to Spawn");
         // lock in case other code reads/writes simultaneously (defensive)
         lock (spawnLock)
         {
@@ -83,7 +83,7 @@ public class ItemSpawnerManager : MonoBehaviour
 
             if (emptyIndices.Count == 0)
             {
-                Debug.Log("TrySpawnOne: no empty spawners available. Will retry after next delay.");
+                //Debug.Log("TrySpawnOne: no empty spawners available. Will retry after next delay.");
                 return;
             }
 
@@ -112,7 +112,7 @@ public class ItemSpawnerManager : MonoBehaviour
 
                 if (chosenIndex == -1)
                 {
-                    Debug.Log("TrySpawnOne: empty spawners found but all physically blocked. Skipping this cycle.");
+                    //Debug.Log("TrySpawnOne: empty spawners found but all physically blocked. Skipping this cycle.");
                     return;
                 }
             }
@@ -125,14 +125,14 @@ public class ItemSpawnerManager : MonoBehaviour
             // final double-check of occupancy before instantiate (protects against race where trigger set occupied)
             if (isOccupied[chosenIndex])
             {
-                Debug.Log($"TrySpawnOne: chosen spawner {chosenIndex} is now occupied. Aborting this attempt.");
+                //Debug.Log($"TrySpawnOne: chosen spawner {chosenIndex} is now occupied. Aborting this attempt.");
                 return;
             }
 
             // Perform spawn
             Instantiate(objectToSpawn, spawnPoints[chosenIndex].position, spawnPoints[chosenIndex].rotation);
             isOccupied[chosenIndex] = true;
-            Debug.Log($"TrySpawnOne: spawned at spawner {chosenIndex}");
+            //Debug.Log($"TrySpawnOne: spawned at spawner {chosenIndex}");
         }
     }
 

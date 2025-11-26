@@ -38,9 +38,13 @@ public class CRBarrierSystem : MonoBehaviour
     {
         if (!collision.gameObject.CompareTag("Player") || isShowing) return;
 
-        if (gt != null && gt.jumpHatCaptured)
+        /*if (gt != null && gt.jumpHatCaptured)
         {
             // Show message 2 then start mini game
+            StartCoroutine(ShowAndStartGame(messageObject2));
+        }*/
+        if (gt != null && gt.IsPuzzleComplete())
+        {
             StartCoroutine(ShowAndStartGame(messageObject2));
         }
         else

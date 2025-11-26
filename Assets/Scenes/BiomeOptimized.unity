@@ -23521,7 +23521,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 1
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 490368501}
+  m_TargetTexture: {fileID: 1334946039}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -23593,7 +23593,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 50.01651, y: 80, z: 50.03177}
-  m_LocalScale: {x: 1, y: 1.000226, z: 1.000226}
+  m_LocalScale: {x: 1, y: 1.0002434, z: 1.0002434}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2135604116}
@@ -39197,43 +39197,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 489924901}
   m_CullTransparentMesh: 1
---- !u!84 &490368501
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 512
-  m_Height: 512
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 4
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!4 &491471539 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4910152066217110687, guid: 5fe989d2aa92b064791215bf92352d60, type: 3}
@@ -70103,7 +70066,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &873775660
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -90077,6 +90040,8 @@ MonoBehaviour:
   shyHatCaptured: 0
   fastHatCaptured: 0
   jumpHatCaptured: 0
+  openedFrozenGate: 0
+  puzzleComplete: 0
   triggerForest: {fileID: 409955173}
   triggerCastle: {fileID: 1910765651}
   triggerWinter: {fileID: 721009793}
@@ -100997,6 +100962,43 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ce362b7fd164f4048861c8b51360234f, type: 3}
   m_PrefabInstance: {fileID: 1334044608}
   m_PrefabAsset: {fileID: 0}
+--- !u!84 &1334946039
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 512
+  m_Height: 512
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 4
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 1
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &1336247928
 GameObject:
   m_ObjectHideFlags: 0
@@ -102530,6 +102532,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1361445304}
   m_CullTransparentMesh: 1
+--- !u!114 &1361478714 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6684849914146943438, guid: affd2c763e2186144aeb379980eab745, type: 3}
+  m_PrefabInstance: {fileID: 1716273700}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1362195834
 GameObject:
   m_ObjectHideFlags: 0
@@ -115801,6 +115814,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 332791057}
     - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: npcDialogText
+      value: 
+      objectReference: {fileID: 1361478714}
+    - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: optionButton1
       value: 
       objectReference: {fileID: 1776411044}
@@ -115820,6 +115837,18 @@ PrefabInstance:
       propertyPath: quests.Array.data[0].info
       value: 
       objectReference: {fileID: 11400000, guid: 9144ecc4033f73d47964b346b7343878, type: 2}
+    - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: quests.Array.data[0].questName
+      value: Fix the Ancient Puzzle
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: quests.Array.data[0].questGiver
+      value: Lira
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: quests.Array.data[0].questDescription
+      value: Complete the old puzzle Lira found.
+      objectReference: {fileID: 0}
     - target: {fileID: 4140839671940744256, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -132375,17 +132404,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 250353303869491612, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1351166896770112947, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1351166896770112947, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1351166896770112947, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -11.0703
       objectReference: {fileID: 0}
     - target: {fileID: 1404404100419259049, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_IsActive
@@ -132463,6 +132496,10 @@ PrefabInstance:
       propertyPath: liraPuzzleQuest.questGiver
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2265038226195537072, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: allTrackedQuests.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2506314663644660560, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_SizeDelta.x
       value: 1597.325
@@ -132521,11 +132558,11 @@ PrefabInstance:
       objectReference: {fileID: 907274038}
     - target: {fileID: 4464953881932299241, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4464953881932299241, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4464953881932299241, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_AnchorMin.y
@@ -132721,7 +132758,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7097108269218200433, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 7097108269218200433, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_AnchoredPosition.y

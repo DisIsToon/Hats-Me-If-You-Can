@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,7 +26,7 @@ public class NPC : MonoBehaviour
     public bool isTalkingWithPlayer = false;
 
     // UI References
-    private TextMeshProUGUI npcDialogText;
+    public TextMeshProUGUI npcDialogText;
     public Button optionButton1;
     public TextMeshProUGUI optionButton1Text;
     public Button optionButton2;
@@ -106,15 +106,6 @@ public class NPC : MonoBehaviour
             StartConversation();
             if (pressFUI != null) pressFUI.SetActive(false);
         }
-
-        if (npcName == "Lira" &&
-            QuestManager.Instance.liraPuzzleQuest.accepted &&
-            QuestManager.Instance.puzzleComplete &&
-            !QuestManager.Instance.liraPuzzleQuest.isCompleted)
-        {
-            CompleteLiraQuest();
-            return;
-        }
     }
 
     void CompleteLiraQuest()
@@ -133,74 +124,130 @@ public class NPC : MonoBehaviour
         return npcName;
     }
 
+    private bool CheckBoolRequirement(QuestInfo info)
+    {
+        if (!info.requireBoolToStart)
+            return true; // No requirement, so good to go
+
+        // Look up the bool by name
+        switch (info.boolRequirementName)
+        {
+            case "puzzleComplete":
+                return QuestManager.Instance.puzzleComplete;
+        }
+
+        Debug.LogWarning("Bool requirement name not found: " + info.boolRequirementName);
+        return false;
+    }
+
     public void StartConversation()
     {
         isTalkingWithPlayer = true;
 
         DialogSystem.Instance.ShowNPCImage(npcName);
 
+        // --- First-time interaction ---
         if (firstTimeInteraction)
         {
+            currentActiveQuest = quests[activeQuestIndex];
+
+            // Check bool requirement
+            if (!CheckBoolRequirement(currentActiveQuest.info))
+            {
+                ShowIncompleteRequirementMessage();
+                return;
+            }
+
             firstTimeInteraction = false;
-            currentActiveQuest = quests[activeQuestIndex]; // first quest
-            StartQuestInitialDialog();
             currentDialog = 0;
+            StartQuestInitialDialog();
+            return;
         }
-        else
+
+        // --- Declined quest ---
+        if (currentActiveQuest.declined)
         {
-            if (currentActiveQuest.declined)
+            DialogSystem.Instance.OpenDialogUI();
+            npcDialogText.text = currentActiveQuest.info.comebackAfterDecline;
+            SetAcceptAndDeclineOptions();
+            return;
+        }
+
+        // --- Accepted but not completed ---
+        if (currentActiveQuest.accepted && !currentActiveQuest.isCompleted)
+        {
+            // Check bool requirement first
+            if (!CheckBoolRequirement(currentActiveQuest.info))
             {
-                DialogSystem.Instance.OpenDialogUI();
-                npcDialogText.text = currentActiveQuest.info.comebackAfterDecline;
-                SetAcceptAndDeclineOptions();
+                ShowIncompleteRequirementMessage();
+                return;
             }
 
-            if (currentActiveQuest.accepted && !currentActiveQuest.isCompleted)
+            // Check items and checkpoints
+            if (AreQuestRequirmentsCompleted())
             {
-                if (AreQuestRequirmentsCompleted())
-                {
-                    SubmitRequiredItems();
-                    DialogSystem.Instance.OpenDialogUI();
-                    npcDialogText.text = currentActiveQuest.info.comebackCompleted;
-                    optionButton1Text.text = "[Take Reward]";
-                    optionButton1.onClick.RemoveAllListeners();
-                    optionButton1.onClick.AddListener(() => ReceiveRewardAndCompleteQuest());
-                }
-                else
-                {
-                    DialogSystem.Instance.OpenDialogUI();
-                    npcDialogText.text = currentActiveQuest.info.comebackInProgress;
-                    optionButton1Text.text = "[Close]";
-                    optionButton1.onClick.RemoveAllListeners();
-                    optionButton1.onClick.AddListener(() =>
-                    {
-                        DialogSystem.Instance.CloseDialogUI();
-                        isTalkingWithPlayer = false;
-                    });
-                }
+                SubmitRequiredItems();
+                DialogSystem.Instance.OpenDialogUI();
+                npcDialogText.text = currentActiveQuest.info.comebackCompleted;
+                optionButton1Text.text = "Take Reward";
+                optionButton1.onClick.RemoveAllListeners();
+                optionButton1.onClick.AddListener(() => ReceiveRewardAndCompleteQuest());
+                optionButton2.gameObject.SetActive(false);
             }
-
-            if (currentActiveQuest.isCompleted)
+            else
             {
                 DialogSystem.Instance.OpenDialogUI();
-                npcDialogText.text = currentActiveQuest.info.finalWords;
-                optionButton1Text.text = "[Close]";
+                npcDialogText.text = currentActiveQuest.info.comebackInProgress;
+                optionButton1Text.text = "Close";
                 optionButton1.onClick.RemoveAllListeners();
                 optionButton1.onClick.AddListener(() =>
                 {
                     DialogSystem.Instance.CloseDialogUI();
                     isTalkingWithPlayer = false;
                 });
+                optionButton2.gameObject.SetActive(false);
             }
-
-            if (!currentActiveQuest.initialDialogCompleted)
-            {
-                StartQuestInitialDialog();
-            }
+            return;
         }
+
+        // --- Completed quest ---
+        if (currentActiveQuest.isCompleted)
+        {
+            DialogSystem.Instance.OpenDialogUI();
+            npcDialogText.text = currentActiveQuest.info.finalWords;
+            optionButton1Text.text = "Close";
+            optionButton1.onClick.RemoveAllListeners();
+            optionButton1.onClick.AddListener(() =>
+            {
+                DialogSystem.Instance.CloseDialogUI();
+                isTalkingWithPlayer = false;
+            });
+            optionButton2.gameObject.SetActive(false);
+            return;
+        }
+
+        // --- Safety fallback ---
+        if (!currentActiveQuest.initialDialogCompleted)
+            StartQuestInitialDialog();
     }
 
-    private void SetAcceptAndDeclineOptions()
+    // --- Helper function for showing "incomplete requirement" message ---
+    public void ShowIncompleteRequirementMessage()
+    {
+        DialogSystem.Instance.OpenDialogUI();
+        npcDialogText.text = "Hmm… something’s missing. Come back when you've handled that puzzle.";
+        optionButton1Text.text = "Close";
+        optionButton1.onClick.RemoveAllListeners();
+        optionButton1.onClick.AddListener(() =>
+        {
+            DialogSystem.Instance.CloseDialogUI();
+            isTalkingWithPlayer = false;
+        });
+        optionButton2.gameObject.SetActive(false);
+    }
+
+
+    public void SetAcceptAndDeclineOptions()
     {
         optionButton1Text.text = currentActiveQuest.info.acceptOption;
         optionButton1.onClick.RemoveAllListeners();
@@ -223,12 +270,14 @@ public class NPC : MonoBehaviour
 
     private bool AreQuestRequirmentsCompleted()
     {
+        // --- Check item requirements ---
         int firstCount = InventorySystem.Instance.CheckItemAmount(currentActiveQuest.info.firstRequirmentItem);
         int secondCount = InventorySystem.Instance.CheckItemAmount(currentActiveQuest.info.secondRequirmentItem);
 
         bool itemsDone = firstCount >= currentActiveQuest.info.firstRequirementAmount &&
                          secondCount >= currentActiveQuest.info.secondRequirementAmount;
 
+        // --- Check checkpoints ---
         bool checkpointsDone = true;
         if (currentActiveQuest.info.hasCheckpoints && currentActiveQuest.info.checkpoints != null)
         {
@@ -242,8 +291,28 @@ public class NPC : MonoBehaviour
             }
         }
 
-        return itemsDone && checkpointsDone;
+        // --- Check bool requirement ---
+        bool boolRequirementDone = true;
+        if (currentActiveQuest.info.requireBoolToStart)
+        {
+            switch (currentActiveQuest.info.boolRequirementName)
+            {
+                case "puzzleComplete":
+                    boolRequirementDone = QuestManager.Instance.puzzleComplete;
+                    break;
+
+                // Add other bool names here if needed
+                default:
+                    Debug.LogWarning("Bool requirement not recognized: " + currentActiveQuest.info.boolRequirementName);
+                    boolRequirementDone = false;
+                    break;
+            }
+        }
+
+        // Return true only if items, checkpoints, and bool requirement are all satisfied
+        return itemsDone && checkpointsDone && boolRequirementDone;
     }
+
 
     private void StartQuestInitialDialog()
     {
@@ -289,7 +358,7 @@ public class NPC : MonoBehaviour
         if (currentActiveQuest.hasNoRequirements)
         {
             npcDialogText.text = currentActiveQuest.info.comebackCompleted;
-            optionButton1Text.text = "[Take Reward]";
+            optionButton1Text.text = "Take Reward";
             optionButton1.onClick.RemoveAllListeners();
             optionButton1.onClick.AddListener(() => ReceiveRewardAndCompleteQuest());
             optionButton2.gameObject.SetActive(false);
@@ -305,7 +374,7 @@ public class NPC : MonoBehaviour
     {
         DialogSystem.Instance.HideAllPortraits();
 
-        optionButton1Text.text = "[Close]";
+        optionButton1Text.text = "Close";
         optionButton1.onClick.RemoveAllListeners();
         optionButton1.onClick.AddListener(() =>
         {
