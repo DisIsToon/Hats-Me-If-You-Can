@@ -12,6 +12,7 @@ public class DialogSystem : MonoBehaviour
 
     public TextMeshProUGUI dialogText;
     public TMPro.TextMeshProUGUI speakerNameText;
+    public string currentSpeakerName = "";
 
     public Button option1BTN;
     public Button option2BTN;
@@ -41,6 +42,17 @@ public class DialogSystem : MonoBehaviour
     void Start()
     {
         dialogUIActive = false;
+    }
+
+    public void SetSpeakerName(string name)
+    {
+        currentSpeakerName = name ?? "";
+        if (speakerNameText != null)
+            speakerNameText.text = currentSpeakerName;
+    }
+    public string GetSpeakerName()
+    {
+        return currentSpeakerName;
     }
 
     public void ShowNPCImage(string npcName)

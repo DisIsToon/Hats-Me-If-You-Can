@@ -128,6 +128,11 @@ public class NPC : MonoBehaviour
         QuestManager.Instance.puzzleObject.SetActive(false);
     }
 
+    public string GetNPCName()
+    {
+        return npcName;
+    }
+
     public void StartConversation()
     {
         isTalkingWithPlayer = true;

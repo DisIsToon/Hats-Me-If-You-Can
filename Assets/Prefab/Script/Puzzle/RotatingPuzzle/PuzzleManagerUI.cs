@@ -9,7 +9,7 @@ public class PuzzleManagerUI : MonoBehaviour
     public GameObject solvedPopup;
     public GameObject completePuzzlePopup;
     public bool isOpen;
-
+    private bool canPlayPuzzle = false;
     public RotatingRingUI[] rings;
 
     private void Awake()
@@ -35,19 +35,29 @@ public class PuzzleManagerUI : MonoBehaviour
         {
             Debug.Log("p is pressed");
         }
-        if (Input.GetKeyDown(KeyCode.P) && !isOpen)
+        if (Input.GetKeyDown(KeyCode.E) && canPlayPuzzle && !isOpen)
         {
-            Debug.Log("p is pressed, inventory open");
+            SelectionManager.Instance.puzzleDetected = false;
             rotatingPuzzleScreen.SetActive(true);
             isOpen = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.P) && isOpen)
-        {
-            Debug.Log("p is pressed, inventory closed");
-            rotatingPuzzleScreen.SetActive(false);
 
-            isOpen = false;
         }
+        else if (Input.GetKeyDown(KeyCode.E) && isOpen)
+        {
+            PuzzleScreenOff();
+        }
+    }
+
+    public void SetCanPlayPuzzle(bool value)
+    {
+        canPlayPuzzle = value;
+    }
+
+    public void PuzzleScreenOff()
+    {
+        rotatingPuzzleScreen.SetActive(false);
+
+        isOpen = false;
     }
 
     public void OnRingSolved(RotatingRingUI ring)

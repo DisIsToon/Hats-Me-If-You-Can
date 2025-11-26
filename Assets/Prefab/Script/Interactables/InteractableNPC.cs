@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +15,7 @@ public class InteractableNPC : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             SelectionManager.Instance.interactableNpcDetected = true;
+            SelectionManager.Instance.currentDetectedNPC = npc;   // ★ Pass NPC here
             playerInRange = true;
         }
     }
@@ -24,6 +25,7 @@ public class InteractableNPC : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             SelectionManager.Instance.interactableNpcDetected = false;
+            SelectionManager.Instance.currentDetectedNPC = null;  // ★ Remove NPC
             playerInRange = false;
 
             if (npc != null)

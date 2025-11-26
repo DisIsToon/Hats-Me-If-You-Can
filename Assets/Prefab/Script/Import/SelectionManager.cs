@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class SelectionManager : MonoBehaviour
 {
@@ -16,6 +17,10 @@ public class SelectionManager : MonoBehaviour
     public GameObject helpInteractCauldronUI;
     public GameObject helpInteractNpcUI;
     public GameObject helpTalkUI;
+    public GameObject playRotatingPuzzleUI;
+
+    public TextMeshProUGUI npcNameText;
+    public NPC currentDetectedNPC;   // Assigned by InteractableNPC
 
     public Image centerDotImage;
     public Image handIcon;
@@ -23,7 +28,10 @@ public class SelectionManager : MonoBehaviour
     public bool pickableItemDetected;
     public bool readableNoteDetected;
     public bool cauldronDetected;
+    public bool puzzleDetected;
     public bool interactableNpcDetected;
+
+
     public bool handIsVisible;
     public bool willTalk;
 
@@ -126,14 +134,36 @@ public class SelectionManager : MonoBehaviour
             helpInteractCauldronUI.SetActive(false);
         }
 
-        //NPC
-        if (interactableNpcDetected == true)
+        // Puzzle Rotating
+        if (puzzleDetected == true)
         {
-            helpInteractNpcUI.SetActive(true);
+            playRotatingPuzzleUI.SetActive(true);
 
         }
-        else if (interactableNpcDetected == false)
+        else if (puzzleDetected == false)
         {
+            playRotatingPuzzleUI.SetActive(false);
+        }
+
+        //NPC
+        if (interactableNpcDetected)
+        {
+            if (currentDetectedNPC != null)
+            {
+                string npcName = currentDetectedNPC.npcName; // Get name directly from NPC
+
+                // Update the dialog system name
+                DialogSystem.Instance.SetSpeakerName(npcName);
+
+                // Update your UI label
+                npcNameText.text = npcName;
+            }
+
+            helpInteractNpcUI.SetActive(true);
+        }
+        else
+        {
+            npcNameText.text = "";
             helpInteractNpcUI.SetActive(false);
         }
     }
