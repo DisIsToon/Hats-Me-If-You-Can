@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: facff60231ca9c34f8e5886b5242d39c, type: 3}
+  m_Name: Quest_Lira
+  m_EditorClassIdentifier: 
+  initialDialog:
+  - "Mmph\u2014! Oh! Hello there!"
+  - 'Are you good with puzzles? '
+  - I was helping a sickly fellow gather winter herbs when a wind spirit blew through
+    and made a mess of everything.
+  - Now the gate to the cold woods is sealed
+  - If you can realign the roots, the forest will open her path to you. Will you
+    try?
+  acceptOption: "I\u2019ll give it a try!"
+  acceptAnswer: Really! Thank you! If you can realign the roots, the forest will
+    open her path to you!
+  declineOption: "I\u2019ll try to come back..."
+  declineAnswer: Very well. Come back when your paws feel sure.
+  comebackAfterDecline: "Changed your mind? The gate won\u2019t open itself, and
+    I can\u2019t coax the roots into place alone."
+  comebackInProgress: Oh you're back. The roots are still tangled, you know. The
+    forest waits, patient but cold.
+  comebackCompleted: "You did it! That\u2019s the \r\nforest\u2019s energy flowing
+    again.\r\n"
+  finalWords: "Follow the frost carefully. \r\nThe Winter Forest is quiet, but never
+    empty."
+  coinReward: 0
+  rewardItem1: 
+  rewardItem2: 
+  firstRequirmentItem: 
+  firstRequirementAmount: 0
+  secondRequirmentItem: 
+  secondRequirementAmount: 0
+  hasCheckpoints: 0
+  checkpoints: []
