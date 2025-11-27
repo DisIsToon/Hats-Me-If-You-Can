@@ -50,6 +50,9 @@ public class QuestManager : MonoBehaviour
     public GameObject puzzleObject;
     public bool puzzleComplete = false;
     public bool winterForestPass = false;
+    public bool questCompleteLira = false;
+    public bool questCompleteMallow = false;
+    public bool questCompleteTulip = false;
     public Quest liraPuzzleQuest;
 
     private void Start()
@@ -292,6 +295,23 @@ public class QuestManager : MonoBehaviour
         if (npcName == "Lira" && puzzleComplete)
         {
             winterForestPass = true;
+            questCompleteLira = true;
+            GameTracker.Instance.CompleteQuest("Lira");
+        }
+
+        // Reward only for Mallow
+        if (npcName == "Mallow")
+        {
+
+            questCompleteMallow = true;
+            GameTracker.Instance.CompleteQuest("Mallow");
+        }
+
+        // Reward only for Tulip
+        if (npcName == "Tulip")
+        {
+            questCompleteTulip = true;
+            GameTracker.Instance.CompleteQuest("Tulip");
         }
     }
 

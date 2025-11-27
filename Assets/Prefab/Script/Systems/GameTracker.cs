@@ -18,6 +18,11 @@ public class GameTracker : MonoBehaviour
     public bool openedFrozenGate = false;
     public bool puzzleComplete = false;
 
+    [Header("Quest Completion Bools")]
+    public bool questCompleteLira = false;
+    public bool questCompleteMallow = false;
+    public bool questCompleteTulip = false;
+
     [Header("Area Triggers")]
     public GameObject triggerForest;
     public GameObject triggerCastle;
@@ -82,6 +87,43 @@ public class GameTracker : MonoBehaviour
                 Debug.LogWarning("Unknown hat: " + hatName);
                 break;
         }
+    }
+
+    // --- Complete a quest ---
+    public void CompleteQuest(string questGiver)
+    {
+        switch (questGiver)
+        {
+            case "Lira":
+                questCompleteLira = true;
+                NewHatalougeManager.Instance.quest1Found = true;   // unlock quest page 1
+                NewHatalougeManager.Instance.UpdateQuestScreen();
+                Debug.Log("Lira's quest completed!");
+                break;
+
+            case "Mallow":
+                questCompleteMallow = true;
+                NewHatalougeManager.Instance.quest2Found = true;   // unlock quest page 2
+                NewHatalougeManager.Instance.UpdateQuestScreen();
+                Debug.Log("Mallow's quest completed!");
+                break;
+
+            case "Tulip":
+                questCompleteTulip = true;
+                NewHatalougeManager.Instance.quest3Found = true;   // unlock quest page 3
+                NewHatalougeManager.Instance.UpdateQuestScreen();
+                Debug.Log("Tulip's quest completed!");
+                break;
+
+            default:
+                Debug.LogWarning("Unknown quest giver: " + questGiver);
+                break;
+        }
+    }
+
+    public bool AllQuestsCompleted()
+    {
+        return questCompleteLira && questCompleteMallow && questCompleteTulip;
     }
 
     public void CheckPlayerInTrigger(GameObject trigger)

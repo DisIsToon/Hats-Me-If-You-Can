@@ -103,7 +103,7 @@ public class NewHatalougeManager : MonoBehaviour
             Instance = this;
     }
 
-    private void Start()
+    public void Start()
     {
         // Ensure initial UI state is correct if journal is active or not
         if (journalPanel != null && journalPanel.activeSelf)
@@ -128,7 +128,7 @@ public class NewHatalougeManager : MonoBehaviour
         UpdateMapScreen();
     }
 
-    private void Update()
+    public void Update()
     {
         // Toggle journal with H key
         if (Input.GetKeyDown(KeyCode.H) && !isOpen)
@@ -231,7 +231,7 @@ public class NewHatalougeManager : MonoBehaviour
         UpdateHatScreen();
     }
 
-    private void UpdateHatScreen()
+    public void UpdateHatScreen()
     {
         // Defensive checks
         if (hatHiddenScreens == null || hatHiddenScreens.Length == 0) return;
@@ -284,7 +284,7 @@ public class NewHatalougeManager : MonoBehaviour
         UpdateQuestScreen();
     }
 
-    private void UpdateQuestScreen()
+    public void UpdateQuestScreen()
     {
         if (questHiddenScreens == null || questHiddenScreens.Length == 0) return;
 
@@ -335,7 +335,7 @@ public class NewHatalougeManager : MonoBehaviour
         UpdateCharacterScreen();
     }
 
-    private void UpdateCharacterScreen()
+    public void UpdateCharacterScreen()
     {
         if (characterHiddenScreens == null || characterHiddenScreens.Length == 0) return;
 
@@ -361,7 +361,7 @@ public class NewHatalougeManager : MonoBehaviour
             characterHiddenScreens[characterIndex].SetActive(true);
     }
 
-    private bool IsCharacterFound(int idx)
+    public bool IsCharacterFound(int idx)
     {
         switch (idx)
         {
@@ -405,7 +405,7 @@ public class NewHatalougeManager : MonoBehaviour
         UpdateInfoScreen();
     }
 
-    private void UpdateInfoScreen()
+    public void UpdateInfoScreen()
     {
         if (infoScreens == null || infoScreens.Length == 0)
         {
@@ -445,7 +445,7 @@ public class NewHatalougeManager : MonoBehaviour
         UpdateMapScreen();
     }
 
-    private void UpdateMapScreen()
+    public void UpdateMapScreen()
     {
         if (mapDefault != null) mapDefault.SetActive(false);
         if (mapForest != null) mapForest.SetActive(false);
