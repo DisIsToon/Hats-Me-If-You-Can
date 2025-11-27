@@ -372,7 +372,6 @@ public class NPC : MonoBehaviour
 
     public void CloseDialogUI()
     {
-        DialogSystem.Instance.HideAllPortraits();
 
         optionButton1Text.text = "Close";
         optionButton1.onClick.RemoveAllListeners();
@@ -380,8 +379,11 @@ public class NPC : MonoBehaviour
         {
             DialogSystem.Instance.CloseDialogUI();
             isTalkingWithPlayer = false;
+            DialogSystem.Instance.HideAllPortraits();
         });
         optionButton2.gameObject.SetActive(false);
+
+        
     }
 
     private void ReceiveRewardAndCompleteQuest()

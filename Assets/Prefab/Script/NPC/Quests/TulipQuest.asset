@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: facff60231ca9c34f8e5886b5242d39c, type: 3}
+  m_Name: TulipQuest
+  m_EditorClassIdentifier: 
+  initialDialog:
+  - "Umm... Mister Bunny? Have you seen a blue hat? It's soft\u2026 and it smells
+    like sunshine."
+  - "I wore it every day. But now... it\u2019s gone.\n\nsniff"
+  acceptOption: I can help you find it.
+  acceptAnswer: "R-really? You\u2019ll help? Thank you\u2026 I was trying not to
+    cry, but my eyes keep leaking."
+  declineOption: "I can\u2019t help right now."
+  declineAnswer: "Oh\u2026 okay. I\u2019ll keep looking\u2026 even if my legs get
+    tired."
+  comebackAfterDecline: "You came back\u2026 d-do you think you can help now? I\u2019m
+    scared my hat is getting lonely."
+  comebackInProgress: "Did you see it anywhere? I\u2026 I keep hoping it\u2019s hiding,
+    not lost."
+  comebackCompleted: "That\u2019s it! That\u2019s my hat! You found it!\r\nIt really
+    did miss me\u2026"
+  finalWords: "I\u2019m keeping my hat close this time. But\u2026 you can come say
+    hi whenever."
+  coinReward: 0
+  rewardItem1: RedPotion
+  rewardItem2: 
+  boolRewardName: 
+  giveBoolReward: 0
+  firstRequirmentItem: Star
+  firstRequirementAmount: 1
+  secondRequirmentItem: 
+  secondRequirementAmount: 0
+  boolRequirementName: 
+  requireBoolToStart: 0
+  hasCheckpoints: 0
+  checkpoints: []

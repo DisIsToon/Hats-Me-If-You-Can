@@ -72,10 +72,11 @@ public class DialogSystem : MonoBehaviour
 
     public void HideAllPortraits()
     {
+        
+        ClearSpeakerName();
         liraImage.SetActive(false);
         mallowImage.SetActive(false);
         tulipImage.SetActive(false);
-        ClearSpeakerName();
     }
 
     public void OpenDialogUI()
@@ -90,12 +91,12 @@ public class DialogSystem : MonoBehaviour
 
     public void CloseDialogUI()
     {
-        HideAllPortraits();
-        ClearSpeakerName();
+        
         MainScreen.SetActive(true);
         dialogUI.gameObject.SetActive(false);
         dialogUIActive = false;
-
+        HideAllPortraits();
+        ClearSpeakerName();
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
     }
