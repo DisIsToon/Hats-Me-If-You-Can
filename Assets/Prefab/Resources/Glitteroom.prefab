@@ -68,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d99572c9108a1ab4d8f16337b354a76d, type: 3}
+  m_Sprite: {fileID: 259499659, guid: d99572c9108a1ab4d8f16337b354a76d, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -115,6 +115,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTrashable: 1
+  itemInfoUI: {fileID: 0}
+  craftingItemInfoUI: {fileID: 0}
+  itemInfoUI_itemName: {fileID: 0}
+  itemInfoUI_itemDescription: {fileID: 0}
+  itemInfoUI_itemFunctionality: {fileID: 0}
+  craftingItemInfoUI_itemName: {fileID: 0}
+  craftingItemInfoUI_itemDescription: {fileID: 0}
+  craftingItemInfoUI_itemFunctionality: {fileID: 0}
+  itemInfoUI_itemIcon: {fileID: 0}
+  craftingItemInfoUI_itemIcon: {fileID: 0}
+  iconForThisItem: {fileID: 0}
   thisName: Glitteroom
   thisDescription: a kind of magical mushroom
   thisFunctionality: material for potion
@@ -125,3 +136,4 @@ MonoBehaviour:
   isNowInsideQuickSlot: 0
   isSelected: 0
   isUseable: 0
+  itemIcons: []
