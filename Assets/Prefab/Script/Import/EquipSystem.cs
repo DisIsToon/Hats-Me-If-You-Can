@@ -1,7 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class EquipSystem : MonoBehaviour
 {
@@ -52,22 +53,6 @@ public class EquipSystem : MonoBehaviour
         {
             SelectQuickSlot(3);
         }
-        else if(Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            SelectQuickSlot(4);
-        }
-        else if(Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            SelectQuickSlot(5);
-        }
-        else if(Input.GetKeyDown(KeyCode.Alpha6))
-        {
-            SelectQuickSlot(6);
-        }
-        else if(Input.GetKeyDown(KeyCode.Alpha7))
-        {
-            SelectQuickSlot(7);
-        }
     }
 
     void SelectQuickSlot(int number)
@@ -91,10 +76,11 @@ public class EquipSystem : MonoBehaviour
                 // ChanGe Color
                 foreach (Transform child in numberHolder.transform)
                 {
-                    child.transform.Find("Text").GetComponent<Text>().color = Color.gray;
+                    child.transform.Find("Text").GetComponent<TMP_Text>().color = Color.gray;
                 }
 
-                Text toBeChanged = numberHolder.transform.Find("number" + number).transform.Find("Text").GetComponent<Text>();
+                TMP_Text toBeChanged = numberHolder.transform.Find("number" + number).transform.Find("Text").GetComponent<TMP_Text>();
+
                 toBeChanged.color = Color.white;
             }
             else // We are trying to select the same slot
@@ -117,7 +103,7 @@ public class EquipSystem : MonoBehaviour
                 // ChanGe Color
                 foreach (Transform child in numberHolder.transform)
                 {
-                    child.transform.Find("Text").GetComponent<Text>().color = Color.gray;
+                    child.transform.Find("Text").GetComponent<TMP_Text>().color = Color.gray;
                 }
 
             }
