@@ -8,6 +8,7 @@ using TMPro;
 public class InventorySystem : MonoBehaviour
 {
     public GameObject ItemInfoUI;
+    public GameObject CraftingItemInfoUI;
     public static InventorySystem Instance { get; set; }
 
     public GameObject inventoryScreenUI;

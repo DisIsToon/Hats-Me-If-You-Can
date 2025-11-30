@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,12 +11,17 @@ public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public bool isTrashable;
  
     // --- Item Info UI --- //
-    private GameObject itemInfoUI;
- 
-    private TextMeshProUGUI itemInfoUI_itemName;
-    private TextMeshProUGUI itemInfoUI_itemDescription;
-    private TextMeshProUGUI itemInfoUI_itemFunctionality;
- 
+    public GameObject itemInfoUI;
+    public GameObject craftingItemInfoUI;
+
+    public TextMeshProUGUI itemInfoUI_itemName;
+    public TextMeshProUGUI itemInfoUI_itemDescription;
+    public TextMeshProUGUI itemInfoUI_itemFunctionality;
+
+    public TextMeshProUGUI craftingItemInfoUI_itemName;
+    public TextMeshProUGUI craftingItemInfoUI_itemDescription;
+    public TextMeshProUGUI craftingItemInfoUI_itemFunctionality;
+
     public string thisName, thisDescription, thisFunctionality;
  
     // --- Consumption --- //
@@ -38,9 +43,15 @@ public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void Start()
     {
         itemInfoUI = InventorySystem.Instance.ItemInfoUI;
+        craftingItemInfoUI = InventorySystem.Instance.CraftingItemInfoUI;
+
         itemInfoUI_itemName = itemInfoUI.transform.Find("itemName").GetComponent<TextMeshProUGUI>();
         itemInfoUI_itemDescription = itemInfoUI.transform.Find("itemDescription").GetComponent<TextMeshProUGUI>();
         itemInfoUI_itemFunctionality = itemInfoUI.transform.Find("itemFunctionality").GetComponent<TextMeshProUGUI>();
+
+        craftingItemInfoUI_itemName = craftingItemInfoUI.transform.Find("itemName").GetComponent<TextMeshProUGUI>();
+        craftingItemInfoUI_itemDescription = craftingItemInfoUI.transform.Find("itemDescription").GetComponent<TextMeshProUGUI>();
+        craftingItemInfoUI_itemFunctionality = craftingItemInfoUI.transform.Find("itemFunctionality").GetComponent<TextMeshProUGUI>();
     }
 
     void Update()
@@ -58,16 +69,30 @@ public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     // Triggered when the mouse enters into the area of the item that has this script.
     public void OnPointerEnter(PointerEventData eventData)
     {
-        itemInfoUI.SetActive(true);
-        itemInfoUI_itemName.text = thisName;
-        itemInfoUI_itemDescription.text = thisDescription;
-        itemInfoUI_itemFunctionality.text = thisFunctionality;
+        if(CraftingSystem.Instance.isOpen)
+        {
+            craftingItemInfoUI.SetActive(true);
+            craftingItemInfoUI.text = thisName;
+            craftingItemInfoUI.text = thisDescription;
+            craftingItemInfoUI.text = thisFunctionality;
+        }
+        else
+        {
+            itemInfoUI.SetActive(true);
+            itemInfoUI_itemName.text = thisName;
+            itemInfoUI_itemDescription.text = thisDescription;
+            itemInfoUI_itemFunctionality.text = thisFunctionality;
+        }
+
+
+        
     }
  
     // Triggered when the mouse exits the area of the item that has this script.
     public void OnPointerExit(PointerEventData eventData)
     {
         itemInfoUI.SetActive(false);
+        craftingItemInfoUI.SetActive(false);
     }
  
     // Triggered when the mouse is clicked over the item that has this script.
@@ -107,6 +132,7 @@ public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void UseItem()
     {
         itemInfoUI.SetActive(false);
+        craftingItemInfoUI.SetActive(false);
 
         InventorySystem.Instance.isOpen = false; 
         InventorySystem.Instance.inventoryScreenUI.SetActive(false);
