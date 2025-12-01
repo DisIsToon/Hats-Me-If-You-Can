@@ -232,8 +232,6 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
             NewHatalougeManager.Instance.isOpen == false)
         {
             ThrowHeldItem();
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
     }
 

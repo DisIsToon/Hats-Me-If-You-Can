@@ -1,24 +1,31 @@
-using Unity.Cinemachine;
+﻿using Unity.Cinemachine;
 using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class ThirdPersonCameraController : MonoBehaviour
 {
-    [SerializeField] private float zoomSpeed = 2f;
-    [SerializeField] private float zoomLerpSpeed = 10f;
-    [SerializeField] private float minDistance = 3f;
-    [SerializeField] private float maxDistance = 15f;
+    public static ThirdPersonCameraController Instance { get; private set; }
 
-    private InputSystem_Actions controls;
+    [SerializeField] public float zoomSpeed = 2f;
+    [SerializeField] public float zoomLerpSpeed = 10f;
+    [SerializeField] public float minDistance = 3f;
+    [SerializeField] public float maxDistance = 15f;
 
-    private CinemachineCamera cam;
-    private CinemachineOrbitalFollow orbital;
-    private Vector2 scrollDelta;
+    public InputSystem_Actions controls;
 
-    private float targetZoom;
-    private float currentZoom;
+    public CinemachineCamera cam;
+    public CinemachineOrbitalFollow orbital;
+    public Vector2 scrollDelta;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public float targetZoom;
+    public float currentZoom;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this) Destroy(gameObject);
+        else Instance = this;
+    }
+
     void Start()
     {
         controls = new InputSystem_Actions();
@@ -26,38 +33,86 @@ public class ThirdPersonCameraController : MonoBehaviour
         controls.CameraControls.MouseZoom.performed += HandleMouseScroll;
 
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         cam = GetComponent<CinemachineCamera>();
         orbital = cam.GetComponent<CinemachineOrbitalFollow>();
 
-        targetZoom = currentZoom = orbital.Radius;
+        if (orbital != null)
+        {
+            targetZoom = currentZoom = orbital.Radius;   // ✔ correct property for your version
+        }
     }
 
-    private void HandleMouseScroll(InputAction.CallbackContext context) 
+    public void HandleMouseScroll(InputAction.CallbackContext context)
     {
         scrollDelta = context.ReadValue<Vector2>();
-        Debug.Log($"Mouse is scrolling. Value: {scrollDelta}");
     }
-    // Update is called once per frame
+
     void Update()
     {
-        if (scrollDelta.y != 0) 
+        // Disable camera controls when UI is open
+        if (InventorySystem.Instance != null && InventorySystem.Instance.isOpen ||
+            CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen ||
+            DialogSystem.Instance != null && DialogSystem.Instance.dialogUIActive ||
+            QuestManager.Instance != null && QuestManager.Instance.isQuestMenuOpen ||
+            CardsController.Instance != null && CardsController.Instance.isOpen ||
+            PuzzleManagerUI.Instance != null && PuzzleManagerUI.Instance.isOpen ||
+            Notes.Instance != null && Notes.Instance.activeNote ||
+            NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.isOpen)
         {
-            if (orbital != null) 
-            {
-                targetZoom = Mathf.Clamp(orbital.Radius - scrollDelta.y * zoomSpeed, minDistance, maxDistance);
-                scrollDelta = Vector2.zero;
-            }
+            // Unlock cursor always while UI is open
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return;   // 🔥 stop camera movement
+        }
+
+        if (scrollDelta.y != 0f)
+        {
+            targetZoom = Mathf.Clamp(
+                orbital.Radius - scrollDelta.y * zoomSpeed,
+                minDistance,
+                maxDistance
+            );
+
+            scrollDelta = Vector2.zero;
         }
 
         float bumperData = controls.CameraControls.GamepadZoom.ReadValue<float>();
-        if (bumperData != 0) 
+
+        if (bumperData != 0f)
         {
-            targetZoom = Mathf.Clamp(orbital.Radius - bumperData * zoomSpeed, minDistance, maxDistance);
+            targetZoom = Mathf.Clamp(
+                orbital.Radius - bumperData * zoomSpeed,
+                minDistance,
+                maxDistance
+            );
         }
 
-
         currentZoom = Mathf.Lerp(currentZoom, targetZoom, Time.deltaTime * zoomLerpSpeed);
-        orbital.Radius = currentZoom;
+
+        orbital.Radius = currentZoom;   // ✔ correct property
+    }
+
+    public void SetCameraActive(bool active)
+    {
+        if (active)
+        {
+            controls.Enable();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            enabled = true;  // re-enable Update()
+        }
+        else
+        {
+            controls.Disable();
+            scrollDelta = Vector2.zero;
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            enabled = false; // stop Update() entirely
+        }
     }
 }

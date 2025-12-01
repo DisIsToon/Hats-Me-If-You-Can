@@ -44,8 +44,8 @@ public class SelectionManager : MonoBehaviour
         onTarget = false;
         craftingSystem = FindObjectOfType<CraftingSystem>(); // Find the CraftingSystemScript in the scene
 
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
     }
 
@@ -88,7 +88,7 @@ public class SelectionManager : MonoBehaviour
         if (NewHatalougeManager.Instance == null)
             Debug.LogWarning("HatalougeManager.Instance is NULL!");
 
-        if (DialogSystem.Instance.dialogUIActive == true ||
+        /*if (DialogSystem.Instance.dialogUIActive == true ||
             CraftingSystem.Instance.isOpen == true ||
             InventorySystem.Instance.isOpen == true ||
             QuestManager.Instance.isQuestMenuOpen == true ||
@@ -101,6 +101,7 @@ public class SelectionManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
+        */
         // Item
         if (pickableItemDetected == true)
         {
