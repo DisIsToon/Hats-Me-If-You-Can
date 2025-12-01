@@ -24,11 +24,13 @@ public class InteractableObject : MonoBehaviour
 
     private IEnumerator PickupItem()
     {
+
         isPickingUp = true;
 
         // If inventory is NOT full, then pick up the item
         if (InventorySystem.Instance.CheckSlotsAvailable(1))
         {
+            NotifUIManager.Instance.NotifyItemPicked(ItemName);
             //SoundManager.Instance.PlaySound(SoundManager.Instance.pickUpSound);
             InventorySystem.Instance.AddToInventory(ItemName);
 

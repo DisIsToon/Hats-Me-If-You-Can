@@ -146,7 +146,7 @@ public class PuzzleManagerUI : MonoBehaviour
         completePuzzlePopup.SetActive(false);
         rotatingPuzzleScreen.SetActive(false);
 
-        Debug.Log("Quest Pass rcv!");
+        NotifUIManager.Instance.NotifyPuzzleComplete();
     }
 
     void CheckIfAllSolved()

@@ -126,6 +126,7 @@ public class WinterBarrierSystem : MonoBehaviour
         // When ended, check if victory
         if (clickerGame.victoryScreen.activeSelf)
         {
+            NotifUIManager.Instance.NotifyBarrierComplete();
             // Disable barrier visuals and collision
             if (boxCollider) boxCollider.enabled = false;
             if (meshRenderer) meshRenderer.enabled = false;

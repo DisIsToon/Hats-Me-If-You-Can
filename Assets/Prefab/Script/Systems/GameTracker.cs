@@ -27,6 +27,9 @@ public class GameTracker : MonoBehaviour
     public GameObject triggerForest;
     public GameObject triggerCastle;
     public GameObject triggerWinter;
+    private bool springGardenNotified = false;
+    private bool castleRuinNotified = false;
+    private bool winterBiomeNotified = false;
 
     [Header("Potions")]
     public bool cakePotionUnlocked = false;
@@ -71,16 +74,19 @@ public class GameTracker : MonoBehaviour
             case "ShyHat":
                 shyHatCaptured = true;
                 NewHatalougeManager.Instance.DiscoverShyHat();
+                NotifUIManager.Instance.NotifyHatCaptured("ShyHat");
                 Debug.Log("ShyHat captured!");
                 break;
             case "FastHat":
                 fastHatCaptured = true;
                 NewHatalougeManager.Instance.DiscoverFastHat();
+                NotifUIManager.Instance.NotifyHatCaptured("FastHat");
                 Debug.Log("FastHat captured!");
                 break;
             case "JumpHat":
                 jumpHatCaptured = true;
                 NewHatalougeManager.Instance.DiscoverLazyHat();
+                NotifUIManager.Instance.NotifyHatCaptured("JumpHat");
                 Debug.Log("JumpHat captured!");
                 break;
             default:
@@ -132,16 +138,34 @@ public class GameTracker : MonoBehaviour
         {
             Debug.Log("Player entered Forest!");
             NewHatalougeManager.Instance.ReachForest();
+
+            if (!springGardenNotified)   // <-- only once
+            {
+                springGardenNotified = true;
+                NotifUIManager.Instance.NotifyBiomeDiscovered("Spring Garden");
+            }
         }
         else if (trigger == triggerCastle)
         {
             Debug.Log("Player entered Castle!");
             NewHatalougeManager.Instance.ReachCastle();
+
+            if (!castleRuinNotified)     // <-- only once
+            {
+                castleRuinNotified = true;
+                NotifUIManager.Instance.NotifyBiomeDiscovered("Castle Ruin");
+            }
         }
         else if (trigger == triggerWinter)
         {
             Debug.Log("Player entered Winter!");
             NewHatalougeManager.Instance.ReachWinter();
+
+            if (!winterBiomeNotified)    // <-- only once
+            {
+                winterBiomeNotified = true;
+                NotifUIManager.Instance.NotifyBiomeDiscovered("Winter Biome");
+            }
         }
     }
 

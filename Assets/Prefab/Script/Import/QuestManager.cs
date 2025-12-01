@@ -53,6 +53,7 @@ public class QuestManager : MonoBehaviour
     public bool questCompleteLira = false;
     public bool questCompleteMallow = false;
     public bool questCompleteTulip = false;
+    public bool headmasterNotifShown = false;
     public Quest liraPuzzleQuest;
 
     private void Start()
@@ -267,14 +268,17 @@ public class QuestManager : MonoBehaviour
         {
             liraQuestAccepted = true;
             puzzleObject.SetActive(true);     // activate puzzle
+            NotifUIManager.Instance.NotifyQuestAccepted("Forest Sprite");
         }
         else if (npcName == "Mallow")
         {
             mallowQuestAccepted = true;
+            NotifUIManager.Instance.NotifyQuestAccepted("Sickly Stranger");
         }
         else if (npcName == "Tulip")
         {
             tulipQuestAccepted = true;
+            NotifUIManager.Instance.NotifyQuestAccepted("Lost Hat");
         }
     }
 
@@ -297,14 +301,15 @@ public class QuestManager : MonoBehaviour
             winterForestPass = true;
             questCompleteLira = true;
             GameTracker.Instance.CompleteQuest("Lira");
+            QuestCompleteNotif.Instance.ShowLiraComplete();
         }
 
         // Reward only for Mallow
         if (npcName == "Mallow")
         {
-
             questCompleteMallow = true;
             GameTracker.Instance.CompleteQuest("Mallow");
+            QuestCompleteNotif.Instance.ShowMallowComplete();
         }
 
         // Reward only for Tulip
@@ -312,6 +317,14 @@ public class QuestManager : MonoBehaviour
         {
             questCompleteTulip = true;
             GameTracker.Instance.CompleteQuest("Tulip");
+            QuestCompleteNotif.Instance.ShowTulipComplete();
+        }
+
+        if (!headmasterNotifShown &&
+        (questCompleteLira || questCompleteMallow || questCompleteTulip))
+        {
+            headmasterNotifShown = true;
+            NotifUIManager.Instance.NotifyMeetHeadMaster();
         }
     }
 

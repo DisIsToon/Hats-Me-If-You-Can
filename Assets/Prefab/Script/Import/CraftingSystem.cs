@@ -121,6 +121,7 @@ public class CraftingSystem : MonoBehaviour
         for (var i = 0; i < blueprintToCraft.numOfItemsToProduce; i++)
         {
             InventorySystem.Instance.AddToInventory(blueprintToCraft.itemName);
+            NotifUIManager.Instance.NotifyPotionBrewed(blueprintToCraft.itemName);
         }
     }
 
