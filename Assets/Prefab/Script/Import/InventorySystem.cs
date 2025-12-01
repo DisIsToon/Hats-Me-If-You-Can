@@ -106,6 +106,16 @@ public class InventorySystem : MonoBehaviour
         }
     }
 
+    public void OpenInventory()
+    {
+        if(!isOpen)
+        {
+            inventoryScreenUI.SetActive(true);
+            isOpen = true;
+        }
+
+    }
+
     public void AddToInventory(string itemName)
     {
         whatSlotToEquip = FindNextEmptySlot();
