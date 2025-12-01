@@ -1,25 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class CardsController : MonoBehaviour
 {
     public static CardsController Instance { get; set; }
 
+    [Header("Cards")]
     [SerializeField] Card cardPrefab;
     [SerializeField] Transform gridTransform;
     [SerializeField] Sprite[] sprites;
 
+    [Header("UI")]
     public GameObject PuzzleScreen;
     public GameObject completePuzzlePopup;
+    public TMP_Text timerText;
+
+    [Header("Timer Settings")]
+    public float puzzleDuration = 60f; // Time in seconds
+    private float currentTime;
+    private bool timerRunning = false;
+
+    [Header("Mirror")]
+    public GameObject mirror;
+    public GameObject mirrorShardPrefab;
 
     public bool isOpen;
+    private bool canPlayPuzzle = false;
 
     private List<Sprite> spritePairs;
-
     Card firstSelected;
     Card secondSelected;
-
     int matchCounts;
 
     private void Awake()
@@ -38,25 +50,85 @@ public class CardsController : MonoBehaviour
     {
         PrepareSprites();
         CreateCards();
+        PuzzleScreen.SetActive(false);
+        timerText.gameObject.SetActive(false);
     }
 
-    void Update()
+    private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.O) && !isOpen)
+        if (Input.GetKeyDown(KeyCode.E) && canPlayPuzzle && !isOpen)
         {
-            PuzzleScreen.SetActive(true);
-            isOpen = true;
+            SelectionManager.Instance.puzzleDetected = false;
+            OpenPuzzle();
         }
-        else if (Input.GetKeyDown(KeyCode.O) && isOpen)
+        else if (Input.GetKeyDown(KeyCode.E) && isOpen)
         {
-            PuzzleScreen.SetActive(false);
+            PuzzleScreenOff();
+        }
 
-            isOpen = false;
+        // Timer update
+        if (timerRunning)
+        {
+            currentTime -= Time.deltaTime;
+            timerText.text = Mathf.Ceil(currentTime).ToString("0"); // Display as whole seconds
+
+            if (currentTime <= 0f)
+            {
+                timerRunning = false;
+                PuzzleScreenOff();
+            }
         }
     }
+
+    public void SetCanPlayPuzzle(bool value)
+    {
+        canPlayPuzzle = value;
+    }
+
+    private void OpenPuzzle()
+    {
+        PuzzleScreen.SetActive(true);
+        isOpen = true;
+
+        // Start timer
+        currentTime = puzzleDuration;
+        timerText.gameObject.SetActive(true);
+        timerRunning = true;
+    }
+
+    public void PuzzleScreenOff()
+    {
+        StartCoroutine(ClosePuzzleSequence());
+    }
+
+    IEnumerator ClosePuzzleSequence()
+    {
+        timerRunning = false;
+        timerText.gameObject.SetActive(false);
+
+        // Hide puzzle screen
+        PuzzleScreen.SetActive(false);
+
+        // Reset selections
+        firstSelected = null;
+        secondSelected = null;
+
+        // Optionally, reset cards if you want puzzle to restart
+        foreach (Transform t in gridTransform)
+        {
+            Card c = t.GetComponent<Card>();
+            c.Hide();
+        }
+
+        matchCounts = 0;
+        isOpen = false;
+
+        yield return null;
+    }
+
     private void PrepareSprites()
     {
-        spritePairs = new List<Sprite> ();
+        spritePairs = new List<Sprite>();
         for (int i = 0; i < sprites.Length; i++)
         {
             spritePairs.Add(sprites[i]);
@@ -65,7 +137,7 @@ public class CardsController : MonoBehaviour
         ShuffleSprites(spritePairs);
     }
 
-    void CreateCards()
+    private void CreateCards()
     {
         for (int i = 0; i < spritePairs.Count; i++)
         {
@@ -77,16 +149,17 @@ public class CardsController : MonoBehaviour
 
     public void SetSelected(Card card)
     {
-        if (card.isSelected == false)
+        if (!card.isSelected)
         {
             card.Show();
 
-            if(firstSelected == null)
+            if (firstSelected == null)
             {
                 firstSelected = card;
                 return;
             }
-            if (secondSelected == null) 
+
+            if (secondSelected == null)
             {
                 secondSelected = card;
                 StartCoroutine(CheckMatching(firstSelected, secondSelected));
@@ -99,34 +172,58 @@ public class CardsController : MonoBehaviour
     IEnumerator CheckMatching(Card a, Card b)
     {
         yield return new WaitForSeconds(0.3f);
-        if(a.iconSprite == b.iconSprite)
+        if (a.iconSprite == b.iconSprite)
         {
-            // Matched
             matchCounts++;
             if (matchCounts >= spritePairs.Count / 2)
             {
-                // level complete
-                completePuzzlePopup.SetActive(true);
+                // Puzzle complete
+                PuzzleComplete();
             }
         }
         else
         {
-            // flip back
             a.Hide();
             b.Hide();
         }
     }
 
-    void ShuffleSprites(List<Sprite> spriteList)
+    public void PuzzleComplete()
+    {
+        canPlayPuzzle = false;
+        // Show complete popup
+        completePuzzlePopup.SetActive(true);
+
+        // Spawn the mirror shard at mirror's position and rotation
+        if (mirrorShardPrefab != null && mirror != null)
+        {
+            Instantiate(mirrorShardPrefab, mirror.transform.position, mirror.transform.rotation);
+        }
+
+        // Destroy the mirror
+        if (mirror != null)
+            Destroy(mirror);
+
+        // Close the puzzle screen after 1 second
+        StartCoroutine(CompleteSequence());
+    }
+
+
+    IEnumerator CompleteSequence()
+    {
+        yield return new WaitForSeconds(1f);
+        PuzzleScreenOff();
+        completePuzzlePopup.SetActive(false);
+    }
+
+    private void ShuffleSprites(List<Sprite> spriteList)
     {
         for (int i = spriteList.Count - 1; i > 0; i--)
         {
             int randomIndex = Random.Range(0, i + 1);
-
-            //Swap the element at i and random index
             Sprite temp = spriteList[i];
             spriteList[i] = spriteList[randomIndex];
-            spriteList[randomIndex] = temp; 
+            spriteList[randomIndex] = temp;
         }
     }
 }

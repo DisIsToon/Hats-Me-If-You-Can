@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class PuzzleManagerUI : MonoBehaviour
 {
     public static PuzzleManagerUI Instance { get; set; }
 
     [Header("Cameras")]
-    public Camera mainCamera;      // Your normal gameplay camera
-    public Camera puzzleCamera;    // A special camera aimed at the puzzle
+    public Camera mainCamera;
+    public Camera puzzleCamera;
 
     [Header("Puzzle Parts")]
     public GameObject rotatingPuzzleScreen;
@@ -20,8 +21,15 @@ public class PuzzleManagerUI : MonoBehaviour
     public bool puzzleComplete;
 
     [Header("Fade Setting")]
-    public CanvasGroup fadePanel;   // The black overlay
+    public CanvasGroup fadePanel;
     public float fadeDuration = 0.5f;
+
+    [Header("Puzzle Timer")]
+    public float puzzleTimeLimit = 20f;
+    private Coroutine timerRoutine;
+
+    [Header("Timer UI")]
+    public TMP_Text timerText;     // ⏳ TMP text to show time
 
     private void Awake()
     {
@@ -42,8 +50,10 @@ public class PuzzleManagerUI : MonoBehaviour
         puzzleCamera.enabled = false;
 
         fadePanel.alpha = 0;
-    }
 
+        if (timerText != null)
+            timerText.text = "";
+    }
 
     IEnumerator Fade(float start, float end)
     {
@@ -62,19 +72,17 @@ public class PuzzleManagerUI : MonoBehaviour
     {
         isOpen = true;
 
-        // Fade to black
         yield return StartCoroutine(Fade(0, 1));
 
-        // Switch cameras
         mainCamera.enabled = false;
         puzzleCamera.enabled = true;
 
-        // Fade back in
         yield return StartCoroutine(Fade(1, 0));
 
-        // UI appears
         rotatingPuzzleScreen.SetActive(true);
 
+        // Start puzzle timer
+        timerRoutine = StartCoroutine(PuzzleTimer());
     }
 
     void Update()
@@ -82,9 +90,7 @@ public class PuzzleManagerUI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && canPlayPuzzle && !isOpen)
         {
             SelectionManager.Instance.puzzleDetected = false;
-            mainScreen.SetActive(false);
             StartCoroutine(OpenPuzzleSequence());
- 
         }
         else if (Input.GetKeyDown(KeyCode.E) && isOpen)
         {
@@ -100,24 +106,55 @@ public class PuzzleManagerUI : MonoBehaviour
     public void PuzzleScreenOff()
     {
         mainScreen.SetActive(true);
+
+        if (timerRoutine != null)
+            StopCoroutine(timerRoutine);
+
+        if (timerText != null)
+            timerText.text = "";
+
         StartCoroutine(ClosePuzzleSequence());
     }
 
     IEnumerator ClosePuzzleSequence()
     {
-        // Fade to black
         yield return StartCoroutine(Fade(0, 1));
 
         rotatingPuzzleScreen.SetActive(false);
 
-        // Restore cameras
         puzzleCamera.enabled = false;
         mainCamera.enabled = true;
 
-        // Fade in again
         yield return StartCoroutine(Fade(1, 0));
 
         isOpen = false;
+    }
+
+    // ⏳ TIMER ROUTINE WITH TMP UPDATE
+    IEnumerator PuzzleTimer()
+    {
+        float t = puzzleTimeLimit;
+
+        while (t > 0 && !puzzleComplete)
+        {
+            t -= Time.deltaTime;
+
+            // Update timer UI
+            if (timerText != null)
+            {
+                float display = Mathf.Max(0, t);
+                timerText.text = display.ToString("F1"); // shows one decimal
+            }
+
+            yield return null;
+        }
+
+        // Timer expired
+        if (!puzzleComplete && isOpen)
+        {
+            Debug.Log("⏳ Puzzle time ended!");
+            PuzzleScreenOff();
+        }
     }
 
     public void OnRingSolved(RotatingRingUI ring)
@@ -140,8 +177,16 @@ public class PuzzleManagerUI : MonoBehaviour
         QuestManager.Instance.SetLiraPuzzleComplete();
         completePuzzlePopup.SetActive(true);
         puzzleComplete = true;
+
+        if (timerRoutine != null)
+            StopCoroutine(timerRoutine);
+
+        if (timerText != null)
+            timerText.text = "";
+
         GameTracker.Instance.SetPuzzleComplete(true);
         yield return new WaitForSeconds(1f);
+
         PuzzleScreenOff();
         completePuzzlePopup.SetActive(false);
         rotatingPuzzleScreen.SetActive(false);
@@ -157,7 +202,7 @@ public class PuzzleManagerUI : MonoBehaviour
                 return;
         }
 
-        Debug.Log("✅ All Rings Solved!");
+        Debug.Log("All Rings Solved!");
         StartCoroutine(ShowCompletePuzzlePopup());
     }
 }
