@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Rigidbody))]
 public class EquippableItem : MonoBehaviour
 {
     public Animator animator;
-    public CharacterController characterController; // ✅ Replaced FirstPersonController
+    public CharacterController characterController; // optional for run anims
 
-    public static EquippableItem Instance { get; set; }
+    // internal state
+    bool isEquipped = false;
+    Rigidbody rb;
 
     void Awake()
     {
         animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
     }
 
     void Start()
@@ -21,42 +26,69 @@ public class EquippableItem : MonoBehaviour
         {
             characterController = FindObjectOfType<CharacterController>();
         }
+
+        // When spawned in hand, you usually want it kinematic until thrown
+        if (rb != null)
+        {
+            rb.useGravity = false;
+            rb.isKinematic = true;
+        }
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) //&& // Left Mouse Button
-            //InventorySystem.Instance.isOpen == false &&
-            //CraftingSystem.Instance.isOpen == false &&
-            //QuestManager.Instance.isQuestMenuOpen == false &&
-            //DialogSystem.Instance.dialogUIActive == false &&
-            )
+        // Optional: sync movement anims with player
+        if (characterController != null)
         {
-            //animator.SetTrigger("hit");
+            bool isMoving = characterController.velocity.magnitude > 0.1f;
+            // animator.SetBool("runWithPlayer", isMoving);
         }
 
-        // ✅ Check movement using CharacterController
-        if (characterController != null && characterController.velocity.magnitude > 0.1f)
-        {
-            //animator.SetBool("runWithPlayer", true);
-        }
-        else
-        {
-            //animator.SetBool("runWithPlayer", false);
-        }
+        // 🚫 NO input or throw logic here anymore
     }
 
-    // THIS IS RAYCAST
-    // NEED TO MAKE ONE FOR COLLIDER INSTEAD 
+    public void OnEquip()
+    {
+        isEquipped = true;
+        gameObject.SetActive(true);
+
+        if (rb != null)
+        {
+            rb.useGravity = false;
+            rb.isKinematic = true;   // held in hand, no physics
+        }
+
+        // animator?.SetTrigger("equip");
+    }
+
+    public void OnUnequip()
+    {
+        isEquipped = false;
+
+        if (rb != null)
+        {
+            rb.useGravity = false;
+            rb.isKinematic = true;
+        }
+
+        // animator?.SetTrigger("unequip");
+        gameObject.SetActive(false);
+    }
+
+    public void OnThrow()
+    {
+        // just animation hook
+        // animator?.SetTrigger("throw");
+    }
+
     public void GetHit()
     {
-
+        // handle damage/hit here if needed
     }
 
     IEnumerator SwingSoundDelay()
     {
         yield return new WaitForSeconds(0.1f);
-
         SoundManager.Instance.PlaySound(SoundManager.Instance.axeSwingSound);
     }
 }

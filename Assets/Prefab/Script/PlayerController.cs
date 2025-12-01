@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
 /// <summary>
 /// Rigidbody-based character with sprint, crouch, double jump, stamina,
-/// and item holding / aiming / throwing with arc preview & landing marker.
-/// Includes High Arc (Lob) mode toggle for taller, longer throws.
+/// NPC interaction, and data persistence.
+/// Throwing / item logic has been moved to the separate `Throw` component.
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
@@ -55,41 +53,9 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     public bool shouldFaceMoveDirection = true;
     #endregion
 
-    #region Inspector - Item & Throw
-    [Header("Item Holding & Throwing")]
-    public Transform handPosition;
-    public GameObject itemPrefab;
-    public float throwForce = 10f;
-    [Range(0f, 60f)]
-    [Tooltip("Default elevation angle (degrees) applied to planar forward for normal throws.")]
-    public float throwElevationAngle = 18f;
-
-    public Vector3 normalHoldOffset = Vector3.zero;
-    public Vector3 aimHoldOffset = new Vector3(0f, 0.1f, 0.4f);
-    public float aimSmoothSpeed = 10f;
-
-    [Header("Throw Arc Settings")]
-    public LayerMask arcCollisionMask;
-    public int arcResolution = 60;         // up from 30 for longer arcs
-    public float arcTimeStep = 0.04f;      // smaller step for smoother curve
-    public float lineWidth = 0.05f;
-
-    [Header("Landing Marker")]
-    public GameObject landingMarkerPrefab; // optional
-    public float landingMarkerScale = 0.25f;
-
-    [Header("High Arc / Lob Mode")]
-    public bool enableHighArc = true;
-    public KeyCode toggleHighArcKey = KeyCode.V;   // press V to toggle
-    [Range(0f, 80f)] public float lobElevationAngle = 38f;
-    public float lobForceMultiplier = 1.4f;        // extra oomph in lob mode
-    #endregion
-
     #region Private Cached
     Rigidbody rb;
     CapsuleCollider col;
-    LineRenderer arcRenderer;
-    GameObject landingMarker;
     #endregion
 
     #region Private State
@@ -104,14 +70,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     float currentStamina;
     float lastGroundedTime;
 
-    bool isAiming;
     bool isHidden;
-
-    bool isHighArc = false; // current toggle state
-
-    GameObject heldItem;
-    Rigidbody heldRb;
-    Collider heldCol;
     #endregion
 
     #region Unity - Init
@@ -123,33 +82,6 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
 
         originalHeight = col.height;
         originalCenter = col.center;
-
-        // Spawn held item
-        if (itemPrefab && handPosition)
-        {
-            heldItem = Instantiate(itemPrefab, handPosition);
-            heldItem.transform.localPosition = normalHoldOffset;
-            heldItem.transform.localRotation = Quaternion.identity;
-
-            heldRb = heldItem.GetComponent<Rigidbody>();
-            heldCol = heldItem.GetComponent<Collider>();
-
-            if (heldRb) heldRb.isKinematic = true;
-            if (heldCol) heldCol.enabled = false;
-        }
-
-        // Arc Renderer
-        arcRenderer = gameObject.AddComponent<LineRenderer>();
-        arcRenderer.positionCount = arcResolution;
-        arcRenderer.startWidth = arcRenderer.endWidth = lineWidth;
-        arcRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        arcRenderer.material.color = Color.white;
-        arcRenderer.enabled = false;
-
-        // Landing marker
-        landingMarker = landingMarkerPrefab ? Instantiate(landingMarkerPrefab)
-                                            : CreateDefaultLandingMarker();
-        landingMarker.SetActive(false);
     }
     #endregion
 
@@ -174,12 +106,6 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         HandleFallBoost();
         HandleStamina();
 
-        // Toggle high-arc (lob) mode
-        if (enableHighArc && Input.GetKeyDown(toggleHighArcKey))
-        {
-            isHighArc = !isHighArc;
-        }
-
         // --- Animator movement speed (with dead-zone + scaling) ---
         if (animator)
         {
@@ -194,44 +120,6 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
             s *= speedMultiplier;
 
             animator.SetFloat(speedParam, s);
-            // Debug.Log($"Speed sent: {s}");
-        }
-
-        // Aiming & item offset
-        isAiming = Input.GetMouseButton(1);
-        if (heldItem)
-        {
-            Vector3 targetOffset = isAiming ? aimHoldOffset : normalHoldOffset;
-            heldItem.transform.localPosition = Vector3.Lerp(
-                heldItem.transform.localPosition, targetOffset, Time.deltaTime * aimSmoothSpeed);
-        }
-
-        // Arc preview
-        if (isAiming && heldItem)
-        {
-            arcRenderer.enabled = true;
-            DrawThrowArcAndMarker();
-        }
-        else
-        {
-            arcRenderer.enabled = false;
-            if (landingMarker) landingMarker.SetActive(false);
-        }
-
-        // Throw (respecting UI gates)
-        if (Input.GetMouseButtonDown(0) &&
-            heldItem &&
-            DialogSystem.Instance.dialogUIActive == false &&
-            CraftingSystem.Instance.isOpen == false &&
-            InventorySystem.Instance.isOpen == false &&
-            QuestManager.Instance.isQuestMenuOpen == false &&
-            CardsController.Instance.isOpen == false &&
-            PuzzleManagerUI.Instance.isOpen == false &&
-            (currentInteractingNPC == null || currentInteractingNPC.isTalkingWithPlayer == false) &&
-            Notes.Instance.activeNote == false &&
-            NewHatalougeManager.Instance.isOpen == false)
-        {
-            ThrowHeldItem();
         }
     }
 
@@ -326,127 +214,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     }
     #endregion
 
-    #region Throw + Arc
-    void ThrowHeldItem()
-    {
-        if (!heldItem || !heldRb) return;
-
-        // Detach & enable physics
-        heldItem.transform.SetParent(null);
-        heldRb.isKinematic = false;
-        heldRb.useGravity = true;
-        if (heldCol) heldCol.enabled = true;
-
-        float force = GetCurrentThrowForce();
-        Vector3 throwDir = GetThrowDirection();
-        heldRb.AddForce(throwDir * force, ForceMode.Impulse);
-
-        // Clear state & visuals
-        heldItem = null;
-        heldRb = null;
-        heldCol = null;
-        arcRenderer.enabled = false;
-        if (landingMarker) landingMarker.SetActive(false);
-    }
-
-    float GetCurrentThrowForce()
-    {
-        float f = isAiming ? throwForce * 1.2f : throwForce;
-        if (isHighArc) f *= lobForceMultiplier;
-        return f;
-    }
-
-    Vector3 GetThrowDirection()
-    {
-        // Use planar forward so camera pitch doesn't force downward throws
-        Vector3 planarForward = cameraTransform
-            ? Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up).normalized
-            : Vector3.ProjectOnPlane(transform.forward, Vector3.up).normalized;
-
-        Vector3 right = cameraTransform ? cameraTransform.right : transform.right;
-
-        // Pick elevation based on current mode
-        float elevation = isHighArc ? lobElevationAngle : throwElevationAngle;
-        Vector3 dir = Quaternion.AngleAxis(elevation, right) * planarForward;
-
-        // Ensure a minimum upward pitch so it always arcs up first
-        const float minPitchDeg = 10f; // a bit higher to reinforce "high"
-        float minY = Mathf.Sin(minPitchDeg * Mathf.Deg2Rad);
-        if (dir.y < minY) dir.y = minY;
-
-        return dir.normalized;
-    }
-
-    void DrawThrowArcAndMarker()
-    {
-        if (!heldItem || !handPosition) return;
-
-        Vector3 startPos = handPosition.position + (transform.forward * 0.08f);
-        float force = GetCurrentThrowForce();
-
-        Vector3 throwDir = GetThrowDirection();
-        Vector3 startVel = throwDir * force;
-
-        Vector3[] points = new Vector3[arcResolution];
-        bool hitFound = false;
-        RaycastHit hitInfo = default;
-
-        Vector3 lastPoint = startPos;
-        for (int i = 0; i < arcResolution; i++)
-        {
-            float t = i * arcTimeStep;
-            Vector3 point = startPos + startVel * t + 0.5f * Physics.gravity * (t * t);
-            points[i] = point;
-
-            if (i > 0)
-            {
-                if (Physics.Linecast(lastPoint, point, out RaycastHit hit, arcCollisionMask, QueryTriggerInteraction.Ignore))
-                {
-                    points[i] = hit.point;
-                    for (int j = i + 1; j < arcResolution; j++) points[j] = hit.point;
-                    hitFound = true;
-                    hitInfo = hit;
-                    break;
-                }
-            }
-            lastPoint = point;
-        }
-
-        arcRenderer.positionCount = arcResolution;
-        arcRenderer.SetPositions(points);
-
-        if (landingMarker)
-        {
-            landingMarker.SetActive(hitFound);
-            if (hitFound)
-            {
-                landingMarker.transform.position = hitInfo.point + hitInfo.normal * 0.01f;
-                landingMarker.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
-            }
-        }
-    }
-    #endregion
-
     #region Utils
-    GameObject CreateDefaultLandingMarker()
-    {
-        GameObject ring = new GameObject("LandingMarker_Auto");
-        var lr = ring.AddComponent<LineRenderer>();
-        lr.loop = true;
-        lr.widthMultiplier = 0.02f;
-        lr.material = new Material(Shader.Find("Sprites/Default"));
-        lr.material.color = new Color(1, 1, 1, 0.9f);
-        int segs = 40;
-        lr.positionCount = segs;
-        float r = landingMarkerScale;
-        for (int i = 0; i < segs; i++)
-        {
-            float a = (i / (float)segs) * Mathf.PI * 2f;
-            lr.SetPosition(i, new Vector3(Mathf.Cos(a) * r, 0, Mathf.Sin(a) * r));
-        }
-        return ring;
-    }
-
     public bool IsCrouching() => isCrouching;
 
     public void SetHidden(bool hidden)
