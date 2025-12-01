@@ -21,8 +21,6 @@ public class DialogSystem : MonoBehaviour
 
     public bool dialogUIActive;
 
-    public GameObject MainScreen;
-
     public GameObject liraImage;
     public GameObject mallowImage;
     public GameObject tulipImage;
@@ -81,7 +79,6 @@ public class DialogSystem : MonoBehaviour
 
     public void OpenDialogUI()
     {
-        MainScreen.SetActive(false);
         dialogUI.gameObject.SetActive(true);
         dialogUIActive = true;
         
@@ -92,7 +89,6 @@ public class DialogSystem : MonoBehaviour
     public void CloseDialogUI()
     {
         
-        MainScreen.SetActive(true);
         dialogUI.gameObject.SetActive(false);
         dialogUIActive = false;
         HideAllPortraits();

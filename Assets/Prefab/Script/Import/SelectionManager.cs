@@ -10,6 +10,9 @@ public class SelectionManager : MonoBehaviour
     public static SelectionManager Instance { get;set;}
     public bool onTarget;
 
+    public GameObject mainScreen;
+    public GameObject inventoryButton;
+    public GameObject quickslotUI;
     public GameObject selectedObject;
     public GameObject interaction_Info_UI;
     public GameObject helpPickUpDetectUI;
@@ -64,6 +67,8 @@ public class SelectionManager : MonoBehaviour
  
     void Update()
     {
+        anyNpcTalking = NPC.allNPCs.Exists(n => n.isTalkingWithPlayer);
+
         foreach (var npc in NPC.allNPCs)
         {
             if (npc.isTalkingWithPlayer)
@@ -88,9 +93,8 @@ public class SelectionManager : MonoBehaviour
         if (NewHatalougeManager.Instance == null)
             Debug.LogWarning("HatalougeManager.Instance is NULL!");
 
-        /*if (DialogSystem.Instance.dialogUIActive == true ||
+        if (DialogSystem.Instance.dialogUIActive == true ||
             CraftingSystem.Instance.isOpen == true ||
-            InventorySystem.Instance.isOpen == true ||
             QuestManager.Instance.isQuestMenuOpen == true ||
             PuzzleManagerUI.Instance.isOpen == true ||
             CardsController.Instance.isOpen == true ||
@@ -98,10 +102,27 @@ public class SelectionManager : MonoBehaviour
             Notes.Instance.activeNote == true ||
             NewHatalougeManager.Instance.isOpen == true)
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            //Cursor.lockState = CursorLockMode.None;
+            //Cursor.visible = true;
+            mainScreen.SetActive(false);
+            inventoryButton.SetActive(false);
+            quickslotUI.SetActive(false);
+
         }
-        */
+        else
+        {
+            //Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            
+            quickslotUI.SetActive(true);
+            if(InventorySystem.Instance.isOpen==false)
+            {
+                inventoryButton.SetActive(true);
+                mainScreen.SetActive(true);
+            }
+
+        }
+
         // Item
         if (pickableItemDetected == true)
         {

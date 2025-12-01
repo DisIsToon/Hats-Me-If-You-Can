@@ -10,7 +10,6 @@ public class NPC : MonoBehaviour
     [Header("References")]
     public GameObject pressFUI;   
     public GameObject dialogUI;   
-    public GameObject MainScreen;
 
     [Header("NPC Name")]
     public string npcName;   
@@ -423,18 +422,29 @@ public class NPC : MonoBehaviour
         if (other.CompareTag("Player"))
             playerInRange = true;
     }
-
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (!other.CompareTag("Player")) return;
+
+        playerInRange = false;
+        isTalkingWithPlayer = false;
+
+        if (pressFUI != null)
+            pressFUI.SetActive(false);
+
+        // Close the real dialog UI
+        if (DialogSystem.Instance != null)
         {
+            DialogSystem.Instance.CloseDialogUI();
             DialogSystem.Instance.HideAllPortraits();
-            playerInRange = false;
-            MainScreen.SetActive(true);
-            if (pressFUI != null) pressFUI.SetActive(false);
-            isTalkingWithPlayer = false;
-            if (dialogUI != null && dialogUI.activeSelf)
-                dialogUI.SetActive(false);
+        }
+
+        // Reset SelectionManager NPC detection
+        if (SelectionManager.Instance != null)
+        {
+            SelectionManager.Instance.interactableNpcDetected = false;
+            SelectionManager.Instance.currentDetectedNPC = null;
         }
     }
+
 }
