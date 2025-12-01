@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,8 +15,7 @@ public class InteractableObject : MonoBehaviour
 
     void Update()
     {
-        // CHANGE INPUT INTO MOUSE CLICK FOR 1ST POV
-        if ((Input.GetKeyDown(KeyCode.E) && playerInRange && canBePickedUp && !isPickingUp))
+        if (Input.GetKeyDown(KeyCode.E) && playerInRange && canBePickedUp && !isPickingUp)
         {
             StartCoroutine(PickupItem());
         }
@@ -27,24 +26,27 @@ public class InteractableObject : MonoBehaviour
 
         isPickingUp = true;
 
-        // If inventory is NOT full, then pick up the item
+        // Always go to inventory now
         if (InventorySystem.Instance.CheckSlotsAvailable(1))
         {
             NotifUIManager.Instance.NotifyItemPicked(ItemName);
             //SoundManager.Instance.PlaySound(SoundManager.Instance.pickUpSound);
             InventorySystem.Instance.AddToInventory(ItemName);
 
-            // Delay before destroying the item to ensure pickup process is completed
+            // Optional pickup sound here
+            // SoundManager.Instance.PlaySound(SoundManager.Instance.pickUpSound);
+
+            // Small delay for safety
             yield return new WaitForSeconds(0.1f);
 
-            SelectionManager.Instance.pickableItemDetected = false;
+            if (SelectionManager.Instance != null)
+                SelectionManager.Instance.pickableItemDetected = false;
+
             Destroy(gameObject);
         }
         else
         {
             Debug.Log("Inventory is full");
-
-            // Reset the flag if the inventory is full
             isPickingUp = false;
         }
     }
@@ -76,8 +78,6 @@ public class InteractableObject : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Ensure the flag is reset when the item is destroyed
         isPickingUp = false;
     }
-    
 }

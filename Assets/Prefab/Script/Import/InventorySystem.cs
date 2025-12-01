@@ -8,7 +8,6 @@ using TMPro;
 public class InventorySystem : MonoBehaviour
 {
     public GameObject ItemInfoUI;
-    public GameObject MainScreen;
 
     public GameObject CraftingItemInfoUI;
     public static InventorySystem Instance { get; set; }
@@ -68,7 +67,6 @@ public class InventorySystem : MonoBehaviour
 
     }
 
-
     private void PopulateSlotList()
     {
         foreach(Transform child in inventoryScreenUI.transform)
@@ -90,6 +88,11 @@ public class InventorySystem : MonoBehaviour
 			Debug.Log("i is pressed");
             inventoryScreenUI.SetActive(true);
 
+        
+
+            //SelectionManager.Instance.DisableSelection();
+            //SelectionManager.Instance.GetComponent<SelectionManager>().enabled = false;
+
             isOpen = true;
  
         }
@@ -97,24 +100,11 @@ public class InventorySystem : MonoBehaviour
         {
             inventoryScreenUI.SetActive(false);
 
+           
+
             isOpen = false;
         }
     }
-
-    // ---------------------------------------------------------
-    // Journal open / close
-    // ---------------------------------------------------------
-    public void OpenInventory()
-    {
-        if ( !isOpen)
-        {
-            inventoryScreenUI.SetActive(true);
-
-            isOpen = true;
-
-        }
-    }
-
 
     public void AddToInventory(string itemName)
     {
