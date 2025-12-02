@@ -21,6 +21,7 @@ public class PuzzleTrigger2 : MonoBehaviour
             if (CardsController.Instance != null)
             {
                 CardsController.Instance.SetCanPlayPuzzle(false);
+                CardsController.Instance.PuzzleScreenOff();
             }
 
         }

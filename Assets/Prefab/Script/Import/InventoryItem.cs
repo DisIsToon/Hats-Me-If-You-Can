@@ -136,7 +136,6 @@ public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         {
             if (isConsumable)
             {
-                SoundManager.Instance.PlaySound(SoundManager.Instance.eatingSound);
                 itemPendingConsumption = gameObject;
             }
 

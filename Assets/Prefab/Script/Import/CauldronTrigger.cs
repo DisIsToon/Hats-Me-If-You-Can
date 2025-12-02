@@ -17,6 +17,7 @@ public class CauldronTrigger : MonoBehaviour
         {
             if (CraftingSystem.Instance != null)
                 CraftingSystem.Instance.SetCanCraft(false);
+            CraftingSystem.Instance.CraftingScreenOff();
         }
     }
 }

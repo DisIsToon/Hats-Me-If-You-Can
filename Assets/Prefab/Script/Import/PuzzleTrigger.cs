@@ -21,8 +21,8 @@ public class PuzzleTrigger : MonoBehaviour
             if (PuzzleManagerUI.Instance != null)
             {
                 PuzzleManagerUI.Instance.SetCanPlayPuzzle(false);
+                PuzzleManagerUI.Instance.PuzzleScreenOff();
             }
-
         }
     }
 }

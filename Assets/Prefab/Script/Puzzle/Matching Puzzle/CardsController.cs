@@ -87,6 +87,7 @@ public class CardsController : MonoBehaviour
 
     private void OpenPuzzle()
     {
+        SoundManager.Instance.PlayPuzzleMusic();
         PuzzleScreen.SetActive(true);
         isOpen = true;
 
@@ -103,6 +104,7 @@ public class CardsController : MonoBehaviour
 
     IEnumerator ClosePuzzleSequence()
     {
+        SoundManager.Instance.ReturnToBiomeMusic();
         timerRunning = false;
         timerText.gameObject.SetActive(false);
 

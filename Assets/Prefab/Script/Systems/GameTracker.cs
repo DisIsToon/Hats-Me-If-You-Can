@@ -139,8 +139,9 @@ public class GameTracker : MonoBehaviour
             Debug.Log("Player entered Forest!");
             NewHatalougeManager.Instance.ReachForest();
 
-            if (!springGardenNotified)   // <-- only once
+            if (!springGardenNotified)
             {
+                SoundManager.Instance.SwitchBiomeMusic("Forest");
                 springGardenNotified = true;
                 NotifUIManager.Instance.NotifyBiomeDiscovered("Spring Garden");
             }
@@ -150,8 +151,11 @@ public class GameTracker : MonoBehaviour
             Debug.Log("Player entered Castle!");
             NewHatalougeManager.Instance.ReachCastle();
 
-            if (!castleRuinNotified)     // <-- only once
+            
+
+            if (!castleRuinNotified)
             {
+                SoundManager.Instance.SwitchBiomeMusic("CastleRuin");
                 castleRuinNotified = true;
                 NotifUIManager.Instance.NotifyBiomeDiscovered("Castle Ruin");
             }
@@ -161,13 +165,17 @@ public class GameTracker : MonoBehaviour
             Debug.Log("Player entered Winter!");
             NewHatalougeManager.Instance.ReachWinter();
 
-            if (!winterBiomeNotified)    // <-- only once
+            
+
+            if (!winterBiomeNotified)
             {
+                SoundManager.Instance.SwitchBiomeMusic("Winter");
                 winterBiomeNotified = true;
                 NotifUIManager.Instance.NotifyBiomeDiscovered("Winter Biome");
             }
         }
     }
+
 
     // --- Unlock a potion ---
     public void UnlockPotion(string potionName)

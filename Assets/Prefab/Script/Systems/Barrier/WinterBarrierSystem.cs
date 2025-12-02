@@ -110,6 +110,7 @@ public class WinterBarrierSystem : MonoBehaviour
         if (clickerGame != null)
         {
             clickerGame.BarrierGameScreen = barrierGameScreen;
+            SoundManager.Instance.PlayPuzzleMusic();
             clickerGame.StartGame(); // <---- Start the mini-game
             StartCoroutine(WaitForVictory());
         }
@@ -126,6 +127,7 @@ public class WinterBarrierSystem : MonoBehaviour
         // When ended, check if victory
         if (clickerGame.victoryScreen.activeSelf)
         {
+            SoundManager.Instance.ReturnToBiomeMusic();
             NotifUIManager.Instance.NotifyBarrierComplete();
             // Disable barrier visuals and collision
             if (boxCollider) boxCollider.enabled = false;

@@ -131,6 +131,9 @@ public class CraftingSystem : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E) && canCraft && !isOpen)
         {
+            // SOUND
+            SoundManager.Instance.PlayBrewingMusic();
+
             SelectionManager.Instance.cauldronDetected = false;
             RefreshNeededItem();
             craftingScreenUI.SetActive(true);
@@ -146,20 +149,9 @@ public class CraftingSystem : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.E) && isOpen)
         {
-            RefreshNeededItem();
-            craftingScreenUI.SetActive(false);
-            inventoryScreenUI.SetActive(false);
-        
-            if(!InventorySystem.Instance.isOpen)
-            {
-                //Cursor.lockState = CursorLockMode.Locked;
-                //Cursor.visible = false;
 
-                //SelectionManager.Instance.EnableSelection();
-                //SelectionManager.Instance.GetComponent<SelectionManager>().enabled = true;
-            }
-        
-            isOpen = false;
+
+            CraftingScreenOff();
         }
     }
     public void SetCanCraft(bool value)
@@ -169,6 +161,9 @@ public class CraftingSystem : MonoBehaviour
 
     public void CraftingScreenOff()
     {
+        //SOUND
+        SoundManager.Instance.ReturnToBiomeMusic();
+
         RefreshNeededItem();
         craftingScreenUI.SetActive(false);
         inventoryScreenUI.SetActive(false);

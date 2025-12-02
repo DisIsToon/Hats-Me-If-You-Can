@@ -89,6 +89,5 @@ public class EquippableItem : MonoBehaviour
     IEnumerator SwingSoundDelay()
     {
         yield return new WaitForSeconds(0.1f);
-        SoundManager.Instance.PlaySound(SoundManager.Instance.axeSwingSound);
     }
 }

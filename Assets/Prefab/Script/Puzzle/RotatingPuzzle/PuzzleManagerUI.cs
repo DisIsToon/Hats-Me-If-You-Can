@@ -70,6 +70,8 @@ public class PuzzleManagerUI : MonoBehaviour
 
     IEnumerator OpenPuzzleSequence()
     {
+        SoundManager.Instance.PlayPuzzleMusic();
+
         isOpen = true;
 
         yield return StartCoroutine(Fade(0, 1));
@@ -105,6 +107,8 @@ public class PuzzleManagerUI : MonoBehaviour
 
     public void PuzzleScreenOff()
     {
+        SoundManager.Instance.ReturnToBiomeMusic();
+
         mainScreen.SetActive(true);
 
         if (timerRoutine != null)
