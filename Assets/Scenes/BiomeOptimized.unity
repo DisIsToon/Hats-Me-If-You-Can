@@ -7296,6 +7296,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 96607901}
   m_CullTransparentMesh: 1
+--- !u!84 &97465288
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 512
+  m_Height: 512
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 4
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 1
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &97544883
 GameObject:
   m_ObjectHideFlags: 0
@@ -25033,7 +25070,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 1
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 329819918}
+  m_TargetTexture: {fileID: 97465288}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -25105,7 +25142,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 50.01651, y: 80, z: 50.03177}
-  m_LocalScale: {x: 1, y: 1.0003512, z: 1.0003512}
+  m_LocalScale: {x: 1, y: 1.0003569, z: 1.0003569}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2135604116}
@@ -26040,43 +26077,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 328996808}
   m_CullTransparentMesh: 1
---- !u!84 &329819918
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 512
-  m_Height: 512
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 4
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &330090418
 GameObject:
   m_ObjectHideFlags: 0
@@ -27054,7 +27054,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 342865183}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 477663872}
+        m_TargetAssemblyTypeName: PauseManager, Assembly-CSharp
+        m_MethodName: OnResumeButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &342865183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30759,6 +30771,58 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 769415023}
   m_SourcePrefab: {fileID: 100100000, guid: 7066f006074ae4d40879f44b3b4f6cf4, type: 3}
+--- !u!1 &373365765
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 373365766}
+  - component: {fileID: 373365767}
+  m_Layer: 0
+  m_Name: CasteRuinBarrier
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &373365766
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373365765}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1624911934}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &373365767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373365765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56587a721bf278a4e97e4e2e98c10d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barrierObject: {fileID: 873775659}
+  messageObject: {fileID: 1898347223}
+  messageObject2: {fileID: 1649285689}
+  fadeDuration: 1
+  showTime: 2
+  barrierGameScreen: {fileID: 1244916714}
+  clickerGame: {fileID: 1938147696}
+  CRBarrierAlreadyOpened: 0
 --- !u!1 &373692359
 GameObject:
   m_ObjectHideFlags: 0
@@ -31041,6 +31105,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -5790593718672215946, guid: 14e4ea3e716eed942903c6561669d922, type: 3}
+--- !u!4 &375110098 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5904770320325028584, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+  m_PrefabInstance: {fileID: 1277643285}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &375986073 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 83b2e3a6f201ff24c80aadb62e1f07f5, type: 3}
@@ -41112,6 +41181,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pauseScreenUI: {fileID: 1878496516}
   isOpen: 0
+  data:
+    shyHatAlreadyCaptured: 0
+    fastHatAlreadyCaptured: 0
+    jumpHatAlreadyCaptured: 0
+    CRBarrierAlreadyOpened: 0
+    WBBarrierAlreadyOpened: 0
+    mirrorClaimed: 0
+    questAlreadyCompleteLira: 0
+    questAlreadyCompleteMallow: 0
+    questAlreadyCompleteTulip: 0
+    castleRuinAlreadyDiscovered: 0
+    winterBiomeAlreadyDiscovered: 0
+    springGardenAlreadyDiscovered: 0
+    lastUpdated: 0
+    playTime: 0
+    playerPosition: {x: 16, y: -0.8, z: -2}
+    potionsCollected:
+      keys: []
+      values: 
 --- !u!1 &477701775
 GameObject:
   m_ObjectHideFlags: 0
@@ -67213,7 +67301,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 786754208}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &786754208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79263,7 +79363,7 @@ GameObject:
   - component: {fileID: 873775662}
   - component: {fileID: 873775661}
   - component: {fileID: 873775660}
-  - component: {fileID: 873775663}
+  - component: {fileID: 873775665}
   - component: {fileID: 873775664}
   m_Layer: 0
   m_Name: Portal Snow
@@ -79340,24 +79440,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 87470548}
   m_LocalEulerAnglesHint: {x: 87, y: 227.99, z: 0}
---- !u!114 &873775663
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 873775659}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56587a721bf278a4e97e4e2e98c10d48, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  messageObject: {fileID: 1898347223}
-  messageObject2: {fileID: 1649285689}
-  fadeDuration: 1
-  showTime: 2
-  barrierGameScreen: {fileID: 1244916714}
-  clickerGame: {fileID: 1938147696}
 --- !u!65 &873775664
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -79379,6 +79461,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.19, y: 0.98, z: 10}
   m_Center: {x: 0, y: 0.0000038146973, z: -0.00000011920929}
+--- !u!114 &873775665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 873775659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68199ab88c71c1d4b89172af230a63c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &873855361
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -94787,17 +94881,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1082515691}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56587a721bf278a4e97e4e2e98c10d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  barrierObject: {fileID: 0}
   messageObject: {fileID: 0}
   messageObject2: {fileID: 0}
   fadeDuration: 1
   showTime: 2
   barrierGameScreen: {fileID: 0}
   clickerGame: {fileID: 0}
+  CRBarrierAlreadyOpened: 0
 --- !u!1 &1082773204
 GameObject:
   m_ObjectHideFlags: 0
@@ -101247,6 +101343,15 @@ MonoBehaviour:
   mirrorPotionUnlocked: 0
   starPotionUnlocked: 0
   herbPotionUnlocked: 0
+  shyHatAlreadyCaptured: 0
+  fastHatAlreadyCaptured: 0
+  jumpHatAlreadyCaptured: 0
+  questAlreadyCompleteLira: 0
+  questAlreadyCompleteMallow: 0
+  questAlreadyCompleteTulip: 0
+  castleRuinAlreadyDiscovered: 0
+  winterBiomeAlreadyDiscovered: 0
+  springGardenAlreadyDiscovered: 0
 --- !u!1 &1191926255
 GameObject:
   m_ObjectHideFlags: 0
@@ -102000,7 +102105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1201944405
 Transform:
   m_ObjectHideFlags: 0
@@ -104902,7 +105007,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1242069538}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 477663872}
+        m_TargetAssemblyTypeName: PauseManager, Assembly-CSharp
+        m_MethodName: OnMainMenuButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1242069538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107017,6 +107134,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5fe989d2aa92b064791215bf92352d60, type: 3}
+--- !u!1001 &1277643285
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 666107846}
+    m_Modifications:
+    - target: {fileID: 4763973794680391652, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+      propertyPath: m_Name
+      value: DataPersistenceManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904770320325028584, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.155178
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904770320325028584, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.41238
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904770320325028584, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 17.167538
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904770320325028584, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904770320325028584, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904770320325028584, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904770320325028584, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904770320325028584, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904770320325028584, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5904770320325028584, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 65d0be62eb793a1438e44aa8f59b4119, type: 3}
 --- !u!1001 &1280782577
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -113294,6 +113468,58 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1340598690}
   m_CullTransparentMesh: 1
+--- !u!1 &1343732688
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1343732689}
+  - component: {fileID: 1343732690}
+  m_Layer: 0
+  m_Name: WinterBiomeBarrier
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1343732689
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1343732688}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1624911934}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1343732690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1343732688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f45ce8ede7fcb43b81016d2806902c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barrierObject: {fileID: 1450536629}
+  messageObject: {fileID: 1898347223}
+  messageObject2: {fileID: 1649285689}
+  fadeDuration: 1
+  showTime: 2
+  barrierGameScreen: {fileID: 1823918589}
+  clickerGame: {fileID: 1142174073}
+  WBBarrierAlreadyOpened: 0
 --- !u!1001 &1343927321
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -121700,14 +121926,14 @@ GameObject:
   - component: {fileID: 1450536631}
   - component: {fileID: 1450536630}
   - component: {fileID: 1450536633}
-  - component: {fileID: 1450536634}
+  - component: {fileID: 1450536635}
   m_Layer: 0
   m_Name: Portal Castle Ruins
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &1450536630
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -121797,7 +122023,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 12.8, y: 0.58, z: 12.36}
   m_Center: {x: -0.0000076293945, y: 0, z: -0.0000009536743}
---- !u!114 &1450536634
+--- !u!114 &1450536635
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121806,15 +122032,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1450536629}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7f45ce8ede7fcb43b81016d2806902c, type: 3}
+  m_Script: {fileID: 11500000, guid: 603dad8ff72c88f48a32cd9462dc130e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  messageObject: {fileID: 1898347223}
-  messageObject2: {fileID: 1649285689}
-  fadeDuration: 1
-  showTime: 1.5
-  barrierGameScreen: {fileID: 1823918589}
-  clickerGame: {fileID: 1142174073}
 --- !u!1 &1451557500
 GameObject:
   m_ObjectHideFlags: 0
@@ -138615,7 +138835,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1621782829}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 477663872}
+        m_TargetAssemblyTypeName: PauseManager, Assembly-CSharp
+        m_MethodName: OnSaveButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1621782829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138768,6 +139000,39 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -4630537658202595969, guid: c3ec285856c2b8844b60c9c01fd4fcf8, type: 3}
+--- !u!1 &1624911933
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1624911934}
+  m_Layer: 0
+  m_Name: BarrierManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1624911934
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1624911933}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 373365766}
+  - {fileID: 1343732689}
+  m_Father: {fileID: 666107846}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1625233046
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -143987,7 +144252,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1695379037}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 477663872}
+        m_TargetAssemblyTypeName: PauseManager, Assembly-CSharp
+        m_MethodName: OnLoadButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1695379037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146245,6 +146522,10 @@ PrefabInstance:
       propertyPath: 'slotList.Array.data[8]'
       value: 
       objectReference: {fileID: 1823169358}
+    - target: {fileID: 5418017023077327644, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5915350191986695218, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -146661,8 +146942,14 @@ PrefabInstance:
     - {fileID: 2972714120437846693, guid: affd2c763e2186144aeb379980eab745, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6569808547020285297, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      insertIndex: 0
+      addedObject: {fileID: 375110098}
+    - targetCorrespondingSourceObject: {fileID: 6569808547020285297, guid: affd2c763e2186144aeb379980eab745, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1780426737}
+    - targetCorrespondingSourceObject: {fileID: 6569808547020285297, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1624911934}
     - targetCorrespondingSourceObject: {fileID: 6569808547020285297, guid: affd2c763e2186144aeb379980eab745, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1191746248}
@@ -150857,12 +151144,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1780426737}
   m_Layer: 0
-  m_Name: Barrier
+  m_Name: ClickerBarrierGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1780426737
 Transform:
   m_ObjectHideFlags: 0

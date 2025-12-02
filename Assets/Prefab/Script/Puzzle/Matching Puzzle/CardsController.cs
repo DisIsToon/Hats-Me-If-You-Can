@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class CardsController : MonoBehaviour
+public class CardsController : MonoBehaviour, IDataPersistence
 {
     public static CardsController Instance { get; set; }
 
@@ -34,6 +34,8 @@ public class CardsController : MonoBehaviour
     Card secondSelected;
     int matchCounts;
 
+    public bool mirrorClaimed;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -45,6 +47,24 @@ public class CardsController : MonoBehaviour
             Instance = this;
         }
     }
+
+    public void LoadData(GameData data)
+    {
+        this.mirrorClaimed = data.mirrorClaimed;
+
+        if (mirrorClaimed)
+        {
+            // Destroy the mirror
+            if (mirror != null)
+                Destroy(mirror);
+        }
+    }
+
+    public void SaveData(GameData data)
+    {
+        data.mirrorClaimed = this.mirrorClaimed;
+    }
+
 
     private void Start()
     {

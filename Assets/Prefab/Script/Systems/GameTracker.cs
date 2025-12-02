@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class GameTracker : MonoBehaviour
+public class GameTracker : MonoBehaviour, IDataPersistence
 {
     public static GameTracker Instance { get; set; }
 
@@ -44,6 +44,19 @@ public class GameTracker : MonoBehaviour
     public bool starPotionUnlocked = false;
     public bool herbPotionUnlocked = false;
 
+    [Header("FROM SAVE SYSTEM")]
+    public bool shyHatAlreadyCaptured;
+    public bool fastHatAlreadyCaptured;
+    public bool jumpHatAlreadyCaptured;
+
+    public bool questAlreadyCompleteLira;
+    public bool questAlreadyCompleteMallow;
+    public bool questAlreadyCompleteTulip;
+
+    public bool castleRuinAlreadyDiscovered;
+    public bool winterBiomeAlreadyDiscovered;
+    public bool springGardenAlreadyDiscovered;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -54,6 +67,109 @@ public class GameTracker : MonoBehaviour
         {
             Instance = this;
         }
+    }
+
+    public void LoadData(GameData data)
+    {
+        // ----- LOAD RAW BOOLS -----
+        this.shyHatAlreadyCaptured = data.shyHatAlreadyCaptured;
+        this.fastHatAlreadyCaptured = data.fastHatAlreadyCaptured;
+        this.jumpHatAlreadyCaptured = data.jumpHatAlreadyCaptured;
+
+        this.questAlreadyCompleteLira = data.questAlreadyCompleteLira;
+        this.questAlreadyCompleteMallow = data.questAlreadyCompleteMallow;
+        this.questAlreadyCompleteTulip = data.questAlreadyCompleteTulip;
+
+        this.castleRuinAlreadyDiscovered = data.castleRuinAlreadyDiscovered;
+        this.winterBiomeAlreadyDiscovered = data.winterBiomeAlreadyDiscovered;
+        this.springGardenAlreadyDiscovered = data.springGardenAlreadyDiscovered;
+
+
+        // ============================================
+        // --- APPLY EFFECTS BASED ON LOADED DATA ------
+        // ============================================
+
+
+        // ----- HATS -----
+        if (shyHatAlreadyCaptured)
+        {
+            shyHatCaptured = true;
+            NewHatalougeManager.Instance.DiscoverShyHat();
+            // ADD LINE TO REMOVE THE HAT FROM THE SCENE
+        }
+
+        if (fastHatAlreadyCaptured)
+        {
+            fastHatCaptured = true;
+            NewHatalougeManager.Instance.DiscoverFastHat();
+            // ADD LINE TO REMOVE THE HAT FROM THE SCENE
+        }
+
+        if (jumpHatAlreadyCaptured)
+        {
+            jumpHatCaptured = true;
+            NewHatalougeManager.Instance.DiscoverLazyHat();
+            // ADD LINE TO REMOVE THE HAT FROM THE SCENE
+        }
+
+
+        // ----- QUESTS -----
+        if (questAlreadyCompleteLira)
+        {
+            questCompleteLira = true;
+            NewHatalougeManager.Instance.quest1Found = true;
+            NewHatalougeManager.Instance.UpdateQuestScreen();
+        }
+
+        if (questAlreadyCompleteMallow)
+        {
+            questCompleteMallow = true;
+            NewHatalougeManager.Instance.quest2Found = true;
+            NewHatalougeManager.Instance.UpdateQuestScreen();
+        }
+
+        if (questAlreadyCompleteTulip)
+        {
+            questCompleteTulip = true;
+            NewHatalougeManager.Instance.quest3Found = true;
+            NewHatalougeManager.Instance.UpdateQuestScreen();
+        }
+
+
+        // ----- BIOMES -----
+        if (springGardenAlreadyDiscovered)
+        {
+            springGardenNotified = true;
+            NewHatalougeManager.Instance.ReachForest();
+        }
+
+        if (castleRuinAlreadyDiscovered)
+        {
+            castleRuinNotified = true;
+            NewHatalougeManager.Instance.ReachCastle();
+        }
+
+        if (winterBiomeAlreadyDiscovered)
+        {
+            winterBiomeNotified = true;
+            NewHatalougeManager.Instance.ReachWinter();
+        }
+    }
+
+
+    public void SaveData(GameData data)
+    {
+        data.shyHatAlreadyCaptured = this.shyHatAlreadyCaptured;
+        data.fastHatAlreadyCaptured = this.fastHatAlreadyCaptured;
+        data.jumpHatAlreadyCaptured = this.jumpHatAlreadyCaptured;
+
+        data.questAlreadyCompleteLira = this.questAlreadyCompleteLira;
+        data.questAlreadyCompleteMallow = this.questAlreadyCompleteMallow;
+        data.questAlreadyCompleteTulip = this.questAlreadyCompleteTulip;
+
+        data.castleRuinAlreadyDiscovered = this.castleRuinAlreadyDiscovered;
+        data.winterBiomeAlreadyDiscovered = this.winterBiomeAlreadyDiscovered;
+        data.springGardenAlreadyDiscovered = this.springGardenAlreadyDiscovered;
     }
 
     private void Start()

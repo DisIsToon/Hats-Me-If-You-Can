@@ -2,8 +2,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-public class WinterBarrierSystem : MonoBehaviour
+public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
 {
+    public static WinterBarrierSystem Instance { get; set; }
+
+    [Header("Barrier Object")]
+    public GameObject barrierObject;
+    private BoxCollider boxCollider;
+    private MeshRenderer meshRenderer;
+
     [Header("Message Object Settings")]
     public GameObject messageObject;      // Message when ShyHat not captured
     public GameObject messageObject2;     // Message when ShyHat captured
@@ -11,46 +18,94 @@ public class WinterBarrierSystem : MonoBehaviour
     public float showTime = 2f;
 
     [Header("Mini Game")]
-    public GameObject barrierGameScreen;  // Assign your BarrierGameScreen (ClickerBarrier root)
-    public ClickerBarrier clickerGame; // Reference to ClickerBarrier script
+    public GameObject barrierGameScreen;
+    public ClickerBarrier clickerGame;
 
     private bool isShowing = false;
-    private BoxCollider boxCollider;
-    private MeshRenderer meshRenderer;
     private GameTracker gt;
 
+    public bool WBBarrierAlreadyOpened;
+
+    // -------------------------------------------------------
+    //  SINGLETON
+    // -------------------------------------------------------
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        Instance = this;
+
+        if (barrierObject != null)
+        {
+            boxCollider = barrierObject.GetComponent<BoxCollider>();
+            meshRenderer = barrierObject.GetComponent<MeshRenderer>();
+        }
+    }
+
+    // -------------------------------------------------------
+    //  SAVE / LOAD
+    // -------------------------------------------------------
+    public void LoadData(GameData data)
+    {
+        this.WBBarrierAlreadyOpened = data.WBBarrierAlreadyOpened;
+
+        Debug.Log("Loaded WBBarrierAlreadyOpened = " + data.WBBarrierAlreadyOpened);
+
+        if (WBBarrierAlreadyOpened && barrierObject != null)
+        {
+            Debug.Log("DisableBarrier DisableBarrier DisableBarrier ");
+            DisableBarrier();
+        }
+    }
+
+    public void SaveData(GameData data)
+    {
+        data.WBBarrierAlreadyOpened = this.WBBarrierAlreadyOpened;
+    }
+
+    // -------------------------------------------------------
+    //  START
+    // -------------------------------------------------------
     private void Start()
     {
         gt = FindObjectOfType<GameTracker>();
-        if (gt == null)
-        {
-            Debug.LogError("GameTracker not found!");
-        }
 
-        boxCollider = GetComponent<BoxCollider>();
-        meshRenderer = GetComponent<MeshRenderer>();
+        if (barrierObject != null)
+        {
+            boxCollider = barrierObject.GetComponent<BoxCollider>();
+            meshRenderer = barrierObject.GetComponent<MeshRenderer>();
+        }
 
         if (messageObject) messageObject.SetActive(false);
         if (messageObject2) messageObject2.SetActive(false);
         if (barrierGameScreen) barrierGameScreen.SetActive(false);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    // -------------------------------------------------------
+    //  CALLED FROM THE BARRIER OBJECT COLLISION SCRIPT
+    // -------------------------------------------------------
+    public void PlayerHitBarrier()
     {
-        if (!collision.gameObject.CompareTag("Player") || isShowing) return;
+        if (isShowing) return;
 
         if (gt != null && gt.shyHatCaptured)
         {
-            // Show message 2 then start mini game
+            // Show special message then start minigame
             StartCoroutine(ShowAndStartGame(messageObject2));
         }
         else
         {
-            // Just show regular message
+            // Show basic message only
             StartCoroutine(ShowAndFade(messageObject));
         }
     }
 
+    // -------------------------------------------------------
+    //  UI + MINIGAME HANDLING
+    // -------------------------------------------------------
     private IEnumerator ShowAndFade(GameObject msgObj)
     {
         if (msgObj == null) yield break;
@@ -93,45 +148,44 @@ public class WinterBarrierSystem : MonoBehaviour
 
         yield return new WaitForSeconds(showTime);
 
-        // Hide message and open the Clicker mini-game
         msgObj.SetActive(false);
         isShowing = false;
 
-
-        if (clickerGame == null)
-        {
-            Debug.Log("Clicker Game is null");
-        }
+        // Start the mini-game
         if (barrierGameScreen != null)
-        {
             barrierGameScreen.SetActive(true);
-        }
 
         if (clickerGame != null)
         {
             clickerGame.BarrierGameScreen = barrierGameScreen;
             SoundManager.Instance.PlayPuzzleMusic();
-            clickerGame.StartGame(); // <---- Start the mini-game
+            clickerGame.StartGame();
             StartCoroutine(WaitForVictory());
         }
     }
 
     private IEnumerator WaitForVictory()
     {
-        // Wait until ClickerBarrierTMP sets its gameEnded = true
+        // Wait for ClickerBarrierTMP to finish
         while (!clickerGame.gameEnded)
         {
             yield return null;
         }
 
-        // When ended, check if victory
+        // Victory handling
         if (clickerGame.victoryScreen.activeSelf)
         {
+            WBBarrierAlreadyOpened = true;
+            DisableBarrier();
+
             SoundManager.Instance.ReturnToBiomeMusic();
             NotifUIManager.Instance.NotifyBarrierComplete();
-            // Disable barrier visuals and collision
-            if (boxCollider) boxCollider.enabled = false;
-            if (meshRenderer) meshRenderer.enabled = false;
         }
+    }
+
+    private void DisableBarrier()
+    {
+        if (boxCollider) boxCollider.enabled = false;
+        if (meshRenderer) meshRenderer.enabled = false;
     }
 }
