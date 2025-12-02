@@ -23,13 +23,19 @@ public class GameTracker : MonoBehaviour
     public bool questCompleteMallow = false;
     public bool questCompleteTulip = false;
 
+    [Header("Current Biome")]
+    public string currentBiome = "None";
+
     [Header("Area Triggers")]
-    public GameObject triggerForest;
+    public GameObject triggerForest1;
+    public GameObject triggerForest2;
+    public GameObject triggerForest3;
     public GameObject triggerCastle;
     public GameObject triggerWinter;
-    private bool springGardenNotified = false;
+    // Notifications (only once)
     private bool castleRuinNotified = false;
     private bool winterBiomeNotified = false;
+    private bool springGardenNotified = false;
 
     [Header("Potions")]
     public bool cakePotionUnlocked = false;
@@ -54,6 +60,71 @@ public class GameTracker : MonoBehaviour
     {
         if (player == null)
             Debug.LogError("Player GameObject not assigned in GameManager!");
+    }
+
+    public void SetCurrentBiome(string biomeName)
+    {
+        currentBiome = biomeName;
+        Debug.Log("Current biome set to: " + biomeName);
+    }
+
+    public void CheckPlayerInTrigger(GameObject trigger)
+    {
+        // ---------------- FOREST ----------------
+        if (trigger == triggerForest1 || trigger == triggerForest2 || trigger == triggerForest3)
+        {
+            Debug.Log("Player entered Forest!");
+            SetCurrentBiome("Forest");
+
+            SoundManager.Instance.SwitchBiomeMusic("Forest");
+
+
+            // forest can notify multiple times — but only first time plays discovery
+            if (!springGardenNotified)
+            {
+                
+                springGardenNotified = true;
+                NotifUIManager.Instance.NotifyBiomeDiscovered("Spring Garden");
+                NewHatalougeManager.Instance.ReachForest();
+            }
+            return;
+        }
+
+        // ---------------- CASTLE ----------------
+        if (trigger == triggerCastle)
+        {
+            Debug.Log("Player entered Castle Ruin!");
+            SetCurrentBiome("CastleRuin");
+
+            SoundManager.Instance.SwitchBiomeMusic("CastleRuin");
+
+            if (!castleRuinNotified)
+            {
+                
+                castleRuinNotified = true;
+                NotifUIManager.Instance.NotifyBiomeDiscovered("Castle Ruin");
+                NewHatalougeManager.Instance.ReachCastle();
+            }
+            return;
+        }
+
+        // ---------------- WINTER ----------------
+        if (trigger == triggerWinter)
+        {
+            Debug.Log("Player entered Winter Biome!");
+            SetCurrentBiome("Winter");
+
+            SoundManager.Instance.SwitchBiomeMusic("Winter");
+
+            if (!winterBiomeNotified)
+            {
+                
+                winterBiomeNotified = true;
+                NotifUIManager.Instance.NotifyBiomeDiscovered("Winter Biome");
+                NewHatalougeManager.Instance.ReachWinter();
+            }
+            return;
+        }
     }
 
     public void SetPuzzleComplete(bool value)
@@ -131,51 +202,6 @@ public class GameTracker : MonoBehaviour
     {
         return questCompleteLira && questCompleteMallow && questCompleteTulip;
     }
-
-    public void CheckPlayerInTrigger(GameObject trigger)
-    {
-        if (trigger == triggerForest)
-        {
-            Debug.Log("Player entered Forest!");
-            NewHatalougeManager.Instance.ReachForest();
-
-            if (!springGardenNotified)
-            {
-                SoundManager.Instance.SwitchBiomeMusic("Forest");
-                springGardenNotified = true;
-                NotifUIManager.Instance.NotifyBiomeDiscovered("Spring Garden");
-            }
-        }
-        else if (trigger == triggerCastle)
-        {
-            Debug.Log("Player entered Castle!");
-            NewHatalougeManager.Instance.ReachCastle();
-
-            
-
-            if (!castleRuinNotified)
-            {
-                SoundManager.Instance.SwitchBiomeMusic("CastleRuin");
-                castleRuinNotified = true;
-                NotifUIManager.Instance.NotifyBiomeDiscovered("Castle Ruin");
-            }
-        }
-        else if (trigger == triggerWinter)
-        {
-            Debug.Log("Player entered Winter!");
-            NewHatalougeManager.Instance.ReachWinter();
-
-            
-
-            if (!winterBiomeNotified)
-            {
-                SoundManager.Instance.SwitchBiomeMusic("Winter");
-                winterBiomeNotified = true;
-                NotifUIManager.Instance.NotifyBiomeDiscovered("Winter Biome");
-            }
-        }
-    }
-
 
     // --- Unlock a potion ---
     public void UnlockPotion(string potionName)

@@ -87,6 +87,8 @@ public class SelectionManager : MonoBehaviour
             Debug.LogWarning("CardsController.Instance is NULL!");
         if (NewHatalougeManager.Instance == null)
             Debug.LogWarning("HatalougeManager.Instance is NULL!");
+        if (PauseManager.Instance == null)
+            Debug.LogWarning("PauseManager.Instance is NULL!");
 
         /*if (DialogSystem.Instance.dialogUIActive == true ||
             CraftingSystem.Instance.isOpen == true ||
@@ -96,6 +98,7 @@ public class SelectionManager : MonoBehaviour
             CardsController.Instance.isOpen == true ||
             anyNpcTalking ||
             Notes.Instance.activeNote == true ||
+            PauseManager.Instance.isOpen == true ||
             NewHatalougeManager.Instance.isOpen == true)
         {
             Cursor.lockState = CursorLockMode.None;

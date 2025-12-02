@@ -59,6 +59,7 @@ public class ThirdPersonCameraController : MonoBehaviour
             CardsController.Instance != null && CardsController.Instance.isOpen ||
             PuzzleManagerUI.Instance != null && PuzzleManagerUI.Instance.isOpen ||
             Notes.Instance != null && Notes.Instance.activeNote ||
+            PauseManager.Instance != null && PauseManager.Instance.isOpen ||
             NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.isOpen)
         {
             // Unlock cursor always while UI is open
