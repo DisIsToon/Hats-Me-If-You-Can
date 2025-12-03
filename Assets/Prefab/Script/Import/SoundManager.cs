@@ -67,6 +67,15 @@ public class SoundManager : MonoBehaviour
     private AudioSource currentBGMusic;
     private string lastBiome = "Forest";   // default, or set on player spawn
 
+    [Header("Volume Settings")]
+    [Range(0f, 1f)] public float bgmVolume = 1f;
+    [Range(0f, 1f)] public float sfxVolume = 1f;
+
+    // List of all SFX AudioSources
+    private List<AudioSource> allSFX = new List<AudioSource>();
+    // List of all BGMs
+    private List<AudioSource> allBGMs = new List<AudioSource>();
+
     private void Awake()
     {
         Instance = this;
@@ -87,6 +96,51 @@ public class SoundManager : MonoBehaviour
     private void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // Collect all SFX
+        allSFX = new List<AudioSource>()
+        {
+            buttonClickedSound, clickedSound,
+            catchAttemptSound, failedcatchSound, shyHatCapturedSound,
+            jumpHatCapturedSound, fastHatCaptureSound,
+            shyHatMovementSound, jumpHatMovementSound, fastHatMovementSound,
+            puzzleInteractSound, rotatingPuzzleButtonClickedSound,
+            rotatingPuzzlePartCompleteSound, pzzleCompleteSound,
+            puzzleGameOverSound, matchingPuzzleCardClicked,
+            matchingPuzzleCardMaatch, hatalogueOpenCloseSound,
+            hatalogueNextPageSound, openInventory, dragUp, dragDrop,
+            equipPotion, brewBtnClicked, brewPotion, itemCollectSound,
+            questCompleteSound, pauseSound, leavesSound, walkOnForest,
+            walkOnSnow, walkOnCastleRuin
+        };
+
+        // Collect all BGMs
+        allBGMs = new List<AudioSource>()
+        {
+            mainMenuBGMusic, forestZoneBGMusic, castleZoneBGMusic,
+            winterZoneBGMusic, hatalougeViewingMusic, brewingMusic,
+            puzzlePlayingMusic
+        };
+    }
+
+    public void SetBGMVolume(float value)
+    {
+        bgmVolume = value;
+
+        foreach (AudioSource bgm in allBGMs)
+        {
+            bgm.volume = value;
+        }
+    }
+
+    public void SetSFXVolume(float value)
+    {
+        sfxVolume = value;
+
+        foreach (AudioSource sfx in allSFX)
+        {
+            sfx.volume = value;
+        }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -112,12 +166,12 @@ public class SoundManager : MonoBehaviour
     {
         PlayBGMusic(puzzlePlayingMusic);   // already uses fading
     }
-
+    /*
     public void PlayHatalogueMusic()
     {
         PlayBGMusic(hatalougeViewingMusic);   // already uses fading
     }
-
+    */
     public void ReturnToBiomeMusic()
     {
         // restore biome music based on lastBiome value
