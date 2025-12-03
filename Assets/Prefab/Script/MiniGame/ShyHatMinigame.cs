@@ -38,7 +38,7 @@ public class ShyHatMinigame : MonoBehaviour
     public TestShyHatBarrier shyHatBarrier;
 
     [Header("Camera Focus (optional)")]
-    public ShyHatMinigameTrigger trigger;
+    public ShyHatMinigameTrigger trigger;   // will auto-find if null
 
     int currentHits = 0;
     float timeLeft;
@@ -48,6 +48,10 @@ public class ShyHatMinigame : MonoBehaviour
 
     void OnEnable()
     {
+        // Safe auto-find if you forget to assign it
+        if (trigger == null)
+            trigger = FindObjectOfType<ShyHatMinigameTrigger>();
+
         StartMinigame();
     }
 
@@ -88,7 +92,7 @@ public class ShyHatMinigame : MonoBehaviour
 
         float dt = pauseGameTime ? Time.unscaledDeltaTime : Time.deltaTime;
 
-        // move marker left-right
+        // --- MOVE MARKER LEFT & RIGHT ---
         markerTime += dt * markerSpeed;
         float t = Mathf.PingPong(markerTime, 1f);
         float width = barArea.rect.width;
@@ -97,9 +101,11 @@ public class ShyHatMinigame : MonoBehaviour
         pos.x = Mathf.Lerp(-width * 0.5f, width * 0.5f, t);
         movingMarker.anchoredPosition = pos;
 
+        // --- INPUT ---
         if (Input.GetKeyDown(hitKey))
             TryHit();
 
+        // --- TIMER ---
         timeLeft -= dt;
         if (timeLeft < 0f) timeLeft = 0f;
 
@@ -150,7 +156,10 @@ public class ShyHatMinigame : MonoBehaviour
             shyHatBarrier.CaptureShyHat();
         }
 
-        // 🔁 tell trigger to restore camera
+        // 🔁 ALWAYS try to give camera back to main
+        if (trigger == null)
+            trigger = FindObjectOfType<ShyHatMinigameTrigger>();
+
         if (trigger != null)
             trigger.ReleaseCameraFocus();
 

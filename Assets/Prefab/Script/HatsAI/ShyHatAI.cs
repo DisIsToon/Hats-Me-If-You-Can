@@ -33,14 +33,24 @@ public class ShyHatAI : MonoBehaviour
     [Tooltip("0-based index of the capture point: 0=point1 ... 6=point7.")]
     public int capturePointIndex = 6;      // 6 = 7th point
 
+    [Header("Animation (visual child)")]
+    [Tooltip("Animator on the visual child object (HatVisual).")]
+    public Animator animator;
+
+    [Tooltip("Name of the trigger parameter that plays the shocked animation.")]
+    public string shockedTriggerName = "Shocked";
+
+    [Tooltip("How long to wait after playing the shocked animation before moving.")]
+    public float shockedDelay = 0.4f;
+
     private int currentIndex = 0;          // Which point we are currently "on"
     private int targetIndex = 0;           // Which point we are moving toward
     private bool isMoving = false;         // Are we currently moving to a point?
     private bool finished = false;         // Reached final point and done
+    private bool isPreparingMove = false;  // waiting during shocked anim
 
     void Start()
     {
-        // Put points into array in order
         fleePoints = new Transform[]
         {
             fleePoint1,
@@ -52,7 +62,6 @@ public class ShyHatAI : MonoBehaviour
             fleePoint7
         };
 
-        // Optional: snap to first point
         if (snapToFirstPoint && fleePoints[0] != null)
         {
             transform.position = fleePoints[0].position;
@@ -67,11 +76,15 @@ public class ShyHatAI : MonoBehaviour
             if (p != null) player = p.transform;
         }
 
-        // auto-grab trigger on same object if not set
         if (minigameTrigger == null)
             minigameTrigger = GetComponent<ShyHatMinigameTrigger>();
 
-        // At start we are not at capture point, so make sure capture is disabled
+        // Try to auto-grab animator from child if not set
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+
         UpdateCaptureState();
     }
 
@@ -80,32 +93,27 @@ public class ShyHatAI : MonoBehaviour
         if (finished) return;
         if (player == null) return;
 
-        // --------- TRIGGER MOVEMENT BY PLAYER PROXIMITY ---------
-        // Only trigger if we are NOT moving and NOT at final point
-        if (!isMoving && currentIndex < fleePoints.Length - 1)
+        // --- Decide to start shocked + move ---
+        if (!isMoving && !isPreparingMove && currentIndex < fleePoints.Length - 1)
         {
             float playerDist = DistanceToPlayer();
 
             if (playerDist <= detectDistance)
             {
-                // Move to the NEXT point
-                targetIndex = currentIndex + 1;
-
-                // Make sure that point exists
-                if (fleePoints[targetIndex] != null)
+                int nextIndex = currentIndex + 1;
+                if (fleePoints[nextIndex] != null)
                 {
-                    isMoving = true;
+                    StartCoroutine(PlayShockedThenMove(nextIndex));
                 }
                 else
                 {
-                    // If it's null, just mark finished so it doesn't hang
                     finished = true;
                     return;
                 }
             }
         }
 
-        // --------- HANDLE MOVEMENT IF ACTIVE ---------
+        // --- Handle actual movement ---
         if (isMoving)
         {
             Transform targetPoint = fleePoints[targetIndex];
@@ -118,7 +126,6 @@ public class ShyHatAI : MonoBehaviour
             Vector3 toTarget = targetPoint.position - transform.position;
             if (lockY) toTarget.y = 0f;
 
-            // If extremely close, treat as arrived
             if (toTarget.magnitude <= arrivalDistance)
             {
                 ArriveAtPoint();
@@ -126,11 +133,8 @@ public class ShyHatAI : MonoBehaviour
             }
 
             Vector3 dir = toTarget.normalized;
-
-            // Move
             transform.position += dir * moveSpeed * Time.deltaTime;
 
-            // Rotate to face movement
             if (dir.sqrMagnitude > 0.0001f)
             {
                 Quaternion targetRot = Quaternion.LookRotation(dir);
@@ -143,6 +147,23 @@ public class ShyHatAI : MonoBehaviour
         }
     }
 
+    System.Collections.IEnumerator PlayShockedThenMove(int nextIndex)
+    {
+        isPreparingMove = true;
+
+        if (animator != null && !string.IsNullOrEmpty(shockedTriggerName))
+        {
+            animator.SetTrigger(shockedTriggerName);
+        }
+
+        if (shockedDelay > 0f)
+            yield return new WaitForSeconds(shockedDelay);
+
+        targetIndex = nextIndex;
+        isMoving = true;
+        isPreparingMove = false;
+    }
+
     float DistanceToPlayer()
     {
         Vector3 diff = player.position - transform.position;
@@ -152,7 +173,6 @@ public class ShyHatAI : MonoBehaviour
 
     void ArriveAtPoint()
     {
-        // Snap to target position to avoid tiny drift
         if (fleePoints[targetIndex] != null)
         {
             transform.position = fleePoints[targetIndex].position;
@@ -161,13 +181,11 @@ public class ShyHatAI : MonoBehaviour
         currentIndex = targetIndex;
         isMoving = false;
 
-        // If we're at the last point, we're done moving
         if (currentIndex >= fleePoints.Length - 1)
         {
             finished = true;
         }
 
-        // 🔑 Update whether the hat is catchable (only at capturePointIndex)
         UpdateCaptureState();
     }
 
@@ -177,15 +195,11 @@ public class ShyHatAI : MonoBehaviour
 
         if (currentIndex == capturePointIndex)
         {
-            // We are on the capture point (point7 by default) → enable
             minigameTrigger.EnableCapture();
-            // Debug.Log("ShyHatAI: Capture ENABLED at point index " + currentIndex);
         }
         else
         {
-            // Any other point → cannot trigger minigame
             minigameTrigger.DisableCapture();
-            // Debug.Log("ShyHatAI: Capture DISABLED at point index " + currentIndex);
         }
     }
 
