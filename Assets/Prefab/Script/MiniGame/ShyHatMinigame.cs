@@ -5,11 +5,27 @@ using System.Collections;
 
 public class ShyHatMinigame : MonoBehaviour
 {
-    [Header("Bar / Markers")]
-    public RectTransform barArea;
-    public RectTransform movingMarker;
-    public RectTransform targetMarker;
-    public float markerSpeed = 1.5f;
+    [Header("Arc / Wand")]
+    [Tooltip("RectTransform of the bunny arc image (parent of wand & target).")]
+    public RectTransform arcRect;
+
+    [Tooltip("Wand image that should move along the blue arc.")]
+    public RectTransform wandRect;
+
+    [Tooltip("Target marker sitting somewhere on the same arc.")]
+    public RectTransform targetRect;
+
+    [Tooltip("If > 0, use this radius. If 0, radius is taken from wand's starting position.")]
+    public float radiusOverride = 0f;
+
+    [Tooltip("How wide the arc sweep is, in degrees, around the top (e.g. 80–110).")]
+    public float maxArcAngle = 90f;   // this is +/- from the top
+
+    [Tooltip("How fast the wand sweeps back and forth.")]
+    public float sweepSpeed = 1.5f;
+
+    [Tooltip("Allowed angle difference for a hit (in degrees).")]
+    public float hitTolerance = 8f;
 
     [Header("Progress")]
     public Slider progressSlider;
@@ -36,13 +52,20 @@ public class ShyHatMinigame : MonoBehaviour
 
     [Header("Shy Hat Barrier Script")]
     [Tooltip("Reference to the TestShyHatBarrier script that talks to GameTracker.")]
-    public TestShyHatBarrier shyHatBarrier;   // << we will call this on success
+    public TestShyHatBarrier shyHatBarrier;
 
-    private int currentHits = 0;
-    private float timeLeft;
-    private float markerTime = 0f;
-    private bool active = false;
-    private float previousTimeScale = 1f;
+    // Internal state
+    int currentHits = 0;
+    float timeLeft;
+    bool active = false;
+    float previousTimeScale = 1f;
+
+    float sweepTime = 0f;        // 0..1 ping-pong driver
+    float wandArcAngle = 0f;     // -maxArcAngle..+maxArcAngle (relative around the top)
+    float targetArcAngle = 0f;   // fixed angle for the target (same convention)
+
+    float radius;                // actual radius used
+    Vector2 centerLocal = Vector2.zero;  // center of the arc in local space
 
     void OnEnable()
     {
@@ -51,11 +74,39 @@ public class ShyHatMinigame : MonoBehaviour
 
     public void StartMinigame()
     {
+        if (arcRect == null || wandRect == null || targetRect == null)
+        {
+            Debug.LogError("ShyHatMinigame: Please assign arcRect, wandRect, and targetRect.");
+            gameObject.SetActive(false);
+            return;
+        }
+
         active = true;
         currentHits = 0;
         timeLeft = totalTime;
-        markerTime = 0f;
+        sweepTime = 0f;
 
+        // center is (0,0) in local space if wand & target are children of arcRect
+        centerLocal = Vector2.zero;
+
+        // determine radius
+        if (radiusOverride > 0f)
+        {
+            radius = radiusOverride;
+        }
+        else
+        {
+            // use the starting distance of the wand from the center
+            radius = wandRect.localPosition.magnitude;
+        }
+
+        // read target's angle based on its local position on the arc
+        Vector2 tLocal = targetRect.localPosition;
+        float targetWorldAngle = Mathf.Atan2(tLocal.y, tLocal.x) * Mathf.Rad2Deg; // 0° = right, 90° = up
+        // convert to "arc angle around the top": 0° at top, negative to left, positive to right
+        targetArcAngle = Mathf.DeltaAngle(90f, targetWorldAngle);
+
+        // init UI stuff
         if (progressSlider != null)
         {
             progressSlider.minValue = 0;
@@ -64,7 +115,7 @@ public class ShyHatMinigame : MonoBehaviour
         }
 
         if (timerText != null)
-            timerText.text = timeLeft.ToString("0.0");
+            timerText.text = totalTime.ToString("0.0");
 
         if (resultText != null)
             resultText.text = "";
@@ -82,18 +133,29 @@ public class ShyHatMinigame : MonoBehaviour
     void Update()
     {
         if (!active) return;
-        if (barArea == null || movingMarker == null || targetMarker == null) return;
 
         float dt = pauseGameTime ? Time.unscaledDeltaTime : Time.deltaTime;
 
-        // --- MOVE MARKER UP & DOWN ---
-        markerTime += dt * markerSpeed;
-        float t = Mathf.PingPong(markerTime, 1f);
-        float height = barArea.rect.height;
+        // --- MOVE WAND ALONG THE ARC (position on a circle) ---
+        sweepTime += dt * sweepSpeed;
+        float t = Mathf.PingPong(sweepTime, 1f);  // 0..1
+        wandArcAngle = Mathf.Lerp(-maxArcAngle, maxArcAngle, t); // -max..+max around the top
 
-        Vector2 pos = movingMarker.anchoredPosition;
-        pos.y = Mathf.Lerp(-height * 0.5f, height * 0.5f, t);
-        movingMarker.anchoredPosition = pos;
+        // worldAngle: 90° is straight up from center, plus wandArcAngle to sweep left/right
+        float worldAngle = 90f + wandArcAngle;
+        float rad = worldAngle * Mathf.Rad2Deg * Mathf.Deg2Rad; // (mistake fix) but easier:
+        // correction: we shouldn't double convert; let's just recalc:
+        rad = worldAngle * Mathf.Deg2Rad;
+
+        Vector2 offset = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * radius;
+        wandRect.localPosition = centerLocal + offset;
+
+        // Optional: rotate wand so it points towards center or along the arc
+        // Here we point it towards the center:
+        Vector2 toCenter = (centerLocal - offset).normalized;
+        float rotAngle = Mathf.Atan2(toCenter.y, toCenter.x) * Mathf.Rad2Deg;
+        // adjust -90 so the wand's "up" or "top" points correctly depending on sprite
+        wandRect.localEulerAngles = new Vector3(0f, 0f, rotAngle - 90f);
 
         // --- INPUT ---
         if (Input.GetKeyDown(hitKey))
@@ -112,11 +174,10 @@ public class ShyHatMinigame : MonoBehaviour
 
     void TryHit()
     {
-        // Overlap check between moving marker and target marker
-        Rect movingRect = GetWorldRect(movingMarker);
-        Rect targetRect = GetWorldRect(targetMarker);
+        // difference between where wand is on the arc vs target's arc angle
+        float diff = Mathf.DeltaAngle(wandArcAngle, targetArcAngle);
 
-        if (movingRect.Overlaps(targetRect, true))
+        if (Mathf.Abs(diff) <= hitTolerance)
         {
             currentHits++;
 
@@ -126,13 +187,6 @@ public class ShyHatMinigame : MonoBehaviour
             if (currentHits >= requiredHits)
                 EndMinigame(true);
         }
-    }
-
-    Rect GetWorldRect(RectTransform rt)
-    {
-        Vector3[] corners = new Vector3[4];
-        rt.GetWorldCorners(corners);
-        return new Rect(corners[0], corners[2] - corners[0]);
     }
 
     void EndMinigame(bool success)
@@ -150,7 +204,6 @@ public class ShyHatMinigame : MonoBehaviour
         {
             Debug.Log("ShyHat Minigame SUCCESS");
 
-            // ⭐ Call the external script that talks to GameTracker ⭐
             if (shyHatBarrier != null)
             {
                 shyHatBarrier.CaptureShyHat();
