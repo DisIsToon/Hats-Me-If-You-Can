@@ -1,4 +1,4 @@
-    using System;
+﻿    using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -118,20 +118,71 @@ public class InventorySystem : MonoBehaviour
 
     public void AddToInventory(string itemName)
     {
+        // 1) Check if item already exists in inventory
+        GameObject existingSlot = FindSlotWithItem(itemName);
+
+        if (existingSlot != null)
+        {
+            // Increase stack amount
+            IncreaseStack(existingSlot);
+
+            // Show popup
+            Sprite icon = existingSlot.transform.GetChild(0).GetComponent<Image>().sprite;
+            TriggerPickupPopUp(itemName, icon);
+
+            ReCalculateList();
+            CraftingSystem.Instance.RefreshNeededItem();
+            QuestManager.Instance.RefreshTrackerList();
+            return;
+        }
+
+        // 2) Item does NOT exist → add a new slot
         whatSlotToEquip = FindNextEmptySlot();
 
-        itemToAdd = Instantiate(Resources.Load<GameObject>(itemName),whatSlotToEquip.transform.position,whatSlotToEquip.transform.rotation);
-        itemToAdd.transform.SetParent(whatSlotToEquip.transform);
+        itemToAdd = Instantiate(Resources.Load<GameObject>(itemName),
+            whatSlotToEquip.transform.position,
+            whatSlotToEquip.transform.rotation);
 
+        itemToAdd.transform.SetParent(whatSlotToEquip.transform);
         itemList.Add(itemName);
 
         TriggerPickupPopUp(itemName, itemToAdd.GetComponent<Image>().sprite);
 
         ReCalculateList();
         CraftingSystem.Instance.RefreshNeededItem();
-
         QuestManager.Instance.RefreshTrackerList();
     }
+
+    private GameObject FindSlotWithItem(string itemName)
+    {
+        foreach (GameObject slot in slotList)
+        {
+            if (slot.transform.childCount > 0)
+            {
+                string childName = slot.transform.GetChild(0).name.Replace("(Clone)", "");
+                if (childName == itemName)
+                    return slot;
+            }
+        }
+        return null;
+    }
+
+    private void IncreaseStack(GameObject slot)
+    {
+        Transform item = slot.transform.GetChild(0);
+
+        TextMeshProUGUI stackText = item.Find("StackText").GetComponent<TextMeshProUGUI>();
+
+        int currentStack = 1;
+
+        if (!string.IsNullOrEmpty(stackText.text))
+            int.TryParse(stackText.text, out currentStack);
+
+        currentStack++;
+
+        stackText.text = currentStack.ToString();
+    }
+
 
     void TriggerPickupPopUp(string itemName, Sprite itemSprite)
     {
@@ -184,42 +235,62 @@ public class InventorySystem : MonoBehaviour
 
     public void RemoveItem(string nameToRemove, int amountToRemove)
     {
-        int counter = amountToRemove;
-
-        for(var i = slotList.Count - 1; i >=0; i--)
+        for (int i = 0; i < slotList.Count; i++)
         {
-            if(slotList[i].transform.childCount > 0)
-            {
-                if(slotList[i].transform.GetChild(0).name == nameToRemove + "(Clone)" && counter !=0)
-                {
-                    Destroy(slotList[i].transform.GetChild(0).gameObject);
+            if (slotList[i].transform.childCount == 0) continue;
 
-                    counter -= 1;
+            GameObject child = slotList[i].transform.GetChild(0).gameObject;
+            string childName = child.name.Replace("(Clone)", "");
+
+            if (childName == nameToRemove)
+            {
+                TextMeshProUGUI stackText = child.transform.Find("StackText").GetComponent<TextMeshProUGUI>();
+
+                int currentStack = 1;
+                int.TryParse(stackText.text, out currentStack);
+
+                if (currentStack > amountToRemove)
+                {
+                    currentStack -= amountToRemove;
+                    stackText.text = currentStack.ToString();
                 }
+                else
+                {
+                    // delete item completely
+                    Destroy(child);
+                }
+
+                ReCalculateList();
+                CraftingSystem.Instance.RefreshNeededItem();
+                QuestManager.Instance.RefreshTrackerList();
+                return;
             }
         }
-
-        ReCalculateList();
-        CraftingSystem.Instance.RefreshNeededItem();
-        QuestManager.Instance.RefreshTrackerList();
     }
+
 
     public void ReCalculateList()
     {
         itemList.Clear();
 
-        foreach(GameObject slot in slotList)
+        foreach (GameObject slot in slotList)
         {
-            if(slot.transform.childCount > 0)
+            if (slot.transform.childCount > 0)
             {
-                string name = slot.transform.GetChild(0).name; // Stone(Clone)
-                string str2 = "(Clone)";
-                string result = name.Replace(str2, "");
+                GameObject item = slot.transform.GetChild(0).gameObject;
+                string cleanName = item.name.Replace("(Clone)", "");
 
-                itemList.Add(result);
+                TextMeshProUGUI stackText = item.transform.Find("StackText").GetComponent<TextMeshProUGUI>();
+
+                int stack = 1;
+                int.TryParse(stackText.text, out stack);
+
+                for (int i = 0; i < stack; i++)
+                    itemList.Add(cleanName);
             }
         }
     }
+
 
     public int CheckItemAmount(string name)
     {
