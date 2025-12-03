@@ -26,6 +26,13 @@ public class ShyHatAI : MonoBehaviour
     public bool lockY = true;              // Keep on ground (XZ only)
     public bool snapToFirstPoint = true;   // Snap hat to point 1 at start
 
+    [Header("Minigame / Capture")]
+    [Tooltip("Trigger on this hat that handles minigame + camera.")]
+    public ShyHatMinigameTrigger minigameTrigger;
+
+    [Tooltip("0-based index of the capture point: 0=point1 ... 6=point7.")]
+    public int capturePointIndex = 6;      // 6 = 7th point
+
     private int currentIndex = 0;          // Which point we are currently "on"
     private int targetIndex = 0;           // Which point we are moving toward
     private bool isMoving = false;         // Are we currently moving to a point?
@@ -59,6 +66,13 @@ public class ShyHatAI : MonoBehaviour
             GameObject p = GameObject.FindGameObjectWithTag("Player");
             if (p != null) player = p.transform;
         }
+
+        // auto-grab trigger on same object if not set
+        if (minigameTrigger == null)
+            minigameTrigger = GetComponent<ShyHatMinigameTrigger>();
+
+        // At start we are not at capture point, so make sure capture is disabled
+        UpdateCaptureState();
     }
 
     void Update()
@@ -147,10 +161,31 @@ public class ShyHatAI : MonoBehaviour
         currentIndex = targetIndex;
         isMoving = false;
 
-        // If we're at the last point, we're done forever
+        // If we're at the last point, we're done moving
         if (currentIndex >= fleePoints.Length - 1)
         {
             finished = true;
+        }
+
+        // 🔑 Update whether the hat is catchable (only at capturePointIndex)
+        UpdateCaptureState();
+    }
+
+    void UpdateCaptureState()
+    {
+        if (minigameTrigger == null) return;
+
+        if (currentIndex == capturePointIndex)
+        {
+            // We are on the capture point (point7 by default) → enable
+            minigameTrigger.EnableCapture();
+            // Debug.Log("ShyHatAI: Capture ENABLED at point index " + currentIndex);
+        }
+        else
+        {
+            // Any other point → cannot trigger minigame
+            minigameTrigger.DisableCapture();
+            // Debug.Log("ShyHatAI: Capture DISABLED at point index " + currentIndex);
         }
     }
 
