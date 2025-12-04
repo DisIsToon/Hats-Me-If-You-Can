@@ -12504,7 +12504,7 @@ GameObject:
   - component: {fileID: 145276717}
   - component: {fileID: 145276716}
   m_Layer: 0
-  m_Name: SkyHat
+  m_Name: ShyHat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12529,10 +12529,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 3.3080919
-  m_Height: 7.2529287
+  m_Radius: 2.3780186
+  m_Height: 5.4858994
   m_Direction: 1
-  m_Center: {x: 0.44568485, y: -0.000013273668, z: 0}
+  m_Center: {x: 0.53801876, y: -0.8835359, z: -0.83774024}
 --- !u!114 &145276717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26140,7 +26140,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 1
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 1840091936}
+  m_TargetTexture: {fileID: 1104148008}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -26212,7 +26212,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 50.01651, y: 80, z: 50.03177}
-  m_LocalScale: {x: 1, y: 1.000402, z: 1.000402}
+  m_LocalScale: {x: 1, y: 1.000411, z: 1.000411}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2135604116}
@@ -32223,6 +32223,9 @@ MonoBehaviour:
   showTime: 2
   barrierGameScreen: {fileID: 1244916714}
   clickerGame: {fileID: 1938147696}
+  mainCamera: {fileID: 0}
+  puzzleCamera: {fileID: 0}
+  fadeImage: {fileID: 0}
   CRBarrierAlreadyOpened: 0
 --- !u!1 &373692359
 GameObject:
@@ -98729,6 +98732,9 @@ MonoBehaviour:
   showTime: 2
   barrierGameScreen: {fileID: 0}
   clickerGame: {fileID: 0}
+  mainCamera: {fileID: 0}
+  puzzleCamera: {fileID: 0}
+  fadeImage: {fileID: 0}
   CRBarrierAlreadyOpened: 0
 --- !u!1 &1082773204
 GameObject:
@@ -100014,6 +100020,43 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1100279954}
   m_SourcePrefab: {fileID: 100100000, guid: 1975ff2ab0317074a954a60dd75da4d7, type: 3}
+--- !u!84 &1104148008
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 512
+  m_Height: 512
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 4
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 1
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &1105331275
 GameObject:
   m_ObjectHideFlags: 0
@@ -102389,7 +102432,7 @@ MonoBehaviour:
   maxBarrierHP: 20
   barrierHP: 0
   damagePerClick: 1
-  barrierImage: {fileID: 1898884218}
+  barrierRenderer: {fileID: 0}
   timerText: {fileID: 675507464}
   victoryScreen: {fileID: 1109217606}
   gameOverScreen: {fileID: 1621269280}
@@ -118320,7 +118363,8 @@ MonoBehaviour:
   messageObject2: {fileID: 1649285689}
   fadeDuration: 1
   showTime: 2
-  barrierGameScreen: {fileID: 1823918589}
+  mainCamera: {fileID: 0}
+  puzzleCamera: {fileID: 0}
   clickerGame: {fileID: 1142174073}
   WBBarrierAlreadyOpened: 0
 --- !u!1001 &1343927321
@@ -154534,16 +154578,24 @@ MonoBehaviour:
   arcCollisionMask:
     serializedVersion: 2
     m_Bits: 0
-  arcResolution: 60
+  arcResolution: 30
   arcTimeStep: 0.04
-  lineWidth: 0.05
+  lineWidth: 0.6
   landingMarkerPrefab: {fileID: 0}
   landingMarkerScale: 0.25
   enableHighArc: 1
   toggleHighArcKey: 118
   lobElevationAngle: 38
   lobForceMultiplier: 1.4
-  throwableItems: []
+  throwableItems:
+  - itemName: Cake Potion
+    prefab: {fileID: 7949281937635042838, guid: c321a1ecd8403cf488d25a1d4c3c83ae, type: 3}
+  - itemName: Cotton Craze
+    prefab: {fileID: 7949281937635042838, guid: fc3cf417b01c9494da701df4e2027249, type: 3}
+  - itemName: Mirror Potion
+    prefab: {fileID: 7949281937635042838, guid: d19f9189b4d19214f90818ce60280c45, type: 3}
+  laserBeamMaterial: {fileID: 2100000, guid: 02cefe984a858ce47abd4d175431b350, type: 2}
+  instanceLaserMaterial: 1
 --- !u!114 &1741229721 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2765834894590215575, guid: e21e907c67f40c740828f31cad76d596, type: 3}
@@ -167426,43 +167478,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1837591333}
   m_CullTransparentMesh: 1
---- !u!84 &1840091936
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 512
-  m_Height: 512
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 4
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1001 &1840153591
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -303180,7 +303195,7 @@ MonoBehaviour:
   maxBarrierHP: 30
   barrierHP: 0
   damagePerClick: 1
-  barrierImage: {fileID: 1184119361}
+  barrierRenderer: {fileID: 0}
   timerText: {fileID: 1134214588}
   victoryScreen: {fileID: 1912903693}
   gameOverScreen: {fileID: 489924901}

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Handles equipping a throwable item from inventory, aiming, arc preview,
-/// and throwing. Attach this to the Player.
+/// Handles equipping a throwable item, aiming, arc preview, and throwing.
 /// Uses a LineRenderer with a custom laser beam material (e.g. MinionsArt Laser).
+/// Works with ItemSlot + InventoryItem + QuickSlot tag (no separate InventorySystem logic).
+/// Attach this to the Player.
 /// </summary>
 public class Throw : MonoBehaviour
 {
@@ -41,11 +42,11 @@ public class Throw : MonoBehaviour
     [System.Serializable]
     public class ThrowableDefinition
     {
-        public string itemName;      // name used in InventorySystem
-        public GameObject prefab;    // prefab to equip in hand
+        public string itemName;      // optional: used if you call EquipFromInventory by name
+        public GameObject prefab;    // prefab to equip in hand / throw
     }
 
-    [Header("Throwable Items (from Inventory)")]
+    [Header("Throwable Items (Prefabs)")]
     public List<ThrowableDefinition> throwableItems = new List<ThrowableDefinition>();
 
     // 🔹 Arc visuals (MinionsArt laser)
@@ -68,6 +69,9 @@ public class Throw : MonoBehaviour
     bool isHighArc;
 
     RigidbodyPlayerWithSprintAndStamina player;
+
+    // Cache of quick slots (ItemSlots tagged as QuickSlot)
+    ItemSlot[] quickSlots;
 
     void Start()
     {
@@ -102,14 +106,24 @@ public class Throw : MonoBehaviour
             arcRenderer.material.color = Color.white;
         }
 
-        // IMPORTANT: do NOT mess with UV offset here – MinionsArt shader
-        // already scrolls textures using its own Speed properties.
+        // MinionsArt shader scrolls on its own via material properties
         arcRenderer.enabled = false;
 
         // Landing marker
         landingMarker = landingMarkerPrefab ? Instantiate(landingMarkerPrefab)
                                             : CreateDefaultLandingMarker();
         landingMarker.SetActive(false);
+
+        // 🔹 Cache all quickslots in the scene (objects tagged "QuickSlot")
+        List<ItemSlot> slotList = new List<ItemSlot>();
+        GameObject[] quickSlotObjects = GameObject.FindGameObjectsWithTag("QuickSlot");
+        foreach (var go in quickSlotObjects)
+        {
+            ItemSlot slot = go.GetComponent<ItemSlot>();
+            if (slot != null)
+                slotList.Add(slot);
+        }
+        quickSlots = slotList.ToArray();
     }
 
     void Update()
@@ -205,10 +219,13 @@ public class Throw : MonoBehaviour
         Vector3 throwDir = GetThrowDirection();
         heldRb.AddForce(throwDir * force, ForceMode.Impulse);
 
+        // 🔹 Reduce stack in the matching quickslot InventoryItem
+        ReduceQuickSlotStackForHeldItem();
+
         // 🔹 Bottle-style: destroy after it lands / slows down
         StartCoroutine(DestroyAfterThrow(thrownObject));
 
-        // Clear state on this component
+        // Clear state on this component for the held world object
         heldItem = null;
         heldRb = null;
         heldCol = null;
@@ -216,6 +233,47 @@ public class Throw : MonoBehaviour
 
         arcRenderer.enabled = false;
         if (landingMarker) landingMarker.SetActive(false);
+    }
+
+    void ReduceQuickSlotStackForHeldItem()
+    {
+        if (heldEquippable == null) return;
+        if (quickSlots == null || quickSlots.Length == 0) return;
+
+        // We use the EquippableItem.itemName to match the InventoryItem
+        string eqName = heldEquippable.itemName;
+        if (string.IsNullOrEmpty(eqName)) return;
+
+        foreach (var slot in quickSlots)
+        {
+            if (slot == null) continue;
+
+            GameObject uiItem = slot.Item; // from your ItemSlot script
+            if (uiItem == null) continue;
+
+            // Must match your real InventoryItem component
+            var invItem = uiItem.GetComponent<InventoryItem>();
+            if (invItem == null) continue;
+
+            // TODO: Change "itemName" and "itemCount" if your InventoryItem uses different field names
+            if (invItem.itemName == eqName)
+            {
+                invItem.itemCount--;
+
+                if (invItem.itemCount <= 0)
+                {
+                    // remove the item from this quickslot
+                    Object.Destroy(uiItem);
+                }
+                else
+                {
+                    // If you have UI text for count, update it here:
+                    // invItem.RefreshCountText();
+                }
+
+                break; // found matching quickslot, done
+            }
+        }
     }
 
     float GetCurrentThrowForce()
@@ -281,9 +339,6 @@ public class Throw : MonoBehaviour
 
         arcRenderer.positionCount = arcResolution;
         arcRenderer.SetPositions(points);
-
-        // NOTE: Do NOT manually scroll mainTextureOffset here.
-        // MinionsArt shader handles UV scrolling internally using Speed properties.
 
         if (landingMarker)
         {
@@ -392,34 +447,36 @@ public class Throw : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Optional: if you want to equip by name instead of quickslot directly.
+    /// Searches quickslots for a matching InventoryItem.itemName.
+    /// </summary>
     public void EquipFromInventory(string itemName)
     {
-        if (handPosition == null)
+        if (quickSlots == null || quickSlots.Length == 0)
         {
-            Debug.LogWarning("Throw: Hand position not assigned.");
+            Debug.LogWarning("EquipFromInventory: No quickSlots found.");
             return;
         }
 
-        // Find definition
-        ThrowableDefinition def = throwableItems.Find(t => t.itemName == itemName);
-        if (def == null || def.prefab == null)
+        foreach (var slot in quickSlots)
         {
-            Debug.LogWarning($"Throw: No throwable prefab mapped for item '{itemName}'.");
-            return;
+            if (slot == null || slot.Item == null) continue;
+
+            var invItem = slot.Item.GetComponent<InventoryItem>();
+            if (invItem == null) continue;
+
+            // TODO: change "itemName" if your InventoryItem uses a different field name
+            if (invItem.itemName == itemName)
+            {
+                // Just rely on your existing system to spawn item into hand,
+                // or you can instantiate prefab here if you want.
+                // For now, we assume your other code handles equipping.
+                return;
+            }
         }
 
-        // Clear old item if any
-        if (heldItem != null)
-        {
-            Destroy(heldItem);
-        }
-
-        // Spawn new instance in hand
-        GameObject newItem = Instantiate(def.prefab, handPosition);
-        newItem.transform.localPosition = normalHoldOffset;
-        newItem.transform.localRotation = Quaternion.identity;
-
-        SetupHeldItem(newItem);
+        Debug.LogWarning($"EquipFromInventory: No quickslot found with item '{itemName}'.");
     }
 
     public void Unequip()
