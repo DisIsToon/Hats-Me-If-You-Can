@@ -46,8 +46,8 @@ public class ThirdPersonCameraController : MonoBehaviour
         controls.Enable();
         controls.CameraControls.MouseZoom.performed += HandleMouseScroll;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     public void HandleMouseScroll(InputAction.CallbackContext context)
@@ -76,8 +76,10 @@ public class ThirdPersonCameraController : MonoBehaviour
         else
         {
             rotationEnabled = true; // allow rotation
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         // Zoom
