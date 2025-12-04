@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using TMPro;    
+using TMPro;
 using System.Collections;
 
 public class ClickerBarrier : MonoBehaviour
@@ -10,8 +10,10 @@ public class ClickerBarrier : MonoBehaviour
     public float barrierHP;
     public float damagePerClick = 1f;
 
+    [Header("3D Barrier Object")]
+    public Renderer barrierRenderer; // <-- assign your 3D object's renderer
+
     [Header("UI Components")]
-    public Image barrierImage;
     public TMP_Text timerText;
     public GameObject victoryScreen;
     public GameObject gameOverScreen;
@@ -23,66 +25,68 @@ public class ClickerBarrier : MonoBehaviour
     public bool gameEnded = false;
 
     [Header("Click Effect Settings")]
-    public GameObject clickEffectPrefab; // prefab with Image component
-    public Transform effectParent;       // typically your Canvas
+    public GameObject clickEffectPrefab;
+    public Transform effectParent;
     public float fadeDuration = 0.8f;
-    public Vector2 randomSpawnOffset = new Vector2(300f, 150f); // screen space spread
-    public float fallSpeed = 100f; // how fast the effect falls
+    public Vector2 randomSpawnOffset = new Vector2(300f, 150f);
+    public float fallSpeed = 100f;
 
     public void StartGame()
     {
         barrierHP = maxBarrierHP;
         timeRemaining = timeLimit;
-        UpdateOpacity();
         gameEnded = false;
 
+        UpdateObjectFade(); // fade object based on HP
 
         if (victoryScreen) victoryScreen.SetActive(false);
         if (gameOverScreen) gameOverScreen.SetActive(false);
         if (BarrierGameScreen) BarrierGameScreen.SetActive(true);
-
-        Debug.Log("ClickerBarrier game started!");
     }
 
-    public void Update()
+    void Update()
     {
         if (gameEnded) return;
 
-        // countdown timer
         timeRemaining -= Time.deltaTime;
+
         if (timerText != null)
             timerText.text = "Time: " + Mathf.Ceil(timeRemaining).ToString();
 
         if (timeRemaining <= 0)
-        {
             GameOver();
-        }
     }
 
-    // Called by Event Trigger → PointerClick
     public void OnClickBarrier()
     {
         if (gameEnded) return;
 
         barrierHP -= damagePerClick;
         barrierHP = Mathf.Clamp(barrierHP, 0, maxBarrierHP);
-        UpdateOpacity();
 
+        UpdateObjectFade();
         SpawnClickEffect();
 
         if (barrierHP <= 0)
-        {
             Victory();
-        }
     }
 
-    public void UpdateOpacity()
+    // Fade 3D object (material alpha)
+    void UpdateObjectFade()
     {
-        if (barrierImage != null)
+        if (barrierRenderer == null) return;
+
+        float alpha = barrierHP / maxBarrierHP;
+
+        // Loop through all materials (if the object has multiple)
+        foreach (Material mat in barrierRenderer.materials)
         {
-            Color c = barrierImage.color;
-            c.a = barrierHP / maxBarrierHP;
-            barrierImage.color = c;
+            if (mat.HasProperty("_Color"))
+            {
+                Color c = mat.color;
+                c.a = alpha;
+                mat.color = c;
+            }
         }
     }
 
@@ -90,7 +94,6 @@ public class ClickerBarrier : MonoBehaviour
     {
         if (clickEffectPrefab == null || effectParent == null) return;
 
-        // Random screen position
         Vector2 randomOffset = new Vector2(
             Random.Range(-randomSpawnOffset.x, randomSpawnOffset.x),
             Random.Range(-randomSpawnOffset.y, randomSpawnOffset.y)
@@ -98,7 +101,6 @@ public class ClickerBarrier : MonoBehaviour
 
         Vector2 spawnPos = (Vector2)Input.mousePosition + randomOffset;
 
-        // Instantiate UI effect
         GameObject effect = Instantiate(clickEffectPrefab, effectParent);
         effect.transform.position = spawnPos;
 
@@ -107,7 +109,7 @@ public class ClickerBarrier : MonoBehaviour
             StartCoroutine(FallAndFade(img));
     }
 
-    System.Collections.IEnumerator FallAndFade(Image img)
+    IEnumerator FallAndFade(Image img)
     {
         Color startColor = img.color;
         float t = 0f;
@@ -118,11 +120,9 @@ public class ClickerBarrier : MonoBehaviour
             t += Time.deltaTime;
             float normalized = t / fadeDuration;
 
-            // Fade out
             float alpha = Mathf.Lerp(1f, 0f, normalized);
             img.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
 
-            // Fall down
             img.transform.position = startPos + Vector3.down * (normalized * fallSpeed);
 
             yield return null;

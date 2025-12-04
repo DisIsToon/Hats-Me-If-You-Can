@@ -6,10 +6,19 @@ using TMPro;
 
 public class CraftingSystem : MonoBehaviour
 {
+    [Header("UI Screens")]
     public GameObject craftingScreenUI;
     public GameObject inventoryScreenUI;
 
-    private bool canCraft = false;
+    [Header("Cameras")]
+    public Camera mainCamera;
+    public Camera craftingCamera;
+
+    [Header("Fade Transition")]
+    public Image fadeImage; // UI Image covering screen for fade (black or any color)
+    public float fadeDuration = 0.5f;
+
+    public bool canCraft = false;
 
     public List<string>inventoryItemList = new List<string>();
 
@@ -112,7 +121,7 @@ public class CraftingSystem : MonoBehaviour
 
     IEnumerator craftingDelayForSound(ItemBlueprints blueprintToCraft)
     {
-        VideoPlayerManager.Instance.PlayCraftVideo();
+        //VideoPlayerManager.Instance.PlayCraftVideo();
         yield return new WaitForSeconds(1f);
 
         //SoundManager.Instance.craftingSound.Stop();
@@ -131,27 +140,11 @@ public class CraftingSystem : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E) && canCraft && !isOpen)
         {
-            // SOUND
-            SoundManager.Instance.PlayBrewingMusic();
-
-            SelectionManager.Instance.cauldronDetected = false;
-            RefreshNeededItem();
-            craftingScreenUI.SetActive(true);
-            inventoryScreenUI.SetActive(true);
-            //Cursor.lockState = CursorLockMode.None;
-            //Cursor.visible = true;
-            
-            //SelectionManager.Instance.DisableSelection();
-            //SelectionManager.Instance.GetComponent<SelectionManager>().enabled = false;
-
-            isOpen = true;
- 
+            StartCoroutine(OpenCraftingScreen());
         }
         else if (Input.GetKeyDown(KeyCode.E) && isOpen)
         {
-
-
-            CraftingScreenOff();
+            StartCoroutine(CloseCraftingScreen());
         }
     }
     public void SetCanCraft(bool value)
@@ -159,16 +152,68 @@ public class CraftingSystem : MonoBehaviour
         canCraft = value; 
     }
 
-    public void CraftingScreenOff()
+    IEnumerator OpenCraftingScreen()
     {
-        //SOUND
-        SoundManager.Instance.ReturnToBiomeMusic();
+        SoundManager.Instance.PlayBrewingMusic();
+        isOpen = true;
+
+        // Fade out
+        yield return StartCoroutine(Fade(1f));
+
+        // Switch camera
+        mainCamera.gameObject.SetActive(false);
+        craftingCamera.gameObject.SetActive(true);
+
+        // Show UI
+        craftingScreenUI.SetActive(true);
+        inventoryScreenUI.SetActive(true);
 
         RefreshNeededItem();
+
+        // Fade in
+        yield return StartCoroutine(Fade(0f));
+
+        SoundManager.Instance.PlayBrewingMusic();
+    }
+
+    IEnumerator CloseCraftingScreen()
+    {
+        // Fade out
+        yield return StartCoroutine(Fade(1f));
+
+        // Hide UI
         craftingScreenUI.SetActive(false);
         inventoryScreenUI.SetActive(false);
 
+        // Switch back camera
+        craftingCamera.gameObject.SetActive(false);
+        mainCamera.gameObject.SetActive(true);
+
         isOpen = false;
+
+        // Fade in
+        yield return StartCoroutine(Fade(0f));
+
+        SoundManager.Instance.ReturnToBiomeMusic();
+    }
+
+    IEnumerator Fade(float targetAlpha)
+    {
+        float startAlpha = fadeImage.color.a;
+        float t = 0f;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, targetAlpha, t / fadeDuration);
+            fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, alpha);
+            yield return null;
+        }
+        fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, targetAlpha);
+    }
+
+    public void CraftingScreenOff()
+    {
+        CloseCraftingScreen();
     }
 
     public void RefreshNeededItem()
