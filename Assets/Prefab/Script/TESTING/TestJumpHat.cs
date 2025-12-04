@@ -1,6 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class TestJumpHat : MonoBehaviour
+public class TestJumpHatBarrier : MonoBehaviour
 {
     private GameTracker gt;
 
@@ -9,21 +9,27 @@ public class TestJumpHat : MonoBehaviour
         // Find the GameTracker in the scene
         gt = FindObjectOfType<GameTracker>();
         if (gt == null)
+        {
             Debug.LogError("GameTracker not found in the scene!");
+        }
     }
 
-    private void OnTriggerEnter(Collider other)
+    // ⭐ CALL THIS FROM JumpHatMinigame AFTER SUCCESS ⭐
+    public void CaptureJumpHat()
     {
-        if (other.CompareTag("Player") && gt != null)
+        if (gt == null)
         {
-            Debug.Log("Player collided with JumpHat");
-
-            // Record capture in GameTracker
-            gt.CaptureHat("JumpHat");
-
-            // Optional: disable or destroy the hat so it can't be collected again
-            gameObject.SetActive(false);
-            // or: Destroy(gameObject);
+            Debug.LogWarning("GameTracker not found when calling CaptureJumpHat.");
+            return;
         }
+
+        Debug.Log("JumpHat captured (triggered by minigame).");
+
+        // Record capture in GameTracker
+        gt.CaptureHat("JumpHat");
+
+        // Disable or remove the hat / barrier
+        gameObject.SetActive(false);
+        // Or: Destroy(gameObject);
     }
 }

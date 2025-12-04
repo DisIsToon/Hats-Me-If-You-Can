@@ -35,6 +35,13 @@ public class JumpHatAI : MonoBehaviour
     public bool rotateTowardsNextPoint = true;
     public float rotationSpeed = 10f;
 
+    [Header("Animation")]
+    [Tooltip("Animator on the hat (or child). If left empty, will auto-find on this GameObject or children.")]
+    public Animator animator;
+
+    [Tooltip("Name of the looping animation state that should play the whole time.")]
+    public string loopAnimationState = "HatLoop"; // change to your state name
+
     private int currentIndex = 0;
     private bool goingForward = true;
     private bool isJumping = false;
@@ -58,7 +65,28 @@ public class JumpHatAI : MonoBehaviour
         // Start at the first point
         transform.position = jumpPoints[0].position;
 
+        // 🔹 Auto-find animator if not set
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+            if (animator == null)
+                animator = GetComponentInChildren<Animator>();
+        }
+
+        // 🔹 Start the looping animation once
+        PlayLoopAnimation();
+
         StartCoroutine(JumpLoop());
+    }
+
+    void PlayLoopAnimation()
+    {
+        if (animator == null) return;
+        if (string.IsNullOrEmpty(loopAnimationState)) return;
+
+        // We just tell the animator to play this state – 
+        // make sure that state is set to Loop in the animation import.
+        animator.Play(loopAnimationState);
     }
 
     IEnumerator JumpLoop()
