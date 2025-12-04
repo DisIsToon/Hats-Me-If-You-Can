@@ -5,7 +5,12 @@ using UnityEngine;
 /// <summary>
 /// Rigidbody-based character with sprint, crouch, double jump, stamina,
 /// NPC interaction, and data persistence.
-/// Throwing / item logic has been moved to the separate `Throw` component.
+/// Animation is driven via parameters:
+/// - Speed (float)
+/// - IsCrouching (bool)
+/// - IsGrounded (bool)
+/// - IsSprinting (bool)
+/// - Jump (trigger)
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
@@ -14,22 +19,36 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     #region Inspector - Movement
     [Header("Movement Settings")]
     public float moveSpeed = 6f;
-    public float sprintSpeed = 10f;
+    public float sprintSpeed = 11f;
     public float jumpForce = 8f;
     public float crouchSpeed = 3f;
 
-    [Header("Stamina Settings")]
-    public float maxStamina = 5f;
-    public float staminaDrainRate = 1f;
-    public float staminaRegenRate = 2f;
+    [Header("Movement Smoothing")]
+    [Tooltip("How quickly the player accelerates to target speed.")]
+    public float acceleration = 55f;
+    [Tooltip("How quickly the player slows down when releasing input.")]
+    public float deceleration = 40f;
+    [Tooltip("Multiplier for acceleration/deceleration while in the air.")]
+    public float airControlMultiplier = 0.8f;
+    #endregion
 
+    #region Inspector - Stamina
+    [Header("Stamina Settings")]
+    public float maxStamina = 6f;
+    public float staminaDrainRate = 0.8f;
+    public float staminaRegenRate = 2.5f;
+    #endregion
+
+    #region Inspector - Ground Check
     [Header("Ground Check")]
     public Transform groundCheck;
     public float groundCheckRadius = 0.3f;
     public LayerMask groundMask;
     [Tooltip("Extra grace time after leaving ground where jump still counts.")]
     public float coyoteTime = 0.1f;
+    #endregion
 
+    #region Inspector - NPC Interaction
     [Header("NPC Interaction")]
     public NPC currentInteractingNPC;
     #endregion
@@ -37,14 +56,23 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     #region Inspector - Animation
     [Header("Animation")]
     public Animator animator;
+
+    [Tooltip("Float parameter for movement speed in the Animator.")]
     public string speedParam = "Speed";
+    [Tooltip("Bool parameter for crouching in the Animator.")]
     public string crouchParam = "IsCrouching";
+    [Tooltip("Bool parameter for grounded state in the Animator.")]
+    public string groundedParam = "IsGrounded";
+    [Tooltip("Bool parameter for sprint/run state in the Animator.")]
+    public string sprintParam = "IsSprinting";
+    [Tooltip("Trigger parameter for jump in the Animator.")]
+    public string jumpTriggerParam = "Jump";
 
     [Header("Animation Tuning")]
     [Tooltip("Speeds below this are treated as 0 (prevents jitter causing walk).")]
-    public float speedDeadzone = 0.15f;
+    public float speedDeadzone = 0.1f;
     [Tooltip("Multiplies the speed value sent to the Animator to hit thresholds.")]
-    public float speedMultiplier = 2.0f;
+    public float speedMultiplier = 3.0f;
     #endregion
 
     #region Inspector - Camera
@@ -69,8 +97,10 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     const int maxJumps = 2;
     float currentStamina;
     float lastGroundedTime;
-
     bool isHidden;
+
+    // Move input cached between Update and FixedUpdate
+    Vector2 moveInput;
     #endregion
 
     #region Unity - Init
@@ -82,6 +112,9 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
 
         originalHeight = col.height;
         originalCenter = col.center;
+
+        // Prevent physics tipping the player over
+        rb.freezeRotation = true;
     }
     #endregion
 
@@ -100,53 +133,64 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     #region Unity - Update
     void Update()
     {
+        // 1) Read input
+        moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        moveInput = Vector2.ClampMagnitude(moveInput, 1f);
+
+        // 2) Ground / crouch / jump / stamina
         HandleGroundCheck();
         HandleCrouch();
         HandleJump();
         HandleFallBoost();
         HandleStamina();
 
-        // --- Animator movement speed (with dead-zone + scaling) ---
-        if (animator)
-        {
-            Vector3 flatVel = rb.linearVelocity;
-            flatVel.y = 0f;
-            float s = flatVel.magnitude;
-
-            // Dead-zone to prevent micro movement from triggering Walk
-            if (s < speedDeadzone) s = 0f;
-
-            // Scale up so it reliably crosses thresholds in transitions/blend trees
-            s *= speedMultiplier;
-
-            animator.SetFloat(speedParam, s);
-        }
+        // 3) Animator parameters
+        UpdateAnimator();
     }
 
     void FixedUpdate()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-        float speed = isCrouching ? crouchSpeed : (isSprinting ? sprintSpeed : moveSpeed);
+        float speed =
+            isCrouching ? crouchSpeed :
+            (isSprinting ? sprintSpeed : moveSpeed);
 
         // Camera-relative movement
         Vector3 forward = cameraTransform ? cameraTransform.forward : transform.forward;
         Vector3 right = cameraTransform ? cameraTransform.right : transform.right;
-        forward.y = 0; right.y = 0;
-        forward.Normalize(); right.Normalize();
+        forward.y = 0f;
+        right.y = 0f;
+        forward.Normalize();
+        right.Normalize();
 
-        Vector3 move = (right * x + forward * z);
-        if (move.sqrMagnitude > 1f) move.Normalize();
+        // x = strafe, y = forward/back
+        Vector3 moveDir = right * moveInput.x + forward * moveInput.y;
+        if (moveDir.sqrMagnitude > 1f)
+            moveDir.Normalize();
 
-        Vector3 targetVel = move * speed;
-        Vector3 planarVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-        Vector3 velChange = targetVel - planarVel;
+        Vector3 targetHorizontalVel = moveDir * speed;
 
-        rb.AddForce(velChange, ForceMode.VelocityChange);
+        // Current planar velocity
+        Vector3 currentVel = rb.linearVelocity;
+        Vector3 currentHorizontalVel = new Vector3(currentVel.x, 0f, currentVel.z);
 
-        if (shouldFaceMoveDirection && move.sqrMagnitude > 0.001f)
+        // Accel / decel
+        float moveAmount = moveDir.sqrMagnitude;
+        float accel = (moveAmount > 0.01f) ? acceleration : deceleration;
+        if (!isGrounded) accel *= airControlMultiplier;
+
+        Vector3 newHorizontalVel = Vector3.MoveTowards(
+            currentHorizontalVel,
+            targetHorizontalVel,
+            accel * Time.fixedDeltaTime
+        );
+
+        // Apply (keep vertical)
+        rb.linearVelocity = new Vector3(newHorizontalVel.x, currentVel.y, newHorizontalVel.z);
+
+        // Face move direction
+        if (shouldFaceMoveDirection && moveDir.sqrMagnitude > 0.001f)
         {
-            Quaternion targetRot = Quaternion.LookRotation(move);
+            Quaternion targetRot = Quaternion.LookRotation(moveDir);
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, 10f * Time.deltaTime));
         }
     }
@@ -156,14 +200,21 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     void HandleGroundCheck()
     {
         bool groundedNow = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundMask);
+
         if (groundedNow)
         {
+            if (!isGrounded)
+            {
+                // Just landed
+                jumpCount = 0;
+            }
+
             isGrounded = true;
             lastGroundedTime = Time.time;
-            jumpCount = 0;
         }
         else
         {
+            // Coyote time
             isGrounded = (Time.time - lastGroundedTime) <= coyoteTime;
         }
     }
@@ -171,7 +222,6 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     void HandleCrouch()
     {
         isCrouching = Input.GetKey(KeyCode.C);
-        if (animator) animator.SetBool(crouchParam, isCrouching);
 
         if (isCrouching)
         {
@@ -189,28 +239,88 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     {
         if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps && !isCrouching)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+            // Reset vertical velocity for consistent jump height
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             jumpCount++;
+
+            // Fire jump animation ONLY on first jump
+            if (animator && jumpCount == 1 && !string.IsNullOrEmpty(jumpTriggerParam))
+            {
+                animator.SetTrigger(jumpTriggerParam);
+            }
         }
     }
 
     void HandleFallBoost()
     {
-        if (!isGrounded && rb.linearVelocity.y < 0)
+        if (!isGrounded && rb.linearVelocity.y < 0f)
+        {
+            // Faster fall for snappier jumps
             rb.linearVelocity += Vector3.up * Physics.gravity.y * 3f * Time.deltaTime;
+        }
     }
 
     void HandleStamina()
     {
-        Vector3 flatVel = rb.linearVelocity; flatVel.y = 0;
+        Vector3 flatVel = rb.linearVelocity;
+        flatVel.y = 0;
         bool moving = flatVel.sqrMagnitude > 0.01f;
 
-        isSprinting = Input.GetKey(KeyCode.LeftShift) && currentStamina > 0 && !isCrouching;
-        if (isSprinting && moving)
+        bool wantsToSprint = Input.GetKey(KeyCode.LeftShift);
+
+        // Sprint only when: Shift, stamina, not crouching, and moving
+        isSprinting = wantsToSprint && currentStamina > 0f && !isCrouching && moving;
+
+        if (isSprinting)
+        {
             currentStamina = Mathf.Max(0, currentStamina - staminaDrainRate * Time.deltaTime);
-        else if (!isSprinting && isGrounded)
+        }
+        else if (isGrounded)
+        {
             currentStamina = Mathf.Min(maxStamina, currentStamina + staminaRegenRate * Time.deltaTime);
+        }
+    }
+    #endregion
+
+    #region Animator Helper
+    void UpdateAnimator()
+    {
+        if (!animator) return;
+
+        Vector3 flatVel = rb.linearVelocity;
+        flatVel.y = 0f;
+        float rawSpeed = flatVel.magnitude;
+
+        bool hasInput = moveInput.sqrMagnitude > 0.01f;
+
+        float animSpeed = 0f;
+
+        if (!isGrounded)
+        {
+            // In air: freeze locomotion speed (jump anim handled by Jump state)
+            animSpeed = 0f;
+        }
+        else
+        {
+            if (!hasInput)
+            {
+                // Grounded + no input = idle
+                animSpeed = 0f;
+            }
+            else
+            {
+                // Grounded + input = walk/run
+                animSpeed = rawSpeed * speedMultiplier;
+                if (animSpeed < speedDeadzone)
+                    animSpeed = speedDeadzone;
+            }
+        }
+
+        animator.SetFloat(speedParam, animSpeed);
+        animator.SetBool(crouchParam, isCrouching);
+        animator.SetBool(groundedParam, isGrounded);
+        animator.SetBool(sprintParam, isSprinting);
     }
     #endregion
 
@@ -236,6 +346,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
 #endif
     #endregion
 
+    #region NPC Trigger
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("NPC"))
@@ -251,4 +362,5 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
             currentInteractingNPC = null;
         }
     }
+    #endregion
 }
