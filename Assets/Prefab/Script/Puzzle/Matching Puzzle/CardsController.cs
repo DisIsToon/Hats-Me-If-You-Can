@@ -164,7 +164,11 @@ public class CardsController : MonoBehaviour, IDataPersistence
         for (int i = 0; i < spritePairs.Count; i++)
         {
             Card card = Instantiate(cardPrefab, gridTransform);
-            card.SetIconSprite(spritePairs[i]);
+
+            // Specify the size you want for this icon
+            Vector2 iconSize = new Vector2(60, 80); // change 100,100 to whatever you want
+            card.SetIconSprite(spritePairs[i], iconSize);
+
             card.controller = this;
         }
     }

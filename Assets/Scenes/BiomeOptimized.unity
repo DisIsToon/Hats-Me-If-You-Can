@@ -7850,43 +7850,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5fe989d2aa92b064791215bf92352d60, type: 3}
---- !u!84 &104731896
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 512
-  m_Height: 512
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 4
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &106502022
 GameObject:
   m_ObjectHideFlags: 0
@@ -22860,6 +22823,43 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 353013252}
   m_SourcePrefab: {fileID: 100100000, guid: 14e4ea3e716eed942903c6561669d922, type: 3}
+--- !u!84 &288321364
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 512
+  m_Height: 512
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 4
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 1
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &288646159
 GameObject:
   m_ObjectHideFlags: 0
@@ -25437,7 +25437,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 1
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 104731896}
+  m_TargetTexture: {fileID: 288321364}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -25509,7 +25509,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 50.01651, y: 80, z: 50.03177}
-  m_LocalScale: {x: 1, y: 1.0003965, z: 1.0003965}
+  m_LocalScale: {x: 1, y: 1.0004036, z: 1.0004036}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2135604116}
@@ -36013,7 +36013,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10.63, y: 5.1, z: 2.4}
+  m_Size: {x: 10.17, y: 1.21, z: 8.05}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &409955176
 MeshRenderer:
@@ -36077,7 +36077,7 @@ Transform:
   m_GameObject: {fileID: 409955173}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.16, y: 1.71, z: -11.84}
+  m_LocalPosition: {x: 15.2, y: 0.26, z: -21.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -83763,6 +83763,14 @@ PrefabInstance:
     - target: {fileID: 7134321573876898971, guid: e60cf650a4ffd8a4b9d1bd89ab032aa8, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7152255943786214358, guid: e60cf650a4ffd8a4b9d1bd89ab032aa8, type: 3}
+      propertyPath: m_Constraint
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7152255943786214358, guid: e60cf650a4ffd8a4b9d1bd89ab032aa8, type: 3}
+      propertyPath: m_ConstraintCount
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7282595132138951373, guid: e60cf650a4ffd8a4b9d1bd89ab032aa8, type: 3}
       propertyPath: m_IsActive
@@ -148013,16 +148021,44 @@ PrefabInstance:
       objectReference: {fileID: 907274050}
     - target: {fileID: 4210144797248315976, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: puzzleDuration
-      value: 15
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 4210144797248315976, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: mirrorShardPrefab
       value: 
       objectReference: {fileID: 6558373580587872047, guid: d68330b65ad164b41bbba2f00683fe8b, type: 3}
     - target: {fileID: 4210144797248315976, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: sprites.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4210144797248315976, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: completePuzzlePopup
       value: 
       objectReference: {fileID: 907274038}
+    - target: {fileID: 4210144797248315976, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: 'sprites.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1839956432, guid: d1fde8f09d5fdcd488143b9a87e99e77, type: 3}
+    - target: {fileID: 4210144797248315976, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: 'sprites.Array.data[1]'
+      value: 
+      objectReference: {fileID: -1441877037, guid: dc87d47147f4d6641aeefddd671dcb9a, type: 3}
+    - target: {fileID: 4210144797248315976, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: 'sprites.Array.data[2]'
+      value: 
+      objectReference: {fileID: -1744195904, guid: 948369247675f7d4bb84997473e20e27, type: 3}
+    - target: {fileID: 4210144797248315976, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: 'sprites.Array.data[3]'
+      value: 
+      objectReference: {fileID: 259499659, guid: d99572c9108a1ab4d8f16337b354a76d, type: 3}
+    - target: {fileID: 4210144797248315976, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: 'sprites.Array.data[4]'
+      value: 
+      objectReference: {fileID: -207041871, guid: 68c8d6302429fd8498fd32c78c8a823d, type: 3}
+    - target: {fileID: 4210144797248315976, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: 'sprites.Array.data[5]'
+      value: 
+      objectReference: {fileID: 849588852, guid: 47306c71eed88e847953b16cb05dd522, type: 3}
     - target: {fileID: 4464953881932299241, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
