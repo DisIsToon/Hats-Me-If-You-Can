@@ -414,6 +414,9 @@ public class NPC : MonoBehaviour
             DialogSystem.Instance.CloseDialogUI();
             isTalkingWithPlayer = false;
             DialogSystem.Instance.HideAllPortraits();
+
+            // --- Play HeadMaster video only after closing dialog ---
+            QuestManager.Instance.PlayHeadMasterVideoAfterDialog();
         });
         if (!disableOption2)
             optionButton2.gameObject.SetActive(false);
