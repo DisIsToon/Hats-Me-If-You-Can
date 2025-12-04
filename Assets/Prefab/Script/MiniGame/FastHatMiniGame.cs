@@ -203,6 +203,13 @@ public class FastHatMinigame : MonoBehaviour
             resultText.color = success ? successColor : failColor;
         }
 
+        // ✅ If success, tell GameTracker we captured the Fast Hat
+        if (success && GameTracker.Instance != null)
+        {
+            GameTracker.Instance.CaptureHat("FastHat");
+            GameTracker.Instance.fastHatAlreadyCaptured = true;
+        }
+
         // Let trigger handle camera + hat
         if (trigger == null)
             trigger = FindObjectOfType<FastHatMinigameTrigger>();
