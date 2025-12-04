@@ -10742,7 +10742,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigamePanel: {fileID: 1802065472}
   throwableTag: Throwable
-  oneTimeOnly: 1
+  shyHatAI: {fileID: 0}
   focusCamera: {fileID: 1257119368}
   focusPriority: 20
   minigameStartDelay: 2
@@ -14979,7 +14979,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &204995302
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16302,7 +16302,6 @@ MonoBehaviour:
   hatFocusTarget: {fileID: 876772842}
   hatAI: {fileID: 235525008}
   startMinigameDelay: 2
-  canTriggerMultipleTimes: 1
   throwableTag: Throwable
   hatRoot: {fileID: 235525004}
 --- !u!114 &235525009
@@ -20496,10 +20495,8 @@ MonoBehaviour:
   hatFocusTarget: {fileID: 1883954074}
   fastHatAI: {fileID: 299638555}
   startMinigameDelay: 2
-  canTriggerMultipleTimes: 0
   throwableTag: Throwable
   hatRoot: {fileID: 944777546}
-  hideOnlyOnSuccess: 1
 --- !u!1 &300801829
 GameObject:
   m_ObjectHideFlags: 0
@@ -60527,6 +60524,7 @@ MonoBehaviour:
   failColor: {r: 1, g: 0, b: 0, a: 1}
   resultDuration: 1
   trigger: {fileID: 0}
+  npcChase: {fileID: 0}
 --- !u!1 &791252614
 GameObject:
   m_ObjectHideFlags: 0
@@ -76227,7 +76225,7 @@ RenderTexture:
   m_TextureSettings:
     serializedVersion: 2
     m_FilterMode: 1
-    m_Aniso: 1
+    m_Aniso: 0
     m_MipBias: 0
     m_WrapU: 1
     m_WrapV: 1
@@ -80101,6 +80099,7 @@ MonoBehaviour:
   resultDuration: 1
   jumpHatBarrier: {fileID: 235525009}
   trigger: {fileID: 235525008}
+  npcLou: {fileID: 0}
 --- !u!1 &971213590 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 14e4ea3e716eed942903c6561669d922, type: 3}
@@ -134072,7 +134071,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0e29f442e57fe540b96ec996f41fd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 1.5
 --- !u!4 &1741229715 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2561941694268522009, guid: e21e907c67f40c740828f31cad76d596, type: 3}
@@ -136239,7 +136237,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1781826416
 RectTransform:
   m_ObjectHideFlags: 0
@@ -143042,6 +143040,7 @@ MonoBehaviour:
   resultDuration: 1
   shyHatBarrier: {fileID: 145276720}
   trigger: {fileID: 145276717}
+  npcIvy: {fileID: 0}
 --- !u!222 &1802065476
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -167489,17 +167488,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6bda5e15a62baf4d9d30adfa90a72b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camToDrawWith: {fileID: 321030462}
-  layer:
-    serializedVersion: 2
-    m_Bits: 1
-  renderers:
-  - {fileID: 0}
-  terrains: []
-  resolution: 512
-  adjustScaling: 2.5
-  RealTimeDiffuse: 0
-  repeatRate: 5
 --- !u!4 &2135604116
 Transform:
   m_ObjectHideFlags: 0
