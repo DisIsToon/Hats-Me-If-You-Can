@@ -25,6 +25,9 @@ public class NPC : MonoBehaviour
     public bool playerInRange = false;
     public bool isTalkingWithPlayer = false;
 
+    [Header("Button Options")]
+    public bool disableOption2 = false;   // <--- NEW
+
     // UI References
     public TextMeshProUGUI npcDialogText;
     public Button optionButton1;
@@ -53,6 +56,11 @@ public class NPC : MonoBehaviour
 
     void Start()
     {
+        if (disableOption2 && optionButton2 != null)
+        {
+            optionButton2.gameObject.SetActive(false);
+        }
+
         if (DialogSystem.Instance == null)
         {
             Debug.LogError("DialogSystem.Instance is NULL! Make sure DialogSystem exists in the scene.");
@@ -106,6 +114,12 @@ public class NPC : MonoBehaviour
             StartConversation();
             if (pressFUI != null) pressFUI.SetActive(false);
         }
+    }
+
+    private void HideOption2()
+    {
+        if (optionButton2 != null)
+            optionButton2.gameObject.SetActive(false);
     }
 
     void CompleteLiraQuest()
@@ -192,7 +206,9 @@ public class NPC : MonoBehaviour
                 optionButton1Text.text = "Take Reward";
                 optionButton1.onClick.RemoveAllListeners();
                 optionButton1.onClick.AddListener(() => ReceiveRewardAndCompleteQuest());
-                optionButton2.gameObject.SetActive(false);
+                if (!disableOption2)
+                    optionButton2.gameObject.SetActive(false);
+
             }
             else
             {
@@ -205,7 +221,9 @@ public class NPC : MonoBehaviour
                     DialogSystem.Instance.CloseDialogUI();
                     isTalkingWithPlayer = false;
                 });
-                optionButton2.gameObject.SetActive(false);
+                if (!disableOption2)
+                    optionButton2.gameObject.SetActive(false);
+
             }
             return;
         }
@@ -222,7 +240,9 @@ public class NPC : MonoBehaviour
                 DialogSystem.Instance.CloseDialogUI();
                 isTalkingWithPlayer = false;
             });
-            optionButton2.gameObject.SetActive(false);
+            if (!disableOption2)
+                optionButton2.gameObject.SetActive(false);
+
             return;
         }
 
@@ -243,7 +263,9 @@ public class NPC : MonoBehaviour
             DialogSystem.Instance.CloseDialogUI();
             isTalkingWithPlayer = false;
         });
-        optionButton2.gameObject.SetActive(false);
+        if (!disableOption2)
+            optionButton2.gameObject.SetActive(false);
+
     }
 
 
@@ -253,10 +275,18 @@ public class NPC : MonoBehaviour
         optionButton1.onClick.RemoveAllListeners();
         optionButton1.onClick.AddListener(AcceptedQuest);
 
-        optionButton2.gameObject.SetActive(true);
-        optionButton2Text.text = currentActiveQuest.info.declineOption;
-        optionButton2.onClick.RemoveAllListeners();
-        optionButton2.onClick.AddListener(DeclinedQuest);
+        // Only enable and assign option 2 if it is not disabled
+        if (!disableOption2 && optionButton2 != null)
+        {
+            optionButton2.gameObject.SetActive(true);
+            optionButton2Text.text = currentActiveQuest.info.declineOption;
+            optionButton2.onClick.RemoveAllListeners();
+            optionButton2.onClick.AddListener(DeclinedQuest);
+        }
+        else
+        {
+            HideOption2(); // hide it just in case
+        }
     }
 
     private void SubmitRequiredItems()
@@ -325,7 +355,9 @@ public class NPC : MonoBehaviour
             currentDialog++;
             CheckIfDialogDone();
         });
-        optionButton2.gameObject.SetActive(false);
+        if (!disableOption2)
+            optionButton2.gameObject.SetActive(false);
+
     }
 
     private void CheckIfDialogDone()
@@ -361,7 +393,9 @@ public class NPC : MonoBehaviour
             optionButton1Text.text = "Take Reward";
             optionButton1.onClick.RemoveAllListeners();
             optionButton1.onClick.AddListener(() => ReceiveRewardAndCompleteQuest());
-            optionButton2.gameObject.SetActive(false);
+            if (!disableOption2)
+                optionButton2.gameObject.SetActive(false);
+
         }
         else
         {
@@ -381,9 +415,11 @@ public class NPC : MonoBehaviour
             isTalkingWithPlayer = false;
             DialogSystem.Instance.HideAllPortraits();
         });
-        optionButton2.gameObject.SetActive(false);
+        if (!disableOption2)
+            optionButton2.gameObject.SetActive(false);
 
-        
+
+
     }
 
     private void ReceiveRewardAndCompleteQuest()

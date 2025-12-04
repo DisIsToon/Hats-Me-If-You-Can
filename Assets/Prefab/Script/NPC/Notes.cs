@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -7,103 +6,133 @@ using UnityEngine.UI;
 
 public class Notes : MonoBehaviour
 {
-    [Header("Settings")]
-    public GameObject dialogScreen;  // Assign your dialog UI panel here
-    public KeyCode interactKey = KeyCode.E;
+    [Header("Note Settings")]
+    [TextArea(3, 8)]
+    public string noteText;
 
-    public bool isPlayerInRange = false;
-    public bool isTalkingWithPlayer = false;
-    public Transform player;
+    public GameObject pressFUI;
+    public GameObject noteScreen;   // ⬅ your per-note screen (speaker, text, button)
 
-    public Button optionButton1;
-    public TextMeshProUGUI optionButton1Text;
-
-    public GameObject MainScreen;
+    public TMP_Text dialogText;
+    public TMP_Text speakerText;
+    public Button option1BTN;
 
     public bool activeNote;
+    private bool playerInRange = false;
 
-    public static Notes Instance { get; set; }
+    public static List<Notes> allNotes = new List<Notes>();
+    public static Notes Instance { get; private set; }
 
     private void Awake()
     {
-            Instance = this;
+        if (!allNotes.Contains(this))
+            allNotes.Add(this);
+    }
+
+    private void OnDestroy()
+    {
+        if (allNotes.Contains(this))
+            allNotes.Remove(this);
+
+        if (Instance == this)
+            Instance = null;
     }
 
     void Start()
     {
-        dialogScreen.SetActive(false);
-        activeNote = false;
+        if (pressFUI != null)
+            pressFUI.SetActive(false);
 
-        if (optionButton1 != null)
-        {
-            optionButton1.onClick.AddListener(CloseDialog);
-            optionButton1.gameObject.SetActive(false);
-        }
-
-        if (optionButton1Text != null)
-            optionButton1Text.text = "Close"; // Default button text
+        if (noteScreen != null)
+            noteScreen.SetActive(false);
     }
 
     void Update()
     {
-        if (isPlayerInRange && Input.GetKeyDown(interactKey))
+        if (!playerInRange) return;
+
+        if (pressFUI != null && (noteScreen == null || !noteScreen.activeSelf))
+            pressFUI.SetActive(true);
+
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            
-            ToggleDialog();
+            OpenNote();
         }
     }
 
-    public void ToggleDialog()
+    // ----------------------------------------------------
+    // OPEN NOTE
+    // ----------------------------------------------------
+    public void OpenNote()
     {
-        SelectionManager.Instance.readableNoteDetected = false;
-        dialogScreen.SetActive(true);
+        Instance = this;
         activeNote = true;
-        optionButton1.gameObject.SetActive(true);
 
-        MainScreen.SetActive(false);
+        if (pressFUI != null)
+            pressFUI.SetActive(false);
+
+        if (noteScreen != null)
+            noteScreen.SetActive(true);
+
+        if (dialogText != null)
+            dialogText.text = noteText;
+
+        if (speakerText != null)
+            speakerText.text = "Note";
+
+        // Button setup
+        if (option1BTN != null)
+        {
+            option1BTN.gameObject.SetActive(true);
+
+            var t = option1BTN.GetComponentInChildren<TextMeshProUGUI>();
+            if (t != null) t.text = "Close";
+
+            option1BTN.onClick.RemoveAllListeners();
+            option1BTN.onClick.AddListener(CloseNote);
+        }
     }
 
+    // ----------------------------------------------------
+    // CLOSE NOTE
+    // ----------------------------------------------------
     public void CloseDialog()
     {
-        dialogScreen.SetActive(false);
-        activeNote=false;
-        optionButton1.gameObject.SetActive(false);
-        MainScreen.SetActive(true);
+        CloseNote();
     }
 
-    /*public void LookAtPlayer()
+    public void CloseNote()
     {
-        var player = PlayerState.Instance.playerBody.transform;
-        Vector3 direction = player.position - transform.position;
-        transform.rotation = Quaternion.LookRotation(direction);
+        if (Instance == this)
+            Instance = null;
 
-        var yRotation = transform.eulerAngles.y;
-        transform.rotation = Quaternion.Euler(0, yRotation, 0);
+        activeNote = false;
 
+        if (noteScreen != null)
+            noteScreen.SetActive(false);
     }
-    */
 
+    // ----------------------------------------------------
+    // TRIGGERS
+    // ----------------------------------------------------
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
-        {
-            isPlayerInRange = true;
-
-        }
+            playerInRange = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            isPlayerInRange = false;
-            MainScreen.SetActive(true);
-            activeNote = false;
-            dialogScreen.SetActive(false);
-            optionButton1.gameObject.SetActive(false);
+            playerInRange = false;
+
+            if (pressFUI != null)
+                pressFUI.SetActive(false);
+
+            if (noteScreen != null && noteScreen.activeSelf)
+                if (Instance == this)
+                    CloseNote();
         }
     }
-
-
-
 }

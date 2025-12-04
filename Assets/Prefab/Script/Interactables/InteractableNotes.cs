@@ -11,7 +11,9 @@ public class InteractableNotes : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SelectionManager.Instance.readableNoteDetected = true;
+            if (SelectionManager.Instance != null)
+                SelectionManager.Instance.readableNoteDetected = true;
+
             playerInRange = true;
         }
     }
@@ -20,9 +22,14 @@ public class InteractableNotes : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SelectionManager.Instance.readableNoteDetected = false;
-            playerInRange = false; 
-            Notes.Instance.CloseDialog();
+            if (SelectionManager.Instance != null)
+                SelectionManager.Instance.readableNoteDetected = false;
+
+            playerInRange = false;
+
+            // SAFETY CHECK
+            if (Notes.Instance != null)
+                Notes.Instance.CloseDialog();
         }
     }
 }
