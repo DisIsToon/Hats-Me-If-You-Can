@@ -55,6 +55,9 @@ public class JumpHatMinigame : MonoBehaviour
     [Tooltip("Trigger that manages Cinemachine camera + hat disappearing.")]
     public JumpHatMinigameTrigger trigger;
 
+    [Header("NPC To Show On Success (Lou)")]
+    public GameObject npcLou;   // <- assign Lou here (set inactive in scene)
+
     // ----- internal state -----
     int currentHits = 0;
     float timeLeft;
@@ -200,6 +203,12 @@ public class JumpHatMinigame : MonoBehaviour
         if (success && jumpHatBarrier != null)
         {
             jumpHatBarrier.CaptureJumpHat();
+        }
+
+        // ⭐ On success, show Lou
+        if (success && npcLou != null)
+        {
+            npcLou.SetActive(true);
         }
 
         // ⭐ Tell the trigger to restore camera & handle hat based on success/fail

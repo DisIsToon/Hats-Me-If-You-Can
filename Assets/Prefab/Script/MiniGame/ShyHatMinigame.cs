@@ -40,6 +40,9 @@ public class ShyHatMinigame : MonoBehaviour
     [Header("Camera Focus (optional)")]
     public ShyHatMinigameTrigger trigger;   // will auto-find if null
 
+    [Header("NPC To Show On Success (Ivy)")]
+    public GameObject npcIvy;   // <- assign Ivy here (set inactive in scene)
+
     int currentHits = 0;
     float timeLeft;
     float markerTime = 0f;
@@ -156,6 +159,12 @@ public class ShyHatMinigame : MonoBehaviour
         if (success && shyHatBarrier != null)
         {
             shyHatBarrier.CaptureShyHat();
+        }
+
+        // ✅ On success, show Ivy
+        if (success && npcIvy != null)
+        {
+            npcIvy.SetActive(true);
         }
 
         // ✅ Tell the trigger to restore camera & handle AI (success/fail)
