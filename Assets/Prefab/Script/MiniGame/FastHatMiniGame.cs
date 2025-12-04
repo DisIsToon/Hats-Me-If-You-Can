@@ -57,6 +57,9 @@ public class FastHatMinigame : MonoBehaviour
     [Tooltip("Trigger that manages Cinemachine + hat visibility.")]
     public FastHatMinigameTrigger trigger;
 
+    [Header("NPC To Show On Success (Chase)")]
+    public GameObject npcChase;   // <- assign Chase here (set inactive in scene)
+
     // ---- internal state ----
     int currentHits = 0;
     float timeLeft;
@@ -201,6 +204,19 @@ public class FastHatMinigame : MonoBehaviour
         {
             resultText.text = success ? successMessage : failMessage;
             resultText.color = success ? successColor : failColor;
+        }
+
+        // ✅ If success, tell GameTracker we captured the Fast Hat
+        if (success && GameTracker.Instance != null)
+        {
+            GameTracker.Instance.CaptureHat("FastHat");
+            GameTracker.Instance.fastHatAlreadyCaptured = true;
+        }
+
+        // ✅ On success, show Chase
+        if (success && npcChase != null)
+        {
+            npcChase.SetActive(true);
         }
 
         // Let trigger handle camera + hat
