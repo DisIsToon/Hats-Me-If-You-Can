@@ -4,7 +4,7 @@ using System.Collections;
 
 public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
 {
-    public static WinterBarrierSystem Instance { get; set; }
+    public static WinterBarrierSystem Instance { get; private set; }
 
     [Header("Barrier Object")]
     public GameObject barrierObject;
@@ -12,13 +12,16 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
     private MeshRenderer meshRenderer;
 
     [Header("Message Object Settings")]
-    public GameObject messageObject;      // Message when ShyHat not captured
-    public GameObject messageObject2;     // Message when ShyHat captured
+    public GameObject messageObject;
+    public GameObject messageObject2;
     public float fadeDuration = 1f;
     public float showTime = 2f;
 
+    [Header("Cameras")]
+    public Camera mainCamera;
+    public Camera puzzleCamera;
+
     [Header("Mini Game")]
-    public GameObject barrierGameScreen;
     public ClickerBarrier clickerGame;
 
     private bool isShowing = false;
@@ -33,7 +36,7 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             return;
         }
         Instance = this;
@@ -50,20 +53,15 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
     // -------------------------------------------------------
     public void LoadData(GameData data)
     {
-        this.WBBarrierAlreadyOpened = data.WBBarrierAlreadyOpened;
+        WBBarrierAlreadyOpened = data.WBBarrierAlreadyOpened;
 
-        Debug.Log("Loaded WBBarrierAlreadyOpened = " + data.WBBarrierAlreadyOpened);
-
-        if (WBBarrierAlreadyOpened && barrierObject != null)
-        {
-            Debug.Log("DisableBarrier DisableBarrier DisableBarrier ");
+        if (WBBarrierAlreadyOpened)
             DisableBarrier();
-        }
     }
 
     public void SaveData(GameData data)
     {
-        data.WBBarrierAlreadyOpened = this.WBBarrierAlreadyOpened;
+        data.WBBarrierAlreadyOpened = WBBarrierAlreadyOpened;
     }
 
     // -------------------------------------------------------
@@ -73,42 +71,34 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
     {
         gt = FindObjectOfType<GameTracker>();
 
-        if (barrierObject != null)
-        {
-            boxCollider = barrierObject.GetComponent<BoxCollider>();
-            meshRenderer = barrierObject.GetComponent<MeshRenderer>();
-        }
-
         if (messageObject) messageObject.SetActive(false);
         if (messageObject2) messageObject2.SetActive(false);
-        if (barrierGameScreen) barrierGameScreen.SetActive(false);
+
+        // Make sure main camera is on
+        if (mainCamera) mainCamera.gameObject.SetActive(true);
+        if (puzzleCamera) puzzleCamera.gameObject.SetActive(false);
     }
 
     // -------------------------------------------------------
-    //  CALLED FROM THE BARRIER OBJECT COLLISION SCRIPT
+    //  WHEN PLAYER COLLIDES WITH BARRIER
     // -------------------------------------------------------
     public void PlayerHitBarrier()
     {
         if (isShowing) return;
 
         if (gt != null && gt.shyHatCaptured)
-        {
-            // Show special message then start minigame
             StartCoroutine(ShowAndStartGame(messageObject2));
-        }
         else
-        {
-            // Show basic message only
             StartCoroutine(ShowAndFade(messageObject));
-        }
     }
 
     // -------------------------------------------------------
-    //  UI + MINIGAME HANDLING
+    //  FADE MESSAGE
     // -------------------------------------------------------
     private IEnumerator ShowAndFade(GameObject msgObj)
     {
         if (msgObj == null) yield break;
+
         isShowing = true;
         msgObj.SetActive(true);
 
@@ -139,6 +129,9 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         isShowing = false;
     }
 
+    // -------------------------------------------------------
+    //  SHOW MESSAGE, THEN START MINIGAME CAMERA VIEW
+    // -------------------------------------------------------
     private IEnumerator ShowAndStartGame(GameObject msgObj)
     {
         if (msgObj == null) yield break;
@@ -151,28 +144,30 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         msgObj.SetActive(false);
         isShowing = false;
 
-        // Start the mini-game
-        if (barrierGameScreen != null)
-            barrierGameScreen.SetActive(true);
+        // Switch cameras
+        SwitchToPuzzleCamera();
 
+        // Start the clicker minigame
         if (clickerGame != null)
         {
-            clickerGame.BarrierGameScreen = barrierGameScreen;
             SoundManager.Instance.PlayPuzzleMusic();
             clickerGame.StartGame();
+
             StartCoroutine(WaitForVictory());
         }
     }
 
+    // -------------------------------------------------------
+    //  WAIT FOR CLICKER GAME RESULT
+    // -------------------------------------------------------
     private IEnumerator WaitForVictory()
     {
-        // Wait for ClickerBarrierTMP to finish
         while (!clickerGame.gameEnded)
-        {
             yield return null;
-        }
 
-        // Victory handling
+        // Return to main camera
+        SwitchToMainCamera();
+
         if (clickerGame.victoryScreen.activeSelf)
         {
             WBBarrierAlreadyOpened = true;
@@ -181,8 +176,31 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
             SoundManager.Instance.ReturnToBiomeMusic();
             NotifUIManager.Instance.NotifyBarrierComplete();
         }
+        else
+        {
+            // If failed, still go back to normal
+            SoundManager.Instance.ReturnToBiomeMusic();
+        }
     }
 
+    // -------------------------------------------------------
+    //  CAMERA SWITCHING
+    // -------------------------------------------------------
+    private void SwitchToPuzzleCamera()
+    {
+        if (mainCamera) mainCamera.gameObject.SetActive(false);
+        if (puzzleCamera) puzzleCamera.gameObject.SetActive(true);
+    }
+
+    private void SwitchToMainCamera()
+    {
+        if (puzzleCamera) puzzleCamera.gameObject.SetActive(false);
+        if (mainCamera) mainCamera.gameObject.SetActive(true);
+    }
+
+    // -------------------------------------------------------
+    //  DISABLE BARRIER OBJECT
+    // -------------------------------------------------------
     private void DisableBarrier()
     {
         if (boxCollider) boxCollider.enabled = false;

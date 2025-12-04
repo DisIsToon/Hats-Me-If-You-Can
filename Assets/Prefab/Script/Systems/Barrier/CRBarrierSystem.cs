@@ -21,13 +21,16 @@ public class CRBarrierSystem : MonoBehaviour, IDataPersistence
     public GameObject barrierGameScreen;
     public ClickerBarrier clickerGame;
 
+    [Header("Cameras & Fade")]
+    public Camera mainCamera;
+    public Camera puzzleCamera;
+    public Image fadeImage;
+
     private bool isShowing = false;
     private GameTracker gt;
 
     public bool CRBarrierAlreadyOpened;
 
-    // -------------------------------------------------------
-    // Singleton
     // -------------------------------------------------------
     private void Awake()
     {
@@ -46,8 +49,6 @@ public class CRBarrierSystem : MonoBehaviour, IDataPersistence
     }
 
     // -------------------------------------------------------
-    // Save / Load
-    // -------------------------------------------------------
     public void LoadData(GameData data)
     {
         CRBarrierAlreadyOpened = data.CRBarrierAlreadyOpened;
@@ -62,8 +63,6 @@ public class CRBarrierSystem : MonoBehaviour, IDataPersistence
     }
 
     // -------------------------------------------------------
-    // Initialization
-    // -------------------------------------------------------
     private void Start()
     {
         gt = FindObjectOfType<GameTracker>();
@@ -77,10 +76,9 @@ public class CRBarrierSystem : MonoBehaviour, IDataPersistence
         if (messageObject) messageObject.SetActive(false);
         if (messageObject2) messageObject2.SetActive(false);
         if (barrierGameScreen) barrierGameScreen.SetActive(false);
+        if (puzzleCamera) puzzleCamera.gameObject.SetActive(false);
     }
 
-    // -------------------------------------------------------
-    // To be called by the barrier object's collision forwarder
     // -------------------------------------------------------
     public void PlayerHitBarrier()
     {
@@ -92,9 +90,6 @@ public class CRBarrierSystem : MonoBehaviour, IDataPersistence
             StartCoroutine(ShowAndFade(messageObject));
     }
 
-    // -------------------------------------------------------
-    // Fade Message
-    // -------------------------------------------------------
     private IEnumerator ShowAndFade(GameObject msgObj)
     {
         if (msgObj == null) yield break;
@@ -113,14 +108,8 @@ public class CRBarrierSystem : MonoBehaviour, IDataPersistence
             elapsed += Time.deltaTime;
             float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
 
-            if (img)
-            {
-                var c = img.color; c.a = alpha; img.color = c;
-            }
-            else if (sr)
-            {
-                var c = sr.color; c.a = alpha; sr.color = c;
-            }
+            if (img) { var c = img.color; c.a = alpha; img.color = c; }
+            else if (sr) { var c = sr.color; c.a = alpha; sr.color = c; }
 
             yield return null;
         }
@@ -129,9 +118,6 @@ public class CRBarrierSystem : MonoBehaviour, IDataPersistence
         isShowing = false;
     }
 
-    // -------------------------------------------------------
-    // Start Minigame
-    // -------------------------------------------------------
     private IEnumerator ShowAndStartGame(GameObject msgObj)
     {
         if (msgObj == null) yield break;
@@ -144,7 +130,12 @@ public class CRBarrierSystem : MonoBehaviour, IDataPersistence
         msgObj.SetActive(false);
         isShowing = false;
 
-        // Start the minigame
+        // Fade out -> switch camera -> fade in
+        yield return StartCoroutine(Fade(1f));
+
+        mainCamera.gameObject.SetActive(false);
+        puzzleCamera.gameObject.SetActive(true);
+
         if (barrierGameScreen != null)
             barrierGameScreen.SetActive(true);
 
@@ -152,15 +143,13 @@ public class CRBarrierSystem : MonoBehaviour, IDataPersistence
         {
             clickerGame.BarrierGameScreen = barrierGameScreen;
             SoundManager.Instance.PlayPuzzleMusic();
-
             clickerGame.StartGame();
             StartCoroutine(WaitForVictory());
         }
+
+        yield return StartCoroutine(Fade(0f));
     }
 
-    // -------------------------------------------------------
-    // Victory Handler
-    // -------------------------------------------------------
     private IEnumerator WaitForVictory()
     {
         while (!clickerGame.gameEnded)
@@ -169,17 +158,36 @@ public class CRBarrierSystem : MonoBehaviour, IDataPersistence
         if (clickerGame.victoryScreen.activeSelf)
         {
             CRBarrierAlreadyOpened = true;
-
             SoundManager.Instance.ReturnToBiomeMusic();
             NotifUIManager.Instance.NotifyBarrierComplete();
+
+            // Fade out -> return to main camera -> fade in
+            yield return StartCoroutine(Fade(1f));
+
+            barrierGameScreen.SetActive(false);
+            puzzleCamera.gameObject.SetActive(false);
+            mainCamera.gameObject.SetActive(true);
+
+            yield return StartCoroutine(Fade(0f));
 
             DisableBarrier();
         }
     }
 
-    // -------------------------------------------------------
-    // Disable Barrier
-    // -------------------------------------------------------
+    private IEnumerator Fade(float targetAlpha)
+    {
+        float startAlpha = fadeImage.color.a;
+        float t = 0f;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, targetAlpha, t / fadeDuration);
+            fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, alpha);
+            yield return null;
+        }
+        fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, targetAlpha);
+    }
+
     private void DisableBarrier()
     {
         if (boxCollider) boxCollider.enabled = false;
