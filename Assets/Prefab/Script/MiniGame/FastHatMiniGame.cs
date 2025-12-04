@@ -67,6 +67,7 @@ public class FastHatMinigame : MonoBehaviour
 
     void OnEnable()
     {
+        Debug.Log("FastHatMinigame: OnEnable -> StartMinigame");
         StartMinigame();
     }
 
@@ -147,7 +148,7 @@ public class FastHatMinigame : MonoBehaviour
             if (progressSlider != null)
                 progressSlider.value = currentHits;
 
-            // 🔥 Increase marker speed each success
+            // Speed up
             currentMarkerSpeed = Mathf.Min(currentMarkerSpeed + speedIncreasePerHit, maxMarkerSpeed);
 
             RandomizeTargetPosition();
@@ -207,7 +208,10 @@ public class FastHatMinigame : MonoBehaviour
             trigger = FindObjectOfType<FastHatMinigameTrigger>();
 
         if (trigger != null)
+        {
+            Debug.Log("FastHatMinigame: Calling trigger.OnFastHatMinigameEnd(" + success + ")");
             trigger.OnFastHatMinigameEnd(success);
+        }
 
         StartCoroutine(CloseAfterDelay());
     }

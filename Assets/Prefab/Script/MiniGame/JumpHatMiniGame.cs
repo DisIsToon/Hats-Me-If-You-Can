@@ -64,6 +64,7 @@ public class JumpHatMinigame : MonoBehaviour
 
     void OnEnable()
     {
+        Debug.Log("JumpHatMinigame: OnEnable -> StartMinigame");
         StartMinigame();
     }
 
@@ -201,12 +202,15 @@ public class JumpHatMinigame : MonoBehaviour
             jumpHatBarrier.CaptureJumpHat();
         }
 
-        // ⭐ Tell the trigger to restore camera & hide hat
+        // ⭐ Tell the trigger to restore camera & handle hat based on success/fail
         if (trigger == null)
             trigger = FindObjectOfType<JumpHatMinigameTrigger>();
 
         if (trigger != null)
-            trigger.ReleaseCameraFocus();
+        {
+            Debug.Log("JumpHatMinigame: Calling trigger.OnJumpHatMinigameEnd(" + success + ")");
+            trigger.OnJumpHatMinigameEnd(success);
+        }
 
         StartCoroutine(CloseAfterDelay());
     }

@@ -52,6 +52,7 @@ public class ShyHatMinigame : MonoBehaviour
         if (trigger == null)
             trigger = FindObjectOfType<ShyHatMinigameTrigger>();
 
+        Debug.Log("ShyHatMinigame: OnEnable -> StartMinigame");
         StartMinigame();
     }
 
@@ -151,17 +152,21 @@ public class ShyHatMinigame : MonoBehaviour
             resultText.color = success ? successColor : failColor;
         }
 
+        // ✅ On success, notify GameTracker via barrier
         if (success && shyHatBarrier != null)
         {
             shyHatBarrier.CaptureShyHat();
         }
 
-        // 🔁 ALWAYS try to give camera back to main
+        // ✅ Tell the trigger to restore camera & handle AI (success/fail)
         if (trigger == null)
             trigger = FindObjectOfType<ShyHatMinigameTrigger>();
 
         if (trigger != null)
-            trigger.ReleaseCameraFocus();
+        {
+            Debug.Log("ShyHatMinigame: Calling trigger.OnShyHatMinigameEnd(" + success + ")");
+            trigger.OnShyHatMinigameEnd(success);
+        }
 
         StartCoroutine(CloseAfterDelay());
     }
