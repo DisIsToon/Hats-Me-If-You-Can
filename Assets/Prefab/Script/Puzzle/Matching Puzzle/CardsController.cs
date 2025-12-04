@@ -22,6 +22,11 @@ public class CardsController : MonoBehaviour, IDataPersistence
     private float currentTime;
     private bool timerRunning = false;
 
+    [Header("Screens")]
+    public GameObject mainScreen;
+    public GameObject inventoryBTN;
+    public GameObject quickSlots;
+
     [Header("Mirror")]
     public GameObject mirror;
     public GameObject mirrorShardPrefab;
@@ -107,6 +112,9 @@ public class CardsController : MonoBehaviour, IDataPersistence
 
     private void OpenPuzzle()
     {
+        mainScreen.SetActive(false);
+        quickSlots.SetActive(false);
+        inventoryBTN.SetActive(false);
         SoundManager.Instance.PlayPuzzleMusic();
         PuzzleScreen.SetActive(true);
         isOpen = true;
@@ -124,6 +132,10 @@ public class CardsController : MonoBehaviour, IDataPersistence
 
     IEnumerator ClosePuzzleSequence()
     {
+        mainScreen.SetActive(true);
+        quickSlots.SetActive(true);
+        inventoryBTN.SetActive(true);
+
         SoundManager.Instance.ReturnToBiomeMusic();
         timerRunning = false;
         timerText.gameObject.SetActive(false);

@@ -1,4 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class CauldronTrigger : MonoBehaviour
 {
@@ -16,8 +20,9 @@ public class CauldronTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             if (CraftingSystem.Instance != null)
+                CraftingSystem.Instance.CraftingScreenOff();
                 CraftingSystem.Instance.SetCanCraft(false);
-            CraftingSystem.Instance.CraftingScreenOff();
+            
         }
     }
 }

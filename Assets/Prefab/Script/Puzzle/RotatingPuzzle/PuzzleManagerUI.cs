@@ -10,6 +10,14 @@ public class PuzzleManagerUI : MonoBehaviour
     public Camera mainCamera;
     public Camera puzzleCamera;
 
+    [Header("Puzzle Object")]
+    public GameObject puzzleObject;   // assign your puzzle's GameObject here
+
+    [Header("Screens")]
+    public GameObject mainScreen;
+    public GameObject inventoryBTN;
+    public GameObject quickSlots;
+
     [Header("Puzzle Parts")]
     public GameObject rotatingPuzzleScreen;
     public GameObject solvedPopup;
@@ -17,8 +25,12 @@ public class PuzzleManagerUI : MonoBehaviour
     public bool isOpen;
     private bool canPlayPuzzle = false;
     public RotatingRingUI[] rings;
-    public GameObject mainScreen;
     public bool puzzleComplete;
+
+    [Header("Cotton")]
+    public GameObject cotton;
+    public GameObject cottonPrefab;
+    public GameObject position;
 
     [Header("Fade Setting")]
     public CanvasGroup fadePanel;
@@ -93,6 +105,9 @@ public class PuzzleManagerUI : MonoBehaviour
         {
             SelectionManager.Instance.puzzleDetected = false;
             StartCoroutine(OpenPuzzleSequence());
+            mainScreen.SetActive(false);
+            quickSlots.SetActive(false);
+            inventoryBTN.SetActive(false);
         }
         else if (Input.GetKeyDown(KeyCode.E) && isOpen)
         {
@@ -110,6 +125,8 @@ public class PuzzleManagerUI : MonoBehaviour
         SoundManager.Instance.ReturnToBiomeMusic();
 
         mainScreen.SetActive(true);
+        quickSlots.SetActive(true);
+        inventoryBTN.SetActive(true);
 
         if (timerRoutine != null)
             StopCoroutine(timerRoutine);
@@ -163,6 +180,8 @@ public class PuzzleManagerUI : MonoBehaviour
 
     public void OnRingSolved(RotatingRingUI ring)
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.rotatingPuzzlePartCompleteSound);
+
         if (solvedPopup)
             StartCoroutine(ShowSolvedPopup());
 
@@ -178,10 +197,30 @@ public class PuzzleManagerUI : MonoBehaviour
 
     IEnumerator ShowCompletePuzzlePopup()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound);
+
         QuestManager.Instance.SetLiraPuzzleComplete();
         completePuzzlePopup.SetActive(true);
         puzzleComplete = true;
 
+        // 🔥 Disable collider on puzzle object
+        if (puzzleObject != null)
+        {
+            BoxCollider col = puzzleObject.GetComponent<BoxCollider>();
+            if (col != null)
+                col.enabled = false;
+        }
+
+        // 🔥 Prevent puzzle from ever opening again
+        canPlayPuzzle = false;
+
+        // Spawn cotton reward
+        if (cottonPrefab != null && cotton != null)
+        {
+            Instantiate(cottonPrefab, position.transform.position, position.transform.rotation);
+        }
+
+        // Stop timer
         if (timerRoutine != null)
             StopCoroutine(timerRoutine);
 
@@ -189,6 +228,7 @@ public class PuzzleManagerUI : MonoBehaviour
             timerText.text = "";
 
         GameTracker.Instance.SetPuzzleComplete(true);
+
         yield return new WaitForSeconds(1f);
 
         PuzzleScreenOff();
@@ -197,6 +237,8 @@ public class PuzzleManagerUI : MonoBehaviour
 
         NotifUIManager.Instance.NotifyPuzzleComplete();
     }
+
+
 
     void CheckIfAllSolved()
     {

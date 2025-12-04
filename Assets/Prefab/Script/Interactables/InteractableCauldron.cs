@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class InteractableCauldron : MonoBehaviour
 {
     public bool playerInRange;
+    public bool isOpen;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -14,6 +15,7 @@ public class InteractableCauldron : MonoBehaviour
         {
             SelectionManager.Instance.cauldronDetected = true;
             playerInRange = true;
+            isOpen = true;
         }
     }
 
@@ -21,10 +23,22 @@ public class InteractableCauldron : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            CraftingSystem.Instance.CraftingScreenOff();
             SelectionManager.Instance.cauldronDetected = false;
             playerInRange = false;
-            CraftingSystem.Instance.CraftingScreenOff();
+            isOpen = true;
 
+        }
+    }
+
+    private void Update()
+    {
+        // Player presses E while inside trigger
+        if (playerInRange && Input.GetKeyDown(KeyCode.E) &&isOpen)
+        {
+            CraftingSystem.Instance.CraftingScreenOff();
+            SelectionManager.Instance.cauldronDetected = false;
+            playerInRange = false;
         }
     }
 }

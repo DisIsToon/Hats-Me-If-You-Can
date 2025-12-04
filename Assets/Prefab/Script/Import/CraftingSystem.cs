@@ -86,7 +86,7 @@ public class CraftingSystem : MonoBehaviour
 
     void CraftAnyItem(ItemBlueprints blueprintToCraft)
     {
-        //SoundManager.Instance.PlaySound(SoundManager.Instance.craftingSound);
+        SoundManager.Instance.PlaySound(SoundManager.Instance.brewPotion);
 
         StartCoroutine(craftingDelayForSound(blueprintToCraft));
         
@@ -121,11 +121,9 @@ public class CraftingSystem : MonoBehaviour
 
     IEnumerator craftingDelayForSound(ItemBlueprints blueprintToCraft)
     {
-        //VideoPlayerManager.Instance.PlayCraftVideo();
+      
         yield return new WaitForSeconds(1f);
-
-        //SoundManager.Instance.craftingSound.Stop();
-
+        SoundManager.Instance.brewPotion.Stop();
         // Produce the amount of items according to the blueprint
         for (var i = 0; i < blueprintToCraft.numOfItemsToProduce; i++)
         {
@@ -143,6 +141,11 @@ public class CraftingSystem : MonoBehaviour
             StartCoroutine(OpenCraftingScreen());
         }
         else if (Input.GetKeyDown(KeyCode.E) && isOpen)
+        {
+            StartCoroutine(CloseCraftingScreen());
+        }
+
+        if(canCraft ==  false && isOpen)
         {
             StartCoroutine(CloseCraftingScreen());
         }

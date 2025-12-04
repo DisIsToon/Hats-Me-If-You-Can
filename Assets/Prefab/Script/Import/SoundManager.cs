@@ -133,6 +133,32 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void StopSound(AudioSource soundToStop)
+    {
+        if (soundToStop != null && soundToStop.isPlaying)
+        {
+            soundToStop.Stop();
+        }
+    }
+
+    public void StopAllMusic()
+    {
+        foreach (AudioSource bgm in allBGMs)
+        {
+            if (bgm != null && bgm.isPlaying)
+                bgm.Stop();
+        }
+    }
+
+    public void StopAllSFX()
+    {
+        foreach (AudioSource sfx in allSFX)
+        {
+            if (sfx != null && sfx.isPlaying)
+                sfx.Stop();
+        }
+    }
+
     public void SetSFXVolume(float value)
     {
         sfxVolume = value;
@@ -180,9 +206,18 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySound(AudioSource soundToPlay)
     {
+        if (soundToPlay == null)
+            return;
+
         if (!soundToPlay.isPlaying)
             soundToPlay.Play();
     }
+
+    public void PlaySFX(AudioSource audio)
+    {
+        audio.PlayOneShot(audio.clip);
+    }
+
 
     public void PlayBGMusic(AudioSource newMusic)
     {
