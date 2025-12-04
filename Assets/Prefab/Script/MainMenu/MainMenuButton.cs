@@ -8,12 +8,9 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 #endif
 
-public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
-{
-    public Animator animator;
+public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 
-    [Tooltip("Animation type: Expand or Spin")]
-    public string hoverAnimationType = "Expand"; // or "Spin"
+{
 
     [Tooltip("Function to perform: NewGame, LoadGame, ShowSettings, ShowCredits, ShowMainMenu, Exit")]
     public string buttonFunction;
@@ -23,36 +20,28 @@ public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public GameObject settingsPanel;
     public GameObject creditsPanel;
     public GameObject loadGamePanel;
-    public GameObject gameSceneLoader;  
+    public GameObject gameSceneLoader;
+
+    [Header("Button Styles")]
+    public GameObject style1;
+    public GameObject style2;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (animator == null) return;
-
-        switch (hoverAnimationType)
-        {
-            case "Expand":
-                animator.Play("HoverExpand", 0, 0);
-                break;
-            case "Spin":
-                animator.Play("SpinAnimation", 0, 0);
-                break;
-        }
+        if (style2 != null)
+            style2.SetActive(false);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (animator == null) return;
+        if (style2 != null)
+            style2.SetActive(true);
+    }
 
-        switch (hoverAnimationType)
-        {
-            case "Expand":
-                animator.Play("HoverShrink", 0, 0);
-                break;
-            case "Spin":
-                animator.Play("Idle", 0, 0); // or a reset rotation animation
-                break;
-        }
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("MainMenuButton clicked: " + buttonFunction);
+        OnClick(); // call your existing method
     }
 
     public void OnClick()
@@ -65,18 +54,22 @@ public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                  break;
             */
             case "LoadGame":
+                Debug.Log("LoadGame ");
                 TogglePanels(loadGamePanel);
                 break;
            
             case "ShowSettings":
+                Debug.Log("ShowSettings ");
                 TogglePanels(settingsPanel);
                 break;
 
             case "ShowCredits":
+                Debug.Log("ShowCredits ");
                 TogglePanels(creditsPanel);
                 break;
 
             case "ShowMainMenu":
+                Debug.Log("ShowMainMenu ");
                 TogglePanels(mainMenuPanel);
                 break;
 

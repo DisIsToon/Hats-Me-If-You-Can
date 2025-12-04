@@ -17,32 +17,42 @@ public class MainMenuTest : Menu
 
     private void Start()
     {
-        if(!DataPersistenceManager.instance.HasGameData())
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (!DataPersistenceManager.instance.HasGameData())
         {
             continuegameButton.interactable = false;
             loadGameButton.interactable = false;
         }
     }
+
+    void Update()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
     public void OnNewGameClicked()
     {
+        Debug.Log("OnNewGameClicked Clicked");
         saveSlotsMenu.ActivateMenu(false);
         this.DeactivateMenu();
     }
 
     public void OnLoadGameClicked()
     {
+        Debug.Log("Load Game Clicked");
         saveSlotsMenu.ActivateMenu(true);
         this.DeactivateMenu();
     }
 
     public void OnContinueGameClicked()
     {
+        Debug.Log("OnContinueGameClicked Clicked");
         DisableMenuButtons();
 
         DataPersistenceManager.instance.SaveGame();
-         
-        Debug.Log("Load Game Clicked");
-        SceneManager.LoadSceneAsync("TestPlayground");
+        SceneManager.LoadSceneAsync("BiomeOptimized");
     }
 
     private void DisableMenuButtons()

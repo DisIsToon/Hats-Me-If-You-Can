@@ -10,7 +10,7 @@ public class DataPersistenceManager : MonoBehaviour
     [SerializeField] private bool initializeDataIfNull = false;
     [SerializeField] private bool forTestDisableDataPersistence = false;
     [SerializeField] private bool forTestOverrideSelectedProfileId = false;
-    [SerializeField] private string testSelectedProfileId = "test";
+    [SerializeField] private string testSelectedProfileId = "MainGame";
 
     [Header("File Storage Config")]
     [SerializeField] private string fileName;
