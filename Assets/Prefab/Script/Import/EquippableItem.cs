@@ -10,6 +10,10 @@ public class EquippableItem : MonoBehaviour
     public Animator animator;
     public CharacterController characterController; // optional for run anims
 
+    [Header("Inventory Link")]
+    [Tooltip("Must match the InventoryItem's identifier for this throwable.")]
+    public string itemName;
+
     // internal state
     bool isEquipped = false;
     Rigidbody rb;
@@ -44,7 +48,7 @@ public class EquippableItem : MonoBehaviour
             // animator.SetBool("runWithPlayer", isMoving);
         }
 
-        // 🚫 NO input or throw logic here anymore
+        // 🚫 NO input or throw logic here – Player's Throw script handles it.
     }
 
     public void OnEquip()
@@ -77,7 +81,7 @@ public class EquippableItem : MonoBehaviour
 
     public void OnThrow()
     {
-        // just animation hook
+        // animation hook if you want
         // animator?.SetTrigger("throw");
     }
 
