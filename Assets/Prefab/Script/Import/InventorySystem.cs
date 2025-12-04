@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,21 +8,21 @@ using TMPro;
 public class InventorySystem : MonoBehaviour
 {
     public GameObject ItemInfoUI;
-
     public GameObject CraftingItemInfoUI;
     public static InventorySystem Instance { get; set; }
 
     public GameObject inventoryScreenUI;
 
-    public List<GameObject>slotList = new List<GameObject>();
+    // Main inventory slots (tag "Slot")
+    public List<GameObject> slotList = new List<GameObject>();
+
+    // Quick slots (tag "QuickSlot")
+    public List<GameObject> quickSlotList = new List<GameObject>();
 
     public List<string> itemList = new List<string>();
-    
-    private GameObject itemToAdd;
 
+    private GameObject itemToAdd;
     private GameObject whatSlotToEquip;
-    
-    //public bool isFull;
 
     public bool isOpen;
 
@@ -30,8 +30,7 @@ public class InventorySystem : MonoBehaviour
     public GameObject pickupAlert;
     public TextMeshProUGUI pickupName;
     public Image pickupImage;
- 
- 
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -43,11 +42,9 @@ public class InventorySystem : MonoBehaviour
             Instance = this;
         }
     }
- 
- 
+
     void Start()
     {
-
         if (pickupAlert == null)
         {
             Debug.LogError("PickupAlert is not assigned in the Inspector!");
@@ -62,63 +59,58 @@ public class InventorySystem : MonoBehaviour
         }
 
         pickupName = pickupAlert.transform.Find("Text").GetComponent<TextMeshProUGUI>();
-        isOpen = false; 
-        PopulateSlotList();
+        isOpen = false;
 
+        PopulateSlotList();
+        PopulateQuickSlotList();
     }
 
     private void PopulateSlotList()
     {
-        foreach(Transform child in inventoryScreenUI.transform)
+        slotList.Clear();
+        foreach (Transform child in inventoryScreenUI.transform)
         {
-            if(child.CompareTag("Slot"))
+            if (child.CompareTag("Slot"))
             {
                 slotList.Add(child.gameObject);
             }
         }
     }
- 
- 
+
+    private void PopulateQuickSlotList()
+    {
+        quickSlotList.Clear();
+        GameObject[] qs = GameObject.FindGameObjectsWithTag("QuickSlot");
+        quickSlotList.AddRange(qs);
+    }
+
     void Update()
     {
- 
         if (Input.GetKeyDown(KeyCode.I) && !isOpen)
         {
- 
-			Debug.Log("i is pressed");
+            Debug.Log("i is pressed");
             inventoryScreenUI.SetActive(true);
-
-        
-
-            //SelectionManager.Instance.DisableSelection();
-            //SelectionManager.Instance.GetComponent<SelectionManager>().enabled = false;
-
             isOpen = true;
- 
         }
         else if (Input.GetKeyDown(KeyCode.I) && isOpen)
         {
             inventoryScreenUI.SetActive(false);
-
-           
-
             isOpen = false;
         }
     }
 
     public void OpenInventory()
     {
-        if(!isOpen)
+        if (!isOpen)
         {
             inventoryScreenUI.SetActive(true);
             isOpen = true;
         }
-
     }
 
     public void AddToInventory(string itemName)
     {
-        // 1) Check if item already exists in inventory
+        // 1) Check if item already exists in inventory (main slots + quickslots)
         GameObject existingSlot = FindSlotWithItem(itemName);
 
         if (existingSlot != null)
@@ -136,7 +128,7 @@ public class InventorySystem : MonoBehaviour
             return;
         }
 
-        // 2) Item does NOT exist → add a new slot
+        // 2) Item does NOT exist → add a new slot in main inventory
         whatSlotToEquip = FindNextEmptySlot();
 
         itemToAdd = Instantiate(Resources.Load<GameObject>(itemName),
@@ -144,6 +136,8 @@ public class InventorySystem : MonoBehaviour
             whatSlotToEquip.transform.rotation);
 
         itemToAdd.transform.SetParent(whatSlotToEquip.transform);
+        itemToAdd.transform.localPosition = Vector3.zero;
+
         itemList.Add(itemName);
 
         TriggerPickupPopUp(itemName, itemToAdd.GetComponent<Image>().sprite);
@@ -155,6 +149,7 @@ public class InventorySystem : MonoBehaviour
 
     private GameObject FindSlotWithItem(string itemName)
     {
+        // Check main inventory slots
         foreach (GameObject slot in slotList)
         {
             if (slot.transform.childCount > 0)
@@ -164,25 +159,33 @@ public class InventorySystem : MonoBehaviour
                     return slot;
             }
         }
+
+        // Check quickslots
+        foreach (GameObject slot in quickSlotList)
+        {
+            if (slot.transform.childCount > 0)
+            {
+                string childName = slot.transform.GetChild(0).name.Replace("(Clone)", "");
+                if (childName == itemName)
+                    return slot;
+            }
+        }
+
         return null;
     }
 
     private void IncreaseStack(GameObject slot)
     {
         Transform item = slot.transform.GetChild(0);
-
         TextMeshProUGUI stackText = item.Find("StackText").GetComponent<TextMeshProUGUI>();
 
         int currentStack = 1;
-
         if (!string.IsNullOrEmpty(stackText.text))
             int.TryParse(stackText.text, out currentStack);
 
         currentStack++;
-
         stackText.text = currentStack.ToString();
     }
-
 
     void TriggerPickupPopUp(string itemName, Sprite itemSprite)
     {
@@ -197,15 +200,14 @@ public class InventorySystem : MonoBehaviour
     IEnumerator DeactivatePickupAlert()
     {
         yield return new WaitForSeconds(2f);
-
         pickupAlert.SetActive(false);
     }
-    
+
     private GameObject FindNextEmptySlot()
     {
-        foreach(GameObject slot in slotList)
+        foreach (GameObject slot in slotList)
         {
-            if(slot.transform.childCount == 0)
+            if (slot.transform.childCount == 0)
             {
                 return slot;
             }
@@ -216,30 +218,46 @@ public class InventorySystem : MonoBehaviour
     public bool CheckSlotsAvailable(int emptyNeeded)
     {
         int emptySlot = 0;
-        foreach(GameObject slot in slotList)
+        foreach (GameObject slot in slotList)
         {
-            if(slot.transform.childCount <= 0)
+            if (slot.transform.childCount <= 0)
             {
                 emptySlot += 1;
             }
         }
-        if(emptySlot >= emptyNeeded)
+        return emptySlot >= emptyNeeded;
+    }
+
+    // 🔹 Core remover: now checks main slots, then quickslots
+    public void RemoveItem(string nameToRemove, int amountToRemove)
+    {
+        // Try main inventory slots first
+        if (TryRemoveFromSlots(slotList, nameToRemove, amountToRemove))
         {
-            return true;
+            ReCalculateList();
+            CraftingSystem.Instance.RefreshNeededItem();
+            QuestManager.Instance.RefreshTrackerList();
+            return;
         }
-        else
+
+        // Then quickslots (if item lives only in quickslot)
+        if (TryRemoveFromSlots(quickSlotList, nameToRemove, amountToRemove))
         {
-            return false;
+            ReCalculateList();
+            CraftingSystem.Instance.RefreshNeededItem();
+            QuestManager.Instance.RefreshTrackerList();
+            return;
         }
     }
 
-    public void RemoveItem(string nameToRemove, int amountToRemove)
+    private bool TryRemoveFromSlots(List<GameObject> slots, string nameToRemove, int amountToRemove)
     {
-        for (int i = 0; i < slotList.Count; i++)
+        for (int i = 0; i < slots.Count; i++)
         {
-            if (slotList[i].transform.childCount == 0) continue;
+            if (slots[i] == null) continue;
+            if (slots[i].transform.childCount == 0) continue;
 
-            GameObject child = slotList[i].transform.GetChild(0).gameObject;
+            GameObject child = slots[i].transform.GetChild(0).gameObject;
             string childName = child.name.Replace("(Clone)", "");
 
             if (childName == nameToRemove)
@@ -256,25 +274,32 @@ public class InventorySystem : MonoBehaviour
                 }
                 else
                 {
-                    // delete item completely
+                    // delete item completely from this slot
                     Destroy(child);
                 }
 
-                ReCalculateList();
-                CraftingSystem.Instance.RefreshNeededItem();
-                QuestManager.Instance.RefreshTrackerList();
-                return;
+                return true;
             }
         }
+        return false;
     }
-
 
     public void ReCalculateList()
     {
         itemList.Clear();
 
-        foreach (GameObject slot in slotList)
+        // Rebuild from main slots
+        RecalcFromSlotCollection(slotList);
+
+        // And from quickslots if you want them to count as owned items
+        RecalcFromSlotCollection(quickSlotList);
+    }
+
+    private void RecalcFromSlotCollection(List<GameObject> slots)
+    {
+        foreach (GameObject slot in slots)
         {
+            if (slot == null) continue;
             if (slot.transform.childCount > 0)
             {
                 GameObject item = slot.transform.GetChild(0).gameObject;
@@ -291,17 +316,15 @@ public class InventorySystem : MonoBehaviour
         }
     }
 
-
     public int CheckItemAmount(string name)
     {
-        int itemCounter = 0;   
-
+        int itemCounter = 0;
         foreach (string item in itemList)
         {
-            if(item == name)
+            if (item == name)
             {
                 itemCounter++;
-            }    
+            }
         }
         return itemCounter;
     }
