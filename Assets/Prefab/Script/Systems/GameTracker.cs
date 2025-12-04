@@ -57,6 +57,8 @@ public class GameTracker : MonoBehaviour, IDataPersistence
     public bool winterBiomeAlreadyDiscovered;
     public bool springGardenAlreadyDiscovered;
 
+    public GameObject allHatsCapturedObject; // assign in inspector
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -279,6 +281,13 @@ public class GameTracker : MonoBehaviour, IDataPersistence
             default:
                 Debug.LogWarning("Unknown hat: " + hatName);
                 break;
+        }
+
+        // Check if all hats are captured
+        if (AllHatsCaptured() && allHatsCapturedObject != null)
+        {
+            allHatsCapturedObject.SetActive(true);
+            Debug.Log("All hats captured! Object activated.");
         }
     }
 

@@ -69,9 +69,6 @@ public class Throw : MonoBehaviour
 
     RigidbodyPlayerWithSprintAndStamina player;
 
-    // 🟢 tracks which inventory item this held throwable represents
-    [SerializeField] private string currentItemName;
-
     void Start()
     {
         player = GetComponent<RigidbodyPlayerWithSprintAndStamina>();
@@ -207,18 +204,6 @@ public class Throw : MonoBehaviour
         float force = GetCurrentThrowForce();
         Vector3 throwDir = GetThrowDirection();
         heldRb.AddForce(throwDir * force, ForceMode.Impulse);
-
-        // 🟢 Consume 1 from the stack in the inventory
-        if (InventorySystem.Instance != null && !string.IsNullOrEmpty(currentItemName))
-        {
-            InventorySystem.Instance.RemoveItem(currentItemName, 1);
-
-            // Optional: clear currentItemName if none left
-            if (InventorySystem.Instance.CheckItemAmount(currentItemName) <= 0)
-            {
-                currentItemName = null;
-            }
-        }
 
         // 🔹 Bottle-style: destroy after it lands / slows down
         StartCoroutine(DestroyAfterThrow(thrownObject));
@@ -415,9 +400,6 @@ public class Throw : MonoBehaviour
             return;
         }
 
-        // 🟢 Remember which inventory item this is
-        currentItemName = itemName;
-
         // Find definition
         ThrowableDefinition def = throwableItems.Find(t => t.itemName == itemName);
         if (def == null || def.prefab == null)
@@ -452,7 +434,6 @@ public class Throw : MonoBehaviour
         heldRb = null;
         heldCol = null;
         heldEquippable = null;
-        currentItemName = null;
 
         arcRenderer.enabled = false;
         if (landingMarker) landingMarker.SetActive(false);

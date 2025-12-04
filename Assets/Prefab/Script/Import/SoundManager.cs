@@ -64,19 +64,19 @@ public class SoundManager : MonoBehaviour
 
     [Header("Music Settings")]
     public float fadeDuration = 1.5f;
-    private AudioSource currentBGMusic;
-    private string lastBiome = "Forest";   // default, or set on player spawn
+    public AudioSource currentBGMusic;
+    public string lastBiome = "Forest";   // default, or set on player spawn
 
     [Header("Volume Settings")]
     [Range(0f, 1f)] public float bgmVolume = 1f;
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
     // List of all SFX AudioSources
-    private List<AudioSource> allSFX = new List<AudioSource>();
+    public List<AudioSource> allSFX = new List<AudioSource>();
     // List of all BGMs
-    private List<AudioSource> allBGMs = new List<AudioSource>();
+    public List<AudioSource> allBGMs = new List<AudioSource>();
 
-    private void Awake()
+    public void Awake()
     {
         Instance = this;
 
@@ -93,7 +93,7 @@ public class SoundManager : MonoBehaviour
         brewingMusic.volume = 0;
     }
 
-    private void Start()
+    public void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -143,7 +143,7 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         switch (scene.name)
         {
@@ -199,7 +199,7 @@ public class SoundManager : MonoBehaviour
     }
 
 
-    private IEnumerator FadeIn(AudioSource audio)
+    public IEnumerator FadeIn(AudioSource audio)
     {
         audio.volume = 0f;
 
@@ -215,7 +215,7 @@ public class SoundManager : MonoBehaviour
         audio.volume = 1f;
     }
 
-    private IEnumerator FadeOut(AudioSource audio)
+    public IEnumerator FadeOut(AudioSource audio)
     {
         while (audio.volume > 0f)
         {

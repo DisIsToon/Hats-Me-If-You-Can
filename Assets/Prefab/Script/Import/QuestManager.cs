@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 using TMPro;
 
 public class QuestManager : MonoBehaviour
@@ -24,10 +25,17 @@ public class QuestManager : MonoBehaviour
     public bool liraQuestAccepted = false;
     public bool mallowQuestAccepted = false;
     public bool tulipQuestAccepted = false;
+    public bool HeadMasterQuestAccepted = false;
 
     [Header("Quests")]
     public List<Quest> allActiveQuests;
     public List<Quest> allCompletedQuests;
+
+    [Header("Video UI")]
+    public RawImage videoRawImage;          // assign the RawImage in inspector
+    public VideoPlayer headmasterVideoPlayer; // assign VideoPlayer in inspector
+
+    private bool hasPlayedHeadmasterVideo = false;
 
     [Header("Active Quest")]
     public QuestInfo activeQuest;
@@ -65,6 +73,14 @@ public class QuestManager : MonoBehaviour
         liraPuzzleQuest.questDescription = "Complete the old puzzle Lira found.";
         liraPuzzleQuest.accepted = false;
         liraPuzzleQuest.isCompleted = false;
+
+        // Hide the RawImage at start
+        if (videoRawImage != null)
+            videoRawImage.gameObject.SetActive(false);
+
+        // Optional: subscribe to video end event
+        if (headmasterVideoPlayer != null)
+            headmasterVideoPlayer.loopPointReached += OnVideoFinished;
     }
 
     public void SetLiraPuzzleComplete()
@@ -184,15 +200,80 @@ public class QuestManager : MonoBehaviour
                 break;
         }
     }
-    
+
     #region Quest Menu Toggle
-    private void Update()
+    public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        /*
+        // Play HeadMaster video if accepted and not yet played
+        if (HeadMasterQuestAccepted && !hasPlayedHeadmasterVideo)
         {
-            questMenu.SetActive(!isQuestMenuOpen);
-            isQuestMenuOpen = !isQuestMenuOpen;
+            //PlayHeadMasterVideoAfterDialog();
         }
+        */
+    }
+
+    public void PlayHeadMasterVideoAfterDialog()
+    {
+        if (HeadMasterQuestAccepted && !hasPlayedHeadmasterVideo)
+        {
+            if (headmasterVideoPlayer != null && videoRawImage != null)
+            {
+                // Stop all game sounds
+                if (SoundManager.Instance != null)
+                {
+                    foreach (AudioSource sfx in SoundManager.Instance.allSFX)
+                        sfx.Pause();
+
+                    foreach (AudioSource bgm in SoundManager.Instance.allBGMs)
+                        bgm.Pause();
+                }
+
+                videoRawImage.gameObject.SetActive(true);
+                headmasterVideoPlayer.gameObject.SetActive(true);
+                headmasterVideoPlayer.Play();
+                hasPlayedHeadmasterVideo = true;
+
+                // Subscribe safely
+                headmasterVideoPlayer.loopPointReached -= OnVideoFinished; // remove any previous
+                headmasterVideoPlayer.loopPointReached += OnVideoFinished;
+            }
+            else
+            {
+                Debug.LogWarning("HeadMaster VideoPlayer or RawImage not assigned!");
+            }
+        }
+    }
+
+    public void OnVideoFinished(VideoPlayer vp)
+    {
+        // Unsubscribe immediately to avoid multiple calls
+        vp.loopPointReached -= OnVideoFinished;
+
+        if (videoRawImage != null)
+            videoRawImage.gameObject.SetActive(false);
+
+        if (vp != null)
+            vp.gameObject.SetActive(false);
+
+        // Resume all sounds
+        if (SoundManager.Instance != null)
+        {
+            foreach (AudioSource sfx in SoundManager.Instance.allSFX)
+                sfx.UnPause();
+
+            foreach (AudioSource bgm in SoundManager.Instance.allBGMs)
+                bgm.UnPause();
+        }
+    }
+
+
+
+
+    public void AcceptHeadMasterQuest()
+    {
+        HeadMasterQuestAccepted = true;
+        // Any additional logic for HeadMaster quest
     }
     #endregion
 
@@ -279,6 +360,10 @@ public class QuestManager : MonoBehaviour
         {
             tulipQuestAccepted = true;
             NotifUIManager.Instance.NotifyQuestAccepted("Lost Hat");
+        }
+        else if (npcName == "Headmaster")
+        {
+            HeadMasterQuestAccepted = true;
         }
     }
 
