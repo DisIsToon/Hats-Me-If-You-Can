@@ -28,14 +28,13 @@ public class JumpHatMinigameTrigger : MonoBehaviour
     public float startMinigameDelay = 0.6f;
 
     [Header("Trigger Settings")]
-    public bool canTriggerMultipleTimes = false;
+    [Tooltip("Tag used by your throwable object.")]
     public string throwableTag = "Throwable";
 
-    [Header("Hat Root (hidden after minigame ends)")]
-    [Tooltip("Main hat object to hide when minigame ends. If empty, uses this GameObject.")]
+    [Header("Hat Root (hidden on success)")]
+    [Tooltip("Main hat object to hide when minigame ends successfully. If empty, uses this GameObject.")]
     public GameObject hatRoot;
 
-    bool hasTriggered = false;
     Coroutine pendingStart;
 
     void Awake()
@@ -50,30 +49,36 @@ public class JumpHatMinigameTrigger : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag(throwableTag))
+        {
+            Debug.Log("JumpHatMinigameTrigger: OnCollisionEnter with throwable");
             TriggerSequence();
+        }
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(throwableTag))
+        {
+            Debug.Log("JumpHatMinigameTrigger: OnTriggerEnter with throwable");
             TriggerSequence();
+        }
     }
 
     void TriggerSequence()
     {
-        if (hasTriggered && !canTriggerMultipleTimes)
-            return;
+        Debug.Log("JumpHatMinigameTrigger: TriggerSequence called.");
 
-        hasTriggered = true;
-
-        // 🔹 Stop hat jumping when hit
+        // 1) Stop hat movement immediately
         if (hatAI != null)
+        {
+            Debug.Log("JumpHatMinigameTrigger: Disabling JumpHatAI.");
             hatAI.enabled = false;
+        }
 
-        // 🔹 Switch to CM_JumpHat and track the hat
+        // 2) Switch camera to JumpHat vcam and focus on it
         FocusHatCamera();
 
-        // 🔹 Start minigame after a small delay
+        // 3) Start minigame after delay
         if (pendingStart != null)
             StopCoroutine(pendingStart);
 
@@ -83,21 +88,22 @@ public class JumpHatMinigameTrigger : MonoBehaviour
     void FocusHatCamera()
     {
         if (jumpHatCamera == null)
+        {
+            Debug.LogWarning("JumpHatMinigameTrigger: jumpHatCamera not assigned.");
             return;
+        }
 
-        // ✅ CM3: use Follow + LookAt (Inspector "Tracking Target")
+        // CM3: Follow + LookAt (same pattern as FastHat)
         jumpHatCamera.Follow = hatFocusTarget;
         jumpHatCamera.LookAt = hatFocusTarget;
 
         if (playerCamera != null)
         {
-            // Priority-based switching
             playerCamera.Priority = 5;
             jumpHatCamera.Priority = 20;
         }
         else
         {
-            // Fallback if you're not using priorities
             jumpHatCamera.gameObject.SetActive(true);
         }
     }
@@ -111,14 +117,26 @@ public class JumpHatMinigameTrigger : MonoBehaviour
             yield return null;
         }
 
-        if (jumpHatMinigameUI != null && !jumpHatMinigameUI.activeSelf)
-            jumpHatMinigameUI.SetActive(true); // JumpHatMinigame.OnEnable()
+        if (jumpHatMinigameUI != null)
+        {
+            if (!jumpHatMinigameUI.activeSelf)
+            {
+                Debug.Log("JumpHatMinigameTrigger: Activating JumpHatMinigame UI.");
+                jumpHatMinigameUI.SetActive(true);   // triggers JumpHatMinigame.OnEnable()
+            }
+        }
+        else
+        {
+            Debug.LogWarning("JumpHatMinigameTrigger: jumpHatMinigameUI is not assigned.");
+        }
     }
 
-    // Called by JumpHatMinigame when it ends
-    public void ReleaseCameraFocus()
+    // 🔹 Called by JumpHatMinigame when it ends
+    public void OnJumpHatMinigameEnd(bool success)
     {
-        // 🔹 Return control to player camera
+        Debug.Log("JumpHatMinigameTrigger: OnJumpHatMinigameEnd(" + success + ")");
+
+        // 1) Camera back to player
         if (playerCamera != null && jumpHatCamera != null)
         {
             playerCamera.Priority = 20;
@@ -129,10 +147,22 @@ public class JumpHatMinigameTrigger : MonoBehaviour
             jumpHatCamera.gameObject.SetActive(false);
         }
 
-        // 🔹 Hide the hat after the encounter
-        if (hatRoot != null)
-            hatRoot.SetActive(false);
+        // 2) Handle success vs fail
+        if (success)
+        {
+            // ✅ SUCCESS: hide the hat (capture handled by TestJumpHatBarrier)
+            if (hatRoot != null)
+                hatRoot.SetActive(false);
+            else
+                gameObject.SetActive(false);
+        }
         else
-            gameObject.SetActive(false);
+        {
+            // ❌ FAIL: give another chance → re-enable AI
+            Debug.Log("JumpHatMinigameTrigger: Minigame failed, re-enabling JumpHatAI for another try.");
+
+            if (hatAI != null)
+                hatAI.enabled = true;
+        }
     }
 }

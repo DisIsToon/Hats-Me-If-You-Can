@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Unity.Cinemachine;   // Cinemachine 3
+using System.Collections;
 
 public class ShyHatMinigameTrigger : MonoBehaviour
 {
@@ -11,8 +12,9 @@ public class ShyHatMinigameTrigger : MonoBehaviour
     [Tooltip("Tag of objects that can trigger the minigame (e.g. 'Throwable').")]
     public string throwableTag = "Throwable";
 
-    [Tooltip("If true, minigame can only be triggered once.")]
-    public bool oneTimeOnly = true;
+    [Header("Shy Hat AI")]
+    [Tooltip("Assign the ShyHatAI script here so it stops moving when hit.")]
+    public MonoBehaviour shyHatAI;  // e.g. ShyHatAI
 
     [Header("Cinemachine Focus")]
     [Tooltip("Cinemachine 3 camera that should focus on this hat when the minigame starts.")]
@@ -29,8 +31,8 @@ public class ShyHatMinigameTrigger : MonoBehaviour
     [Tooltip("If true, the AI must call EnableCapture() before this trigger will work.")]
     public bool requireEnableFromAI = true;
 
-    private bool hasTriggered = false;
-    private bool canTrigger = false;   // set by AI
+    // gating controlled by AI
+    private bool canTrigger = false;
 
     // original camera state so we can restore it
     private int originalPriority;
@@ -62,22 +64,26 @@ public class ShyHatMinigameTrigger : MonoBehaviour
 
     void CheckHit(GameObject hitObject)
     {
-        if (hasTriggered && oneTimeOnly)
-            return;
-
         if (!hitObject.CompareTag(throwableTag))
             return;
 
         if (requireEnableFromAI && !canTrigger)
         {
-            // Hat not at the final point yet
+            // AI hasn't allowed capture yet (e.g., not at final spot)
+            Debug.Log("ShyHatMinigameTrigger: Hit, but capture not enabled by AI yet.");
             return;
         }
 
-        hasTriggered = true;
-        Debug.Log("ShyHatMinigameTrigger: Hit by throwable, focusing camera and starting minigame.");
+        Debug.Log("ShyHatMinigameTrigger: Hit by throwable, stopping AI and starting minigame.");
 
-        // Focus camera on THIS hat
+        // 1) Stop Shy Hat movement immediately
+        if (shyHatAI != null)
+        {
+            Debug.Log("ShyHatMinigameTrigger: Disabling ShyHatAI.");
+            shyHatAI.enabled = false;
+        }
+
+        // 2) Focus camera on THIS hat
         if (focusCamera != null)
         {
             focusCamera.Follow = transform;
@@ -85,14 +91,18 @@ public class ShyHatMinigameTrigger : MonoBehaviour
             focusCamera.Priority = focusPriority;
         }
 
-        // Start minigame after a short delay (camera settles)
+        // 3) Start minigame after a short delay (camera settles)
         if (minigamePanel != null)
         {
             StartCoroutine(StartMinigameAfterDelay());
         }
+        else
+        {
+            Debug.LogWarning("ShyHatMinigameTrigger: minigamePanel is not assigned.");
+        }
     }
 
-    System.Collections.IEnumerator StartMinigameAfterDelay()
+    IEnumerator StartMinigameAfterDelay()
     {
         // Wait in unscaled time so pausing Time.timeScale later doesn't matter
         float elapsed = 0f;
@@ -102,7 +112,8 @@ public class ShyHatMinigameTrigger : MonoBehaviour
             yield return null;
         }
 
-        minigamePanel.SetActive(true);
+        Debug.Log("ShyHatMinigameTrigger: Activating ShyHatMinigame UI.");
+        minigamePanel.SetActive(true); // ShyHatMinigame.OnEnable()
     }
 
     /// <summary>
@@ -119,15 +130,36 @@ public class ShyHatMinigameTrigger : MonoBehaviour
     }
 
     /// <summary>
-    /// Called by ShyHatMinigame when the minigame ends to restore the camera.
+    /// Called by ShyHatMinigame when the minigame ends to restore the camera
+    /// and optionally re-enable AI on fail.
     /// </summary>
-    public void ReleaseCameraFocus()
+    public void OnShyHatMinigameEnd(bool success)
     {
+        Debug.Log("ShyHatMinigameTrigger: OnShyHatMinigameEnd(" + success + ")");
+
+        // Restore camera
         if (focusCamera != null)
         {
             focusCamera.Priority = originalPriority;
             focusCamera.Follow = originalFollow;
             focusCamera.LookAt = originalLookAt;
+        }
+
+        if (success)
+        {
+            // SUCCESS: ShyHatBarrier handles disabling / capture via TestShyHatBarrier
+            // No need to re-enable AI here; hat is effectively done.
+        }
+        else
+        {
+            // FAIL: give another chance → re-enable AI so Shy Hat can move again
+            Debug.Log("ShyHatMinigameTrigger: Minigame failed, re-enabling ShyHatAI for another try.");
+
+            if (shyHatAI != null)
+                shyHatAI.enabled = true;
+
+            // Keep canTrigger = true so you can hit it again without re-waiting,
+            // or leave capture logic to AI if you want it to re-gate.
         }
     }
 }

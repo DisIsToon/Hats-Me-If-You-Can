@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections;
 
@@ -25,20 +25,16 @@ public class FastHatMinigameTrigger : MonoBehaviour
 
     [Header("Timing")]
     [Tooltip("Delay after focusing on hat before minigame UI appears.")]
-    public float startMinigameDelay = 0.6f;
+    public float startMinigameDelay = 2f;
 
     [Header("Trigger Settings")]
-    public bool canTriggerMultipleTimes = false;
+    [Tooltip("Tag used by your throwable object.")]
     public string throwableTag = "Throwable";
 
-    [Header("Hat Root (hidden or kept after minigame)")]
-    [Tooltip("Hat GameObject to hide when minigame ends (on success). If empty, uses this GameObject.")]
+    [Header("Hat Root (hidden on success)")]
+    [Tooltip("Hat GameObject to hide when minigame ends successfully. If empty, uses this GameObject.")]
     public GameObject hatRoot;
 
-    [Tooltip("Hide the hat only if minigame was successful.")]
-    public bool hideOnlyOnSuccess = true;
-
-    bool hasTriggered = false;
     Coroutine pendingStart;
 
     void Awake()
@@ -53,35 +49,36 @@ public class FastHatMinigameTrigger : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag(throwableTag))
-            TryStartMinigame();
+        {
+            Debug.Log("FastHatMinigameTrigger: OnCollisionEnter with throwable");
+            TriggerSequence();
+        }
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(throwableTag))
-            TryStartMinigame();
+        {
+            Debug.Log("FastHatMinigameTrigger: OnTriggerEnter with throwable");
+            TriggerSequence();
+        }
     }
 
-    void TryStartMinigame()
+    void TriggerSequence()
     {
-        if (hasTriggered && !canTriggerMultipleTimes)
-            return;
+        Debug.Log("FastHatMinigameTrigger: TriggerSequence called.");
 
-        // Only allow catching during stop window
-        if (fastHatAI != null && !fastHatAI.isInStopWindow)
+        // 1) STOP THE HAT MOVEMENT IMMEDIATELY
+        if (fastHatAI != null)
         {
-            Debug.Log("Tried to hit Fast Hat, but not in stop window.");
-            return;
+            Debug.Log("FastHatMinigameTrigger: Disabling FastHatAI.");
+            fastHatAI.enabled = false;
         }
 
-        hasTriggered = true;
-
-        // Stop AI so he doesn't run away
-        if (fastHatAI != null)
-            fastHatAI.enabled = false;
-
+        // 2) Switch camera to Fast Hat and focus on it
         FocusHatCamera();
 
+        // 3) Start minigame after a delay
         if (pendingStart != null)
             StopCoroutine(pendingStart);
 
@@ -91,9 +88,12 @@ public class FastHatMinigameTrigger : MonoBehaviour
     void FocusHatCamera()
     {
         if (fastHatCamera == null)
+        {
+            Debug.LogWarning("FastHatMinigameTrigger: fastHatCamera not assigned.");
             return;
+        }
 
-        // Same pattern as Jump Hat: Follow + LookAt
+        // Follow + LookAt same as Jump Hat
         fastHatCamera.Follow = hatFocusTarget;
         fastHatCamera.LookAt = hatFocusTarget;
 
@@ -117,14 +117,26 @@ public class FastHatMinigameTrigger : MonoBehaviour
             yield return null;
         }
 
-        if (fastHatMinigameUI != null && !fastHatMinigameUI.activeSelf)
-            fastHatMinigameUI.SetActive(true);   // triggers FastHatMinigame.OnEnable()
+        if (fastHatMinigameUI != null)
+        {
+            if (!fastHatMinigameUI.activeSelf)
+            {
+                Debug.Log("FastHatMinigameTrigger: Activating FastHatMinigame UI.");
+                fastHatMinigameUI.SetActive(true);   // triggers FastHatMinigame.OnEnable()
+            }
+        }
+        else
+        {
+            Debug.LogWarning("FastHatMinigameTrigger: fastHatMinigameUI is not assigned.");
+        }
     }
 
     // Called by FastHatMinigame when it ends
     public void OnFastHatMinigameEnd(bool success)
     {
-        // Camera back to player
+        Debug.Log("FastHatMinigameTrigger: OnFastHatMinigameEnd(" + success + ")");
+
+        // 1) Camera back to player
         if (playerCamera != null && fastHatCamera != null)
         {
             playerCamera.Priority = 20;
@@ -135,24 +147,21 @@ public class FastHatMinigameTrigger : MonoBehaviour
             fastHatCamera.gameObject.SetActive(false);
         }
 
-        // Hat visibility behavior
-        if (hatRoot != null)
+        // 2) Handle success vs fail
+        if (success)
         {
-            if (success && hideOnlyOnSuccess)
-            {
+            // ✅ SUCCESS: hat disappears, no more catching
+            if (hatRoot != null)
                 hatRoot.SetActive(false);
-            }
-            else if (!hideOnlyOnSuccess)
-            {
-                // Always hide on end
-                hatRoot.SetActive(false);
-            }
-            else
-            {
-                // If we only hide on success and it failed, optionally re-enable AI
-                if (fastHatAI != null)
-                    fastHatAI.enabled = true;
-            }
+        }
+        else
+        {
+            // ❌ FAIL: give another chance
+            Debug.Log("FastHatMinigameTrigger: Minigame failed, re-enabling FastHatAI for another try.");
+
+            // Turn AI back on so it starts running again
+            if (fastHatAI != null)
+                fastHatAI.enabled = true;
         }
     }
 }
