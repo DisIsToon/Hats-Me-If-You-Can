@@ -262,7 +262,6 @@ public class SoundManager : MonoBehaviour
         audio.Stop();
     }
 
-
     // -------- UI + BIOME HANDLERS --------
 
     public void SwitchBiomeMusic(string biome)
