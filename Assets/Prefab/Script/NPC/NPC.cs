@@ -11,6 +11,7 @@ public class NPC : MonoBehaviour
     public GameObject pressFUI;   
     public GameObject dialogUI;   
     public GameObject MainScreen;
+    public bool isOpen;
 
     [Header("NPC Name")]
     public string npcName;   
@@ -108,11 +109,17 @@ public class NPC : MonoBehaviour
         if (pressFUI != null && (dialogUI == null || !dialogUI.activeSelf))
             pressFUI.SetActive(true);
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && !isOpen)
         {
             SelectionManager.Instance.interactableNpcDetected = false;
             StartConversation();
             if (pressFUI != null) pressFUI.SetActive(false);
+        }
+        else if (Input.GetKeyDown(KeyCode.E) && isOpen)
+        {
+            isOpen = false;
+            CloseDialogUI();
+
         }
     }
 

@@ -22,6 +22,11 @@ public class ShyHatMinigame : MonoBehaviour
     [Header("Input")]
     public KeyCode hitKey = KeyCode.Space;
 
+    [Header("Screens")]
+    public GameObject mainScreen;
+    public GameObject inventoryBTN;
+    public GameObject quickSlots;
+
     [Header("Game Control")]
     public MonoBehaviour playerController;
     public bool pauseGameTime = true;
@@ -66,6 +71,10 @@ public class ShyHatMinigame : MonoBehaviour
 
     public void StartMinigame()
     {
+        mainScreen.SetActive(false);
+        quickSlots.SetActive(false);
+        inventoryBTN.SetActive(false);
+
         active = true;
         currentHits = 0;
         timeLeft = totalTime;
@@ -156,6 +165,10 @@ public class ShyHatMinigame : MonoBehaviour
 
     void EndMinigame(bool success)
     {
+        mainScreen.SetActive(true);
+        quickSlots.SetActive(true);
+        inventoryBTN.SetActive(true);
+
         if (!active) return;
         active = false;
 
@@ -168,6 +181,7 @@ public class ShyHatMinigame : MonoBehaviour
         // ✅ On success, notify GameTracker via barrier
         if (success && shyHatBarrier != null)
         {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound);
             shyHatBarrier.CaptureShyHat();
         }
 

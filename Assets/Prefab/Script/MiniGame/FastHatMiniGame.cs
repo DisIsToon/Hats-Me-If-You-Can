@@ -20,6 +20,11 @@ public class FastHatMinigame : MonoBehaviour
     [Tooltip("Maximum allowed marker speed.")]
     public float maxMarkerSpeed = 10f;
 
+    [Header("Screens")]
+    public GameObject mainScreen;
+    public GameObject inventoryBTN;
+    public GameObject quickSlots;
+
     [Header("Difficulty")]
     [Tooltip("Successful hits needed to win.")]
     public int requiredHits = 6;
@@ -81,6 +86,10 @@ public class FastHatMinigame : MonoBehaviour
 
     public void StartMinigame()
     {
+        mainScreen.SetActive(false);
+        quickSlots.SetActive(false);
+        inventoryBTN.SetActive(false);
+
         active = true;
         currentHits = 0;
         timeLeft = totalTime;
@@ -207,6 +216,11 @@ public class FastHatMinigame : MonoBehaviour
 
     void EndMinigame(bool success)
     {
+        mainScreen.SetActive(true);
+        quickSlots.SetActive(true);
+        inventoryBTN.SetActive(true);
+
+
         if (!active) return;
         active = false;
 
@@ -219,6 +233,7 @@ public class FastHatMinigame : MonoBehaviour
         // ✅ If success, tell GameTracker we captured the Fast Hat
         if (success && GameTracker.Instance != null)
         {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound);
             GameTracker.Instance.CaptureHat("FastHat");
             GameTracker.Instance.fastHatAlreadyCaptured = true;
         }
