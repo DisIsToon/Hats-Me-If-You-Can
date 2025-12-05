@@ -56,6 +56,7 @@ public class QuestManager : MonoBehaviour
 
     [Header("Special Objects / Rewards")]
     public GameObject puzzleObject;
+    public GameObject lostHat;
     public bool puzzleComplete = false;
     public bool winterForestPass = false;
     public bool questCompleteLira = false;
@@ -359,6 +360,7 @@ public class QuestManager : MonoBehaviour
         else if (npcName == "Tulip")
         {
             tulipQuestAccepted = true;
+            lostHat.SetActive(true);    
             NotifUIManager.Instance.NotifyQuestAccepted("Lost Hat");
         }
         else if (npcName == "Headmaster")

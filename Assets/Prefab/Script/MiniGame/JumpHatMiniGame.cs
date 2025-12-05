@@ -23,6 +23,10 @@ public class JumpHatMinigame : MonoBehaviour
 
     [Tooltip("How many seconds are lost on a miss.")]
     public float missTimePenalty = 0.5f;
+    [Header("Screens")]
+    public GameObject mainScreen;
+    public GameObject inventoryBTN;
+    public GameObject quickSlots;
 
     [Header("Progress UI")]
     public Slider progressSlider;
@@ -73,6 +77,10 @@ public class JumpHatMinigame : MonoBehaviour
 
     public void StartMinigame()
     {
+        mainScreen.SetActive(false);
+        quickSlots.SetActive(false);
+        inventoryBTN.SetActive(false);
+
         active = true;
         currentHits = 0;
         timeLeft = totalTime;
@@ -190,6 +198,11 @@ public class JumpHatMinigame : MonoBehaviour
 
     void EndMinigame(bool success)
     {
+        mainScreen.SetActive(true);
+        quickSlots.SetActive(true);
+        inventoryBTN.SetActive(true);
+
+
         if (!active) return;
         active = false;
 
@@ -202,6 +215,7 @@ public class JumpHatMinigame : MonoBehaviour
         // ⭐ If minigame succeeded, notify GameTracker via barrier
         if (success && jumpHatBarrier != null)
         {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound);
             jumpHatBarrier.CaptureJumpHat();
         }
 
