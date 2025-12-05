@@ -43,6 +43,11 @@ public class ShyHatMinigame : MonoBehaviour
     [Header("NPC To Show On Success (Ivy)")]
     public GameObject npcIvy;   // <- assign Ivy here (set inactive in scene)
 
+    [Header("Panels To Hide During Minigame")]
+    public GameObject panelToHide1;
+    public GameObject panelToHide2;
+    public GameObject panelToHide3;
+
     int currentHits = 0;
     float timeLeft;
     float markerTime = 0f;
@@ -87,6 +92,11 @@ public class ShyHatMinigame : MonoBehaviour
             previousTimeScale = Time.timeScale;
             Time.timeScale = 0f;
         }
+
+        // Hide panels when minigame starts
+        if (panelToHide1 != null) panelToHide1.SetActive(false);
+        if (panelToHide2 != null) panelToHide2.SetActive(false);
+        if (panelToHide3 != null) panelToHide3.SetActive(false);
     }
 
     void Update()
@@ -197,6 +207,11 @@ public class ShyHatMinigame : MonoBehaviour
 
         if (resultText != null)
             resultText.text = "";
+
+        // Show panels again when minigame finishes
+        if (panelToHide1 != null) panelToHide1.SetActive(true);
+        if (panelToHide2 != null) panelToHide2.SetActive(true);
+        if (panelToHide3 != null) panelToHide3.SetActive(true);
 
         gameObject.SetActive(false);
     }

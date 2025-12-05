@@ -60,6 +60,11 @@ public class FastHatMinigame : MonoBehaviour
     [Header("NPC To Show On Success (Chase)")]
     public GameObject npcChase;   // <- assign Chase here (set inactive in scene)
 
+    [Header("Panels To Hide During Minigame")]
+    public GameObject panelToHide1;
+    public GameObject panelToHide2;
+    public GameObject panelToHide3;
+
     // ---- internal state ----
     int currentHits = 0;
     float timeLeft;
@@ -103,6 +108,11 @@ public class FastHatMinigame : MonoBehaviour
             previousTimeScale = Time.timeScale;
             Time.timeScale = 0f;
         }
+
+        // Hide panels when minigame starts
+        if (panelToHide1 != null) panelToHide1.SetActive(false);
+        if (panelToHide2 != null) panelToHide2.SetActive(false);
+        if (panelToHide3 != null) panelToHide3.SetActive(false);
 
         RandomizeTargetPosition();
     }
@@ -249,6 +259,11 @@ public class FastHatMinigame : MonoBehaviour
 
         if (resultText != null)
             resultText.text = "";
+
+        // Show panels again when minigame finishes
+        if (panelToHide1 != null) panelToHide1.SetActive(true);
+        if (panelToHide2 != null) panelToHide2.SetActive(true);
+        if (panelToHide3 != null) panelToHide3.SetActive(true);
 
         gameObject.SetActive(false);
     }

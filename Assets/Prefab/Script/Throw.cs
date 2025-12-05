@@ -318,7 +318,7 @@ public class Throw : MonoBehaviour
 
         float elapsed = 0f;
         float minLifetime = 0.1f;   // ensure it exists at least briefly
-        float maxLifetime = 5f;     // safety timeout
+        float maxLifetime = 3f;     // safety timeout
 
         while (item != null && elapsed < maxLifetime)
         {
