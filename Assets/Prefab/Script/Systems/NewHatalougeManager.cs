@@ -12,6 +12,7 @@ public class NewHatalougeManager : MonoBehaviour
     public bool isOpen = false;
 
     [Header("Section Parents")]
+    public GameObject hatScreen;
     public GameObject hatSection;
     public GameObject questSection;
     public GameObject characterSection;
@@ -142,6 +143,7 @@ public class NewHatalougeManager : MonoBehaviour
     // ---------------------------------------------------------
     public void OpenJournal()
     {
+        hatScreen.SetActive(false);
         if (journalPanel != null) journalPanel.SetActive(true);
         isOpen = true;
         OpenSection(0);
@@ -149,6 +151,7 @@ public class NewHatalougeManager : MonoBehaviour
 
     public void CloseJournal()
     {
+        hatScreen.SetActive(true);
         if (journalPanel != null) journalPanel.SetActive(false);
         isOpen = false;
     }

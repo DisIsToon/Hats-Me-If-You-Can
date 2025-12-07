@@ -6,6 +6,11 @@ using TMPro;
 
 public class CraftingSystem : MonoBehaviour
 {
+    [Header("Screens")]
+    public GameObject mainScreen;
+    public GameObject inventoryBTN;
+    public GameObject quickSlots;
+
     [Header("UI Screens")]
     public GameObject craftingScreenUI;
     public GameObject inventoryScreenUI;
@@ -157,6 +162,10 @@ public class CraftingSystem : MonoBehaviour
 
     IEnumerator OpenCraftingScreen()
     {
+        mainScreen.SetActive(false);
+        quickSlots.SetActive(false);
+        inventoryBTN.SetActive(false);
+
         SoundManager.Instance.PlayBrewingMusic();
         isOpen = true;
 
@@ -181,6 +190,10 @@ public class CraftingSystem : MonoBehaviour
 
     IEnumerator CloseCraftingScreen()
     {
+        mainScreen.SetActive(true);
+        quickSlots.SetActive(true);
+        inventoryBTN.SetActive(true);
+
         // Fade out
         yield return StartCoroutine(Fade(1f));
 
@@ -297,7 +310,7 @@ public class CraftingSystem : MonoBehaviour
 
         cottonCrazeReq1.text = "2 Star [" + star_count + "]";
         cottonCrazeReq2.text = "3 Glitteroom [" + glitteroom_count + "]";
-        cottonCrazeReq3.text = "1 Cotton Flower [" + cottonFlower_count + "]";
+        cottonCrazeReq3.text = "1 CottonFlower [" + cottonFlower_count + "]";
 
         if (star_count >= 2 && glitteroom_count >= 3 && cottonFlower_count >= 1 && InventorySystem.Instance.CheckSlotsAvailable(1))
         {
