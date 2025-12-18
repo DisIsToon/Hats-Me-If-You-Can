@@ -58,6 +58,13 @@ public class GameTracker : MonoBehaviour, IDataPersistence
     public bool springGardenAlreadyDiscovered;
 
     public GameObject allHatsCapturedObject; // assign in inspector
+    public GameObject endingHintScreen;
+
+    [Header("All Hats Captured UI")]
+    public float hatsPopupDuration = 3f;
+    public float fadeOutDuration = 1f;
+
+    private bool allHatsPopupShown = false;
 
     private void Awake()
     {
@@ -284,11 +291,13 @@ public class GameTracker : MonoBehaviour, IDataPersistence
         }
 
         // Check if all hats are captured
-        if (AllHatsCaptured() && allHatsCapturedObject != null)
+        if (AllHatsCaptured() && allHatsCapturedObject != null && !allHatsPopupShown)
         {
             allHatsCapturedObject.SetActive(true);
-            Debug.Log("All hats captured! Object activated.");
+            StartCoroutine(ShowAllHatsCapturedPopup());
+            Debug.Log("All hats captured! Popup shown.");
         }
+
     }
 
     // --- Complete a quest ---
@@ -357,6 +366,39 @@ public class GameTracker : MonoBehaviour, IDataPersistence
                 Debug.LogWarning("Unknown potion: " + potionName);
                 break;
         }
+    }
+    private IEnumerator ShowAllHatsCapturedPopup()
+    {
+        yield return new WaitForSeconds(2f);
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.rotatingPuzzlePartCompleteSound);
+
+        allHatsPopupShown = true;
+
+        endingHintScreen.SetActive(true);
+
+        CanvasGroup cg = endingHintScreen.GetComponent<CanvasGroup>();
+        if (cg == null)
+        {
+            Debug.LogError("CanvasGroup missing on allHatsCapturedObject!");
+            yield break;
+        }
+
+        // Fade in instantly
+        cg.alpha = 1f;
+
+        // Wait before fading out
+        yield return new WaitForSeconds(hatsPopupDuration);
+
+        float elapsed = 0f;
+        while (elapsed < fadeOutDuration)
+        {
+            elapsed += Time.deltaTime;
+            cg.alpha = Mathf.Lerp(1f, 0f, elapsed / fadeOutDuration);
+            yield return null;
+        }
+
+        cg.alpha = 0f;
+        endingHintScreen.SetActive(false);
     }
 
     // --- Check if all hats are captured ---
