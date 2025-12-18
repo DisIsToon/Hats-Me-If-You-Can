@@ -93,6 +93,9 @@ public class NewHatalougeManager : MonoBehaviour
     private bool reachedWinter = false;
     private bool reachedCastle = false;
 
+    [Header("Popup Setting")]
+    public float delay;
+
     // ---------------------------------------------------------
     // Unity callbacks
     // ---------------------------------------------------------
@@ -127,6 +130,8 @@ public class NewHatalougeManager : MonoBehaviour
         UpdateInfoScreen();
         // Initialize map screen
         UpdateMapScreen();
+
+        StartCoroutine(ShowPopupAfterDelay());
     }
 
     public void Update()
@@ -138,11 +143,21 @@ public class NewHatalougeManager : MonoBehaviour
             CloseJournal();
     }
 
+    IEnumerator ShowPopupAfterDelay()
+    {
+        yield return new WaitForSeconds(delay);
+        OpenJournal();
+        OpenJournalWithSection(3); // 3 = Info section
+
+
+    }
+
     // ---------------------------------------------------------
     // Journal open / close
     // ---------------------------------------------------------
     public void OpenJournal()
     {
+        SoundManager.Instance.PlayHatalogueMusic();
         hatScreen.SetActive(false);
         if (journalPanel != null) journalPanel.SetActive(true);
         isOpen = true;
@@ -151,6 +166,7 @@ public class NewHatalougeManager : MonoBehaviour
 
     public void CloseJournal()
     {
+        SoundManager.Instance.ReturnToBiomeMusic();
         hatScreen.SetActive(true);
         if (journalPanel != null) journalPanel.SetActive(false);
         isOpen = false;
@@ -214,6 +230,15 @@ public class NewHatalougeManager : MonoBehaviour
                 UpdateMapScreen();
                 break;
         }
+    }
+
+    public void OpenJournalWithSection(int sectionIndex)
+    {
+        hatScreen.SetActive(false);
+        if (journalPanel != null) journalPanel.SetActive(true);
+        isOpen = true;
+
+        OpenSection(sectionIndex);
     }
 
     // ---------------------------------------------------------

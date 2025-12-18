@@ -18,6 +18,9 @@ public class ClickerBarrier : MonoBehaviour
     public GameObject victoryScreen;
     public GameObject gameOverScreen;
     public GameObject BarrierGameScreen;
+    public GameObject MainScreen;
+    public GameObject QuickSlotScreen;
+    public GameObject InventoryBTN;
 
     [Header("Timer Settings")]
     public float timeLimit = 10f;
@@ -33,6 +36,10 @@ public class ClickerBarrier : MonoBehaviour
 
     public void StartGame()
     {
+        MainScreen.SetActive(false);
+        InventoryBTN.SetActive(false);
+        QuickSlotScreen.SetActive(false);
+
         barrierHP = maxBarrierHP;
         timeRemaining = timeLimit;
         gameEnded = false;
@@ -146,6 +153,7 @@ public class ClickerBarrier : MonoBehaviour
         yield return new WaitForSeconds(1f);
         gameOverScreen.SetActive(false);
         BarrierGameScreen.SetActive(false);
+
     }
 
     public void Victory()
@@ -159,6 +167,9 @@ public class ClickerBarrier : MonoBehaviour
         if (gameOverScreen != null)
             gameOverScreen.SetActive(false);
 
+        MainScreen.SetActive(true);
+        QuickSlotScreen.SetActive(true);
+        InventoryBTN.SetActive(true);
         StartCoroutine(ShowVictoryPopup());
     }
 
@@ -171,7 +182,9 @@ public class ClickerBarrier : MonoBehaviour
 
         if (victoryScreen != null)
             victoryScreen.SetActive(false);
-
+        MainScreen.SetActive(true);
+        QuickSlotScreen.SetActive(true);
+        InventoryBTN.SetActive(true);
         StartCoroutine(ShowGameOverPopup());
     }
 }

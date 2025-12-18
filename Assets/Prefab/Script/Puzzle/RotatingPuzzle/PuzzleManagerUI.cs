@@ -101,7 +101,7 @@ public class PuzzleManagerUI : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && canPlayPuzzle && !isOpen)
+        if (Input.GetKeyDown(KeyCode.E) && canPlayPuzzle && !isOpen && !puzzleComplete)
         {
             SelectionManager.Instance.puzzleDetected = false;
             StartCoroutine(OpenPuzzleSequence());

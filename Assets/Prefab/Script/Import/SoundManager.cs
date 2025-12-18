@@ -192,12 +192,12 @@ public class SoundManager : MonoBehaviour
     {
         PlayBGMusic(puzzlePlayingMusic);   // already uses fading
     }
-    /*
+
     public void PlayHatalogueMusic()
     {
         PlayBGMusic(hatalougeViewingMusic);   // already uses fading
     }
-    */
+
     public void ReturnToBiomeMusic()
     {
         // restore biome music based on lastBiome value

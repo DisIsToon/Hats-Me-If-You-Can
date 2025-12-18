@@ -11,6 +11,8 @@ public class NPC : MonoBehaviour
     public GameObject pressFUI;   
     public GameObject dialogUI;   
     public GameObject MainScreen;
+    public GameObject QuickSlotScreen;
+    public GameObject InventoryBTN;
     public bool isOpen;
 
     [Header("NPC Name")]
@@ -164,7 +166,9 @@ public class NPC : MonoBehaviour
     public void StartConversation()
     {
         isTalkingWithPlayer = true;
-
+        MainScreen.SetActive(false);
+        InventoryBTN.SetActive(false);
+        QuickSlotScreen.SetActive(false);
         DialogSystem.Instance.ShowNPCImage(npcName);
 
         // --- First-time interaction ---
@@ -477,6 +481,8 @@ public class NPC : MonoBehaviour
             DialogSystem.Instance.HideAllPortraits();
             playerInRange = false;
             MainScreen.SetActive(true);
+            QuickSlotScreen.SetActive(true);
+            InventoryBTN.SetActive(true);
             if (pressFUI != null) pressFUI.SetActive(false);
             isTalkingWithPlayer = false;
             if (dialogUI != null && dialogUI.activeSelf)

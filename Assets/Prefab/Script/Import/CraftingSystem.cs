@@ -42,8 +42,8 @@ public class CraftingSystem : MonoBehaviour
     //All Blueprint
     // Tools
     public ItemBlueprints cakePotionBLP = new ItemBlueprints("CakePotion", 3, 2, "Star", 1, "Glitteroom", 2, "", 0);
-    public ItemBlueprints cottonCrazeBLP = new ItemBlueprints("CottonCraze", 2, 2, "Star", 2, "Glitteroom", 3, "CottonFlower", 1);
-    public ItemBlueprints mirrorPotionBLP = new ItemBlueprints("MirrorPotion", 2, 2, "Star", 3, "Glitteroom", 1, "MirrorShard", 1);
+    public ItemBlueprints cottonCrazeBLP = new ItemBlueprints("CottonCraze", 3, 2, "Star", 2, "Glitteroom", 3, "Cottonflower", 1);
+    public ItemBlueprints mirrorPotionBLP = new ItemBlueprints("MirrorPotion", 3, 2, "Star", 3, "Glitteroom", 1, "Mirrorshard", 1);
 
     public static CraftingSystem Instance { get; set; }
 
@@ -236,8 +236,8 @@ public class CraftingSystem : MonoBehaviour
     {
         int star_count = 0;
         int glitteroom_count = 0;
-        int cottonFlower_count = 0;
-        int mirrorShard_count = 0;
+        int cottonflower_count = 0;
+        int mirrorshard_count = 0;
 
         int stone_count = 0;
         int wood_count = 0;
@@ -255,11 +255,11 @@ public class CraftingSystem : MonoBehaviour
                 case "Glitteroom":
                     glitteroom_count += 1;
                     break;
-                case "CottonFlower":
-                    cottonFlower_count += 1;
+                case "Cottonflower":
+                    cottonflower_count += 1;
                     break;
-                case "MirrorShard":
-                    mirrorShard_count += 1;
+                case "Mirrorshard":
+                    mirrorshard_count += 1;
                     break;
                 case "Stone":
                     stone_count += 1;
@@ -270,27 +270,6 @@ public class CraftingSystem : MonoBehaviour
 
             }
         }
-
-        /*
-    //Craft Tools Buttons
-    Button craftCakePotionBTN;
-    Button craftCottonCrazeBTN;
-    Button craftMirrorPotionBTN;
-
-    //Requirement Tool Text
-    TextMeshProUGUI cakePotionReq1, cakePotionReq2, cakePotionReq2;
-    TextMeshProUGUI cottonCrazeReq1, cottonCrazeReq2, cottonCrazeReq3;
-    TextMeshProUGUI mirrorPotionReq1, mirrorPotionReq2, mirrorPotionReq3;
-
-    public bool isOpen;
-
-    //All Blueprint
-    // Tools
-    public ItemBlueprints cakePotionBLP = new ItemBlueprints("CakePotion", 3, 2, "Star", 1, "Glitteroom", 2, "", 0);
-    public ItemBlueprints cottonCrazeBLP = new ItemBlueprints("CottonCraze", 2, 2, "Star", 2, "Glitteroom", 3, "CottonFlower", 1);
-    public ItemBlueprints mirrorPotionBLP = new ItemBlueprints("MirrorPotion", 2, 2, "Star", 3, "Glitteroom", 1, "MirrorShard", 1);
-         */
-
 
         //. ....Red CakePotion.... .//
 
@@ -310,9 +289,9 @@ public class CraftingSystem : MonoBehaviour
 
         cottonCrazeReq1.text = "2 Star [" + star_count + "]";
         cottonCrazeReq2.text = "3 Glitteroom [" + glitteroom_count + "]";
-        cottonCrazeReq3.text = "1 CottonFlower [" + cottonFlower_count + "]";
+        cottonCrazeReq3.text = "1 Cottonflower [" + cottonflower_count + "]";
 
-        if (star_count >= 2 && glitteroom_count >= 3 && cottonFlower_count >= 1 && InventorySystem.Instance.CheckSlotsAvailable(1))
+        if (star_count >= 2 && glitteroom_count >= 3 && cottonflower_count >= 1 && InventorySystem.Instance.CheckSlotsAvailable(1))
         {
             craftCottonCrazeBTN.gameObject.SetActive(true);
         }
@@ -325,9 +304,9 @@ public class CraftingSystem : MonoBehaviour
 
         mirrorPotionReq1.text = "3 Star [" + star_count + "]";
         mirrorPotionReq2.text = "1 Glitteroom [" + glitteroom_count + "]";
-        mirrorPotionReq3.text = "1 Mirror Shard [" + mirrorShard_count + "]";
+        mirrorPotionReq3.text = "1 Mirrorshard [" + mirrorshard_count + "]";
 
-        if (star_count >= 3 && glitteroom_count >= 1 && mirrorShard_count >= 1 && InventorySystem.Instance.CheckSlotsAvailable(1))
+        if (star_count >= 3 && glitteroom_count >= 1 && mirrorshard_count >= 1 && InventorySystem.Instance.CheckSlotsAvailable(1))
         {
             craftMirrorPotionBTN.gameObject.SetActive(true);
         }

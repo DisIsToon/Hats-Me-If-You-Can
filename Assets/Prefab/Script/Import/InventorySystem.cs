@@ -82,7 +82,7 @@ public class InventorySystem : MonoBehaviour
     void Update()
     {
  
-        if (Input.GetKeyDown(KeyCode.I) && !isOpen)
+        if (Input.GetKeyDown(KeyCode.Tab) && !isOpen)
         {
  
 			Debug.Log("i is pressed");
@@ -96,7 +96,7 @@ public class InventorySystem : MonoBehaviour
             isOpen = true;
  
         }
-        else if (Input.GetKeyDown(KeyCode.I) && isOpen)
+        else if (Input.GetKeyDown(KeyCode.Tab) && isOpen)
         {
             inventoryScreenUI.SetActive(false);
 
@@ -235,38 +235,47 @@ public class InventorySystem : MonoBehaviour
 
     public void RemoveItem(string nameToRemove, int amountToRemove)
     {
-        for (int i = 0; i < slotList.Count; i++)
-        {
-            if (slotList[i].transform.childCount == 0) continue;
+        bool removedAny = false;
 
-            GameObject child = slotList[i].transform.GetChild(0).gameObject;
+        foreach (GameObject slot in slotList)
+        {
+            if (slot.transform.childCount == 0) continue;
+
+            GameObject child = slot.transform.GetChild(0).gameObject;
             string childName = child.name.Replace("(Clone)", "");
 
             if (childName == nameToRemove)
             {
-                TextMeshProUGUI stackText = child.transform.Find("StackText").GetComponent<TextMeshProUGUI>();
+                TextMeshProUGUI stackText = child.transform.Find("StackText")?.GetComponent<TextMeshProUGUI>();
 
                 int currentStack = 1;
-                int.TryParse(stackText.text, out currentStack);
+                if (stackText != null && !string.IsNullOrEmpty(stackText.text))
+                    int.TryParse(stackText.text, out currentStack);
 
                 if (currentStack > amountToRemove)
                 {
                     currentStack -= amountToRemove;
-                    stackText.text = currentStack.ToString();
+                    if (stackText != null) stackText.text = currentStack.ToString();
                 }
                 else
                 {
-                    // delete item completely
                     Destroy(child);
                 }
 
-                ReCalculateList();
-                CraftingSystem.Instance.RefreshNeededItem();
-                QuestManager.Instance.RefreshTrackerList();
-                return;
+                removedAny = true;
+                break; // remove only from one slot per call
             }
         }
+
+        if (!removedAny)
+            Debug.LogWarning($"Could not remove {nameToRemove}: not found in inventory!");
+
+        ReCalculateList();
+        CraftingSystem.Instance.RefreshNeededItem();
+        QuestManager.Instance.RefreshTrackerList();
     }
+
+
 
 
     public void ReCalculateList()
@@ -283,7 +292,11 @@ public class InventorySystem : MonoBehaviour
                 TextMeshProUGUI stackText = item.transform.Find("StackText").GetComponent<TextMeshProUGUI>();
 
                 int stack = 1;
-                int.TryParse(stackText.text, out stack);
+
+                if (!int.TryParse(stackText.text, out stack) || stack < 1)
+                {
+                    stack = 1;
+                }
 
                 for (int i = 0; i < stack; i++)
                     itemList.Add(cleanName);
