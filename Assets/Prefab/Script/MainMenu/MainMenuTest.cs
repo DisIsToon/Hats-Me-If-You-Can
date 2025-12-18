@@ -14,6 +14,7 @@ public class MainMenuTest : Menu
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button continuegameButton;
     [SerializeField] private Button loadGameButton;
+    [SerializeField] private Button quitGameButton;
 
     private void Start()
     {
@@ -54,6 +55,18 @@ public class MainMenuTest : Menu
         DataPersistenceManager.instance.SaveGame();
         SceneManager.LoadSceneAsync("BiomeOptimized");
     }
+
+    public void ExitGame()
+    {
+        Debug.Log("ExitGame button clicked. Quitting application...");
+
+#if UNITY_EDITOR
+    UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
 
     private void DisableMenuButtons()
     {

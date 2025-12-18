@@ -74,15 +74,23 @@ public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 break;
 
             case "Exit":
-                Debug.Log("Game Closed");
+                ExitGame();
+                break;
 
-#if UNITY_EDITOR
-                EditorApplication.isPlaying = false;
-#else
-                Application.Quit();
-#endif
+            default:
+                Debug.LogWarning("Unknown buttonFunction: " + buttonFunction);
                 break;
         }
+    }
+    private void ExitGame()
+    {
+        Debug.Log("Exit button pressed. Quitting game...");
+
+#if UNITY_EDITOR
+    UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 
     private void TogglePanels(GameObject activePanel)

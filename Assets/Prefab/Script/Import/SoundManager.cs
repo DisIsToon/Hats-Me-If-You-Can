@@ -183,6 +183,11 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void PlayMainMenuMusic()
+    {
+        PlayBGMusic(mainMenuBGMusic);   // already uses fading
+    }
+
     public void PlayBrewingMusic()
     {
         PlayBGMusic(brewingMusic);   // already uses fading
