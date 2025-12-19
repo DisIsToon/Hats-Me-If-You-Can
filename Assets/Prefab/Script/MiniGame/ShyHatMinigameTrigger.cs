@@ -10,7 +10,7 @@ public class ShyHatMinigameTrigger : MonoBehaviour
 
     [Header("Detection")]
     [Tooltip("Tag of objects that can trigger the minigame (e.g. 'Throwable').")]
-    public string throwableTag = "Throwable";
+    public string throwableTag = "CakePotion";
 
     [Header("Shy Hat AI")]
     [Tooltip("Assign the ShyHatAI script here so it stops moving when hit.")]

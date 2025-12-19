@@ -29,7 +29,7 @@ public class JumpHatMinigameTrigger : MonoBehaviour
 
     [Header("Trigger Settings")]
     [Tooltip("Tag used by your throwable object.")]
-    public string throwableTag = "Throwable";
+    public string throwableTag = "CottonCraze";
 
     [Header("Hat Root (hidden on success)")]
     [Tooltip("Main hat object to hide when minigame ends successfully. If empty, uses this GameObject.")]
