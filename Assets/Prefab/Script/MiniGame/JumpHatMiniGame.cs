@@ -82,6 +82,7 @@ public class JumpHatMinigame : MonoBehaviour
 
     public void StartMinigame()
     {
+        SoundManager.Instance.PlayHatCaptureMusic();
         mainScreen.SetActive(false);
         quickSlots.SetActive(false);
         inventoryBTN.SetActive(false);
@@ -149,7 +150,11 @@ public class JumpHatMinigame : MonoBehaviour
             timerText.text = timeLeft.ToString("0.0");
 
         if (timeLeft <= 0f)
+        {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.failedcatchSound.clip);
             EndMinigame(false);
+        }
+
     }
 
     void TryHit()
@@ -160,6 +165,7 @@ public class JumpHatMinigame : MonoBehaviour
         // SUCCESS
         if (movingRect.Overlaps(targetRect, true))
         {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.matchingPuzzleCardMaatch.clip);
             currentHits++;
 
             if (progressSlider != null)
@@ -173,6 +179,7 @@ public class JumpHatMinigame : MonoBehaviour
         else
         {
             // MISS penalties
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.matchingPuzzleCardNotMatch.clip);
             currentHits = Mathf.Max(0, currentHits - penaltyOnMiss);
 
             if (progressSlider != null)
@@ -208,6 +215,7 @@ public class JumpHatMinigame : MonoBehaviour
 
     void EndMinigame(bool success)
     {
+
         mainScreen.SetActive(true);
         quickSlots.SetActive(true);
         inventoryBTN.SetActive(true);
@@ -215,6 +223,8 @@ public class JumpHatMinigame : MonoBehaviour
 
         if (!active) return;
         active = false;
+
+        SoundManager.Instance.ReturnToBiomeMusic();
 
         if (resultText != null)
         {
@@ -225,7 +235,7 @@ public class JumpHatMinigame : MonoBehaviour
         // ⭐ If minigame succeeded, notify GameTracker via barrier
         if (success && jumpHatBarrier != null)
         {
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound);
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.jumpHatCapturedSound.clip);
             jumpHatBarrier.CaptureJumpHat();
         }
 

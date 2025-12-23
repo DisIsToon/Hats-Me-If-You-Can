@@ -99,6 +99,8 @@ public class CardsController : MonoBehaviour, IDataPersistence
 
             if (currentTime <= 0f)
             {
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.puzzleGameOverSound.clip);
+                Debug.Log("Card Controller Time off");
                 timerRunning = false;
                 PuzzleScreenOff();
             }
@@ -190,7 +192,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
         if (!card.isSelected)
         {
             card.Show();
-
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.puzzleInteractSound.clip);
             if (firstSelected == null)
             {
                 firstSelected = card;
@@ -212,6 +214,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
         yield return new WaitForSeconds(0.3f);
         if (a.iconSprite == b.iconSprite)
         {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.matchingPuzzleCardMaatch.clip);
             matchCounts++;
             if (matchCounts >= spritePairs.Count / 2)
             {
@@ -221,6 +224,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
         }
         else
         {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.matchingPuzzleCardNotMatch.clip);
             a.Hide();
             b.Hide();
         }
@@ -228,6 +232,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
 
     public void PuzzleComplete()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.rotatingPuzzlePartCompleteSound.clip);
         canPlayPuzzle = false;
         // Show complete popup
         completePuzzlePopup.SetActive(true);

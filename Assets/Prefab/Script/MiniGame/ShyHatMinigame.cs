@@ -136,14 +136,18 @@ public class ShyHatMinigame : MonoBehaviour
             timerText.text = timeLeft.ToString("0.0");
 
         if (timeLeft <= 0f)
+        {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.failedcatchSound.clip);
             EndMinigame(false);
+        }
+
     }
 
     void TryHit()
     {
         Rect movingRect = GetWorldRect(movingMarker);
         Rect targetRect = GetWorldRect(targetMarker);
-
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.matchingPuzzleCardMaatch.clip);
         if (movingRect.Overlaps(targetRect, true))
         {
             currentHits++;
@@ -165,12 +169,15 @@ public class ShyHatMinigame : MonoBehaviour
 
     void EndMinigame(bool success)
     {
+
         mainScreen.SetActive(true);
         quickSlots.SetActive(true);
         inventoryBTN.SetActive(true);
 
         if (!active) return;
         active = false;
+
+        SoundManager.Instance.ReturnToBiomeMusic();
 
         if (resultText != null)
         {
@@ -181,7 +188,7 @@ public class ShyHatMinigame : MonoBehaviour
         // ✅ On success, notify GameTracker via barrier
         if (success && shyHatBarrier != null)
         {
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound);
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.shyHatCapturedSound.clip);
             shyHatBarrier.CaptureShyHat();
         }
 

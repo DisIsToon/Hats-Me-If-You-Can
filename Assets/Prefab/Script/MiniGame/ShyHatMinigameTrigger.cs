@@ -94,6 +94,7 @@ public class ShyHatMinigameTrigger : MonoBehaviour
         // 3) Start minigame after a short delay (camera settles)
         if (minigamePanel != null)
         {
+            SoundManager.Instance.PlayHatCaptureMusic();
             StartCoroutine(StartMinigameAfterDelay());
         }
         else
@@ -135,9 +136,11 @@ public class ShyHatMinigameTrigger : MonoBehaviour
     /// </summary>
     public void OnShyHatMinigameEnd(bool success)
     {
+        SoundManager.Instance.ReturnToBiomeMusic();
         Debug.Log("ShyHatMinigameTrigger: OnShyHatMinigameEnd(" + success + ")");
 
         // Restore camera
+                
         if (focusCamera != null)
         {
             focusCamera.Priority = originalPriority;

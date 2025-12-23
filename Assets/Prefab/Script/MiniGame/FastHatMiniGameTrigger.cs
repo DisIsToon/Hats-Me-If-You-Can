@@ -122,6 +122,7 @@ public class FastHatMinigameTrigger : MonoBehaviour
             if (!fastHatMinigameUI.activeSelf)
             {
                 Debug.Log("FastHatMinigameTrigger: Activating FastHatMinigame UI.");
+                SoundManager.Instance.PlayHatCaptureMusic();
                 fastHatMinigameUI.SetActive(true);   // triggers FastHatMinigame.OnEnable()
             }
         }
@@ -134,6 +135,7 @@ public class FastHatMinigameTrigger : MonoBehaviour
     // Called by FastHatMinigame when it ends
     public void OnFastHatMinigameEnd(bool success)
     {
+        SoundManager.Instance.ReturnToBiomeMusic();
         Debug.Log("FastHatMinigameTrigger: OnFastHatMinigameEnd(" + success + ")");
 
         // 1) Camera back to player

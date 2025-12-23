@@ -173,6 +173,8 @@ public class PuzzleManagerUI : MonoBehaviour
         // Timer expired
         if (!puzzleComplete && isOpen)
         {
+            Debug.Log("Rotating Puzzle Time off");
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.puzzleGameOverSound.clip);
             Debug.Log("⏳ Puzzle time ended!");
             PuzzleScreenOff();
         }
@@ -180,7 +182,7 @@ public class PuzzleManagerUI : MonoBehaviour
 
     public void OnRingSolved(RotatingRingUI ring)
     {
-        SoundManager.Instance.PlaySFX(SoundManager.Instance.rotatingPuzzlePartCompleteSound);
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.rotatingPuzzlePartCompleteSound.clip);
 
         if (solvedPopup)
             StartCoroutine(ShowSolvedPopup());
@@ -197,7 +199,7 @@ public class PuzzleManagerUI : MonoBehaviour
 
     IEnumerator ShowCompletePuzzlePopup()
     {
-        SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound);
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound.clip);
 
         QuestManager.Instance.SetLiraPuzzleComplete();
         completePuzzlePopup.SetActive(true);

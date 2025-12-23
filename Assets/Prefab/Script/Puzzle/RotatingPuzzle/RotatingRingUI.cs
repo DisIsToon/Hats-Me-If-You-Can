@@ -41,6 +41,7 @@ public class RotatingRingUI : MonoBehaviour
     {
         if (isLocked || isRotating) return;
 
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.puzzleInteractSound.clip);
         float direction = left ? 1f : -1f;
         targetRotation += snapAngle * direction;
 

@@ -370,7 +370,7 @@ public class GameTracker : MonoBehaviour, IDataPersistence
     private IEnumerator ShowAllHatsCapturedPopup()
     {
         yield return new WaitForSeconds(2f);
-        SoundManager.Instance.PlaySFX(SoundManager.Instance.rotatingPuzzlePartCompleteSound);
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.rotatingPuzzlePartCompleteSound.clip);
 
         allHatsPopupShown = true;
 

@@ -7,6 +7,9 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance { get; set; }
 
+    [Header("SFX Player")]
+    public AudioSource sfxSource;
+
     [Header("Clicks")]
     public AudioSource buttonClickedSound;
     public AudioSource clickedSound;
@@ -29,6 +32,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource puzzleGameOverSound;
     public AudioSource matchingPuzzleCardClicked;
     public AudioSource matchingPuzzleCardMaatch;
+    public AudioSource matchingPuzzleCardNotMatch;
 
     [Header("Hatalogue")]
     public AudioSource hatalogueOpenCloseSound;
@@ -61,6 +65,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource hatalougeViewingMusic;
     public AudioSource brewingMusic;
     public AudioSource puzzlePlayingMusic;
+    public AudioSource capturingHatMusic;
 
     [Header("Music Settings")]
     public float fadeDuration = 1.5f;
@@ -107,7 +112,7 @@ public class SoundManager : MonoBehaviour
             puzzleInteractSound, rotatingPuzzleButtonClickedSound,
             rotatingPuzzlePartCompleteSound, pzzleCompleteSound,
             puzzleGameOverSound, matchingPuzzleCardClicked,
-            matchingPuzzleCardMaatch, hatalogueOpenCloseSound,
+            matchingPuzzleCardMaatch,matchingPuzzleCardNotMatch, hatalogueOpenCloseSound,
             hatalogueNextPageSound, openInventory, dragUp, dragDrop,
             equipPotion, brewBtnClicked, brewPotion, itemCollectSound,
             questCompleteSound, pauseSound, leavesSound, walkOnForest,
@@ -119,7 +124,7 @@ public class SoundManager : MonoBehaviour
         {
             mainMenuBGMusic, forestZoneBGMusic, castleZoneBGMusic,
             winterZoneBGMusic, hatalougeViewingMusic, brewingMusic,
-            puzzlePlayingMusic
+            puzzlePlayingMusic, capturingHatMusic
         };
     }
 
@@ -198,6 +203,11 @@ public class SoundManager : MonoBehaviour
         PlayBGMusic(puzzlePlayingMusic);   // already uses fading
     }
 
+    public void PlayHatCaptureMusic()
+    {
+        PlayBGMusic(capturingHatMusic);   // already uses fading
+    }
+
     public void PlayHatalogueMusic()
     {
         PlayBGMusic(hatalougeViewingMusic);   // already uses fading
@@ -218,10 +228,12 @@ public class SoundManager : MonoBehaviour
             soundToPlay.Play();
     }
 
-    public void PlaySFX(AudioSource audio)
+    public void PlaySFX(AudioClip clip)
     {
-        audio.PlayOneShot(audio.clip);
+        if (clip == null) return;
+        sfxSource.PlayOneShot(clip, sfxVolume);
     }
+
 
 
     public void PlayBGMusic(AudioSource newMusic)
@@ -248,24 +260,26 @@ public class SoundManager : MonoBehaviour
 
         while (audio.volume < 1f)
         {
-            audio.volume += Time.deltaTime * 0.5f;
+            audio.volume += Time.unscaledDeltaTime * 0.5f;
             yield return null;
         }
 
         audio.volume = 1f;
     }
 
+
     public IEnumerator FadeOut(AudioSource audio)
     {
         while (audio.volume > 0f)
         {
-            audio.volume -= Time.deltaTime * 0.5f;
+            audio.volume -= Time.unscaledDeltaTime * 0.5f;
             yield return null;
         }
 
         audio.volume = 0f;
         audio.Stop();
     }
+
 
     // -------- UI + BIOME HANDLERS --------
 

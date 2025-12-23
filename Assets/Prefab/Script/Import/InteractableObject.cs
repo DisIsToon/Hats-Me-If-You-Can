@@ -41,7 +41,7 @@ public class InteractableObject : MonoBehaviour
 
             if (SelectionManager.Instance != null)
                 SelectionManager.Instance.pickableItemDetected = false;
-
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.itemCollectSound.clip);
             Destroy(gameObject);
         }
         else

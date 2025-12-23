@@ -40,7 +40,7 @@ public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound);
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         Debug.Log("MainMenuButton clicked: " + buttonFunction);
         OnClick(); // call your existing method
     }

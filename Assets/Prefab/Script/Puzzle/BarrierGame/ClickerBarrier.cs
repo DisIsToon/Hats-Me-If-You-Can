@@ -100,7 +100,7 @@ public class ClickerBarrier : MonoBehaviour
 
     public void SpawnClickEffect()
     {
-        SoundManager.Instance.PlaySFX(SoundManager.Instance.buttonClickedSound);
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.buttonClickedSound.clip);
         if (clickEffectPrefab == null || effectParent == null) return;
 
         Vector2 randomOffset = new Vector2(
@@ -142,7 +142,7 @@ public class ClickerBarrier : MonoBehaviour
 
     IEnumerator ShowVictoryPopup()
     {
-        SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound);
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound.clip);
         yield return new WaitForSeconds(1f);
         victoryScreen.SetActive(false);
         BarrierGameScreen.SetActive(false);
@@ -158,7 +158,7 @@ public class ClickerBarrier : MonoBehaviour
 
     public void Victory()
     {
-        SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound);
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound.clip);
         gameEnded = true;
 
         if (victoryScreen != null)
@@ -177,8 +177,9 @@ public class ClickerBarrier : MonoBehaviour
     {
         gameEnded = true;
 
+
         if (gameOverScreen != null)
-            gameOverScreen.SetActive(true);
+        gameOverScreen.SetActive(true);
 
         if (victoryScreen != null)
             victoryScreen.SetActive(false);

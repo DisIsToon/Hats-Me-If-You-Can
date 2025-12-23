@@ -78,9 +78,14 @@ public class JumpHatMinigameTrigger : MonoBehaviour
         // 2) Switch camera to JumpHat vcam and focus on it
         FocusHatCamera();
 
-        // 3) Start minigame after delay
+        // 3) Restart delayed minigame safely
         if (pendingStart != null)
+        {
             StopCoroutine(pendingStart);
+            pendingStart = null;
+        }
+
+        SoundManager.Instance.PlayHatCaptureMusic();
 
         pendingStart = StartCoroutine(StartMinigameAfterDelay());
     }
@@ -134,6 +139,7 @@ public class JumpHatMinigameTrigger : MonoBehaviour
     // 🔹 Called by JumpHatMinigame when it ends
     public void OnJumpHatMinigameEnd(bool success)
     {
+        SoundManager.Instance.ReturnToBiomeMusic();
         Debug.Log("JumpHatMinigameTrigger: OnJumpHatMinigameEnd(" + success + ")");
 
         // 1) Camera back to player

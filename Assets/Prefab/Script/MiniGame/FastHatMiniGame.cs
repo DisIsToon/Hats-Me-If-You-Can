@@ -86,6 +86,7 @@ public class FastHatMinigame : MonoBehaviour
 
     public void StartMinigame()
     {
+        SoundManager.Instance.PlayHatCaptureMusic();
         mainScreen.SetActive(false);
         quickSlots.SetActive(false);
         inventoryBTN.SetActive(false);
@@ -154,7 +155,10 @@ public class FastHatMinigame : MonoBehaviour
             timerText.text = timeLeft.ToString("0.0");
 
         if (timeLeft <= 0f)
+        {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.failedcatchSound.clip);
             EndMinigame(false);
+        }
     }
 
     void TryHit()
@@ -165,6 +169,7 @@ public class FastHatMinigame : MonoBehaviour
         // SUCCESS
         if (movingRect.Overlaps(targetRect, true))
         {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.matchingPuzzleCardMaatch.clip);
             currentHits++;
 
             if (progressSlider != null)
@@ -181,6 +186,7 @@ public class FastHatMinigame : MonoBehaviour
         else
         {
             // MISS penalties
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.matchingPuzzleCardNotMatch.clip);
             currentHits = Mathf.Max(0, currentHits - penaltyOnMiss);
 
             if (progressSlider != null)
@@ -216,6 +222,7 @@ public class FastHatMinigame : MonoBehaviour
 
     void EndMinigame(bool success)
     {
+
         mainScreen.SetActive(true);
         quickSlots.SetActive(true);
         inventoryBTN.SetActive(true);
@@ -223,6 +230,8 @@ public class FastHatMinigame : MonoBehaviour
 
         if (!active) return;
         active = false;
+
+        SoundManager.Instance.ReturnToBiomeMusic();
 
         if (resultText != null)
         {
@@ -233,7 +242,7 @@ public class FastHatMinigame : MonoBehaviour
         // ✅ If success, tell GameTracker we captured the Fast Hat
         if (success && GameTracker.Instance != null)
         {
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound);
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.fastHatCaptureSound.clip);
             GameTracker.Instance.CaptureHat("FastHat");
             GameTracker.Instance.fastHatAlreadyCaptured = true;
         }
