@@ -166,6 +166,7 @@ public class NewHatalougeManager : MonoBehaviour
 
     public void CloseJournal()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         SoundManager.Instance.ReturnToBiomeMusic();
         hatScreen.SetActive(true);
         if (journalPanel != null) journalPanel.SetActive(false);
@@ -174,6 +175,7 @@ public class NewHatalougeManager : MonoBehaviour
 
     public void ToggleJournal()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         if (!isOpen) OpenJournal();
         else CloseJournal();
     }
@@ -203,30 +205,35 @@ public class NewHatalougeManager : MonoBehaviour
             case 0: // Hat
                 if (hatSection != null) hatSection.SetActive(true);
                 if (hatPressed != null) hatPressed.SetActive(true);
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
                 UpdateHatScreen();
                 break;
 
             case 1: // Quest
                 if (questSection != null) questSection.SetActive(true);
                 if (questPressed != null) questPressed.SetActive(true);
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
                 UpdateQuestScreen();
                 break;
 
             case 2: // Character
                 if (characterSection != null) characterSection.SetActive(true);
                 if (characterPressed != null) characterPressed.SetActive(true);
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
                 UpdateCharacterScreen();
                 break;
 
             case 3: // Info
                 if (infoSection != null) infoSection.SetActive(true);
                 if (infoPressed != null) infoPressed.SetActive(true);
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
                 UpdateInfoScreen();
                 break;
 
             case 4: // Map
                 if (mapSection != null) mapSection.SetActive(true);
                 if (mapPressed != null) mapPressed.SetActive(true);
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
                 UpdateMapScreen();
                 break;
         }
@@ -246,6 +253,7 @@ public class NewHatalougeManager : MonoBehaviour
     // ---------------------------------------------------------
     public void NextHat()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         if (hatHiddenScreens == null || hatHiddenScreens.Length == 0) return;
         hatIndex = (hatIndex + 1) % hatHiddenScreens.Length;
         UpdateHatScreen();
@@ -253,6 +261,7 @@ public class NewHatalougeManager : MonoBehaviour
 
     public void PrevHat()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         if (hatHiddenScreens == null || hatHiddenScreens.Length == 0) return;
         hatIndex--;
         if (hatIndex < 0) hatIndex = hatHiddenScreens.Length - 1;
@@ -299,6 +308,7 @@ public class NewHatalougeManager : MonoBehaviour
     // ---------------------------------------------------------
     public void NextQuest()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         if (questHiddenScreens == null || questHiddenScreens.Length == 0) return;
         questIndex = (questIndex + 1) % questHiddenScreens.Length;
         UpdateQuestScreen();
@@ -306,6 +316,7 @@ public class NewHatalougeManager : MonoBehaviour
 
     public void PrevQuest()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         if (questHiddenScreens == null || questHiddenScreens.Length == 0) return;
         questIndex--;
         if (questIndex < 0) questIndex = questHiddenScreens.Length - 1;
@@ -350,6 +361,7 @@ public class NewHatalougeManager : MonoBehaviour
     // ---------------------------------------------------------
     public void NextCharacter()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         if (characterHiddenScreens == null || characterHiddenScreens.Length == 0) return;
         characterIndex = (characterIndex + 1) % characterHiddenScreens.Length;
         UpdateCharacterScreen();
@@ -357,6 +369,7 @@ public class NewHatalougeManager : MonoBehaviour
 
     public void PrevCharacter()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         if (characterHiddenScreens == null || characterHiddenScreens.Length == 0) return;
         characterIndex--;
         if (characterIndex < 0) characterIndex = characterHiddenScreens.Length - 1;
@@ -419,6 +432,7 @@ public class NewHatalougeManager : MonoBehaviour
     // ---------------------------------------------------------
     public void NextInfo()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         if (infoScreens == null || infoScreens.Length == 0) return;
         infoIndex++;
         if (infoIndex >= infoScreens.Length) infoIndex = infoScreens.Length - 1;
@@ -427,6 +441,7 @@ public class NewHatalougeManager : MonoBehaviour
 
     public void PrevInfo()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         if (infoScreens == null || infoScreens.Length == 0) return;
         infoIndex--;
         if (infoIndex < 0) infoIndex = 0;

@@ -91,6 +91,7 @@ public class CraftingSystem : MonoBehaviour
 
     void CraftAnyItem(ItemBlueprints blueprintToCraft)
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         SoundManager.Instance.PlaySound(SoundManager.Instance.brewPotion);
 
         StartCoroutine(craftingDelayForSound(blueprintToCraft));

@@ -29,6 +29,7 @@ public class SettingsManager : MonoBehaviour
 
     public void BackButton()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         PauseManager.Instance.CloseSettingScreen();
         PauseManager.Instance.OpenPauseScreen();
 
@@ -36,12 +37,14 @@ public class SettingsManager : MonoBehaviour
 
     public void ExitButton()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         PauseManager.Instance.CloseSettingScreen();
         PauseManager.Instance.ClosePause();
     }
 
     public void CloseSettingScreen()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         settingScreenUI.SetActive(false);
         menuScreen.SetActive(true);
     }

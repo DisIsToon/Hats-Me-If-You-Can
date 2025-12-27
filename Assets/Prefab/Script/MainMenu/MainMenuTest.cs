@@ -58,6 +58,7 @@ public class MainMenuTest : Menu
 
     public void ExitGame()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         Debug.Log("ExitGame button clicked. Quitting application...");
 
 #if UNITY_EDITOR

@@ -38,6 +38,7 @@ public class PauseManager : MonoBehaviour
 
     public void OpenPauseScreen()
     {
+        SoundManager.Instance.PlayMainMenuMusic();
         pauseScreenUI.SetActive(true);
     }
 
@@ -58,6 +59,7 @@ public class PauseManager : MonoBehaviour
 
     public void OpenPause()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         OpenPauseScreen();
         Time.timeScale = 0f;       // Freeze the world
         isOpen = true;
@@ -65,10 +67,13 @@ public class PauseManager : MonoBehaviour
 
     public void ClosePause()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
+        SoundManager.Instance.ReturnToBiomeMusic();
         ClosePauseScreen();
         pauseScreenUI.SetActive(false);
         Time.timeScale = 1f;       // Unfreeze the world
         isOpen = false;
+
     }
 
     public void OnResumeButton()
@@ -78,6 +83,7 @@ public class PauseManager : MonoBehaviour
 
     public void OnSaveButton()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         CardsController.Instance.SaveData(data);
         WinterBarrierSystem.Instance.SaveData(data);
         CRBarrierSystem.Instance.SaveData(data);
@@ -86,6 +92,7 @@ public class PauseManager : MonoBehaviour
 
     public void OnLoadButton()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         CardsController.Instance.LoadData(data);
         WinterBarrierSystem.Instance.LoadData(data);
         CRBarrierSystem.Instance.LoadData(data);
@@ -94,12 +101,14 @@ public class PauseManager : MonoBehaviour
 
     public void OnSettingButton()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         ClosePauseScreen();
         OpenSettingScreen();
     }
 
     public void OnMainMenuButton()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         Time.timeScale = 1f; // Just to be safe before switching scenes
         SceneManager.LoadScene("MainMenu");
     }

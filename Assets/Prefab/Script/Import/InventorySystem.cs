@@ -87,8 +87,9 @@ public class InventorySystem : MonoBehaviour
  
 			Debug.Log("i is pressed");
             inventoryScreenUI.SetActive(true);
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
 
-        
+
 
             //SelectionManager.Instance.DisableSelection();
             //SelectionManager.Instance.GetComponent<SelectionManager>().enabled = false;
@@ -99,8 +100,8 @@ public class InventorySystem : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Tab) && isOpen)
         {
             inventoryScreenUI.SetActive(false);
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
 
-           
 
             isOpen = false;
         }
@@ -110,6 +111,7 @@ public class InventorySystem : MonoBehaviour
     {
         if(!isOpen)
         {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
             inventoryScreenUI.SetActive(true);
             isOpen = true;
         }
