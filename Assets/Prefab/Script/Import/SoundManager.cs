@@ -67,6 +67,8 @@ public class SoundManager : MonoBehaviour
     public AudioSource puzzlePlayingMusic;
     public AudioSource capturingHatMusic;
 
+    public AudioSource openMessageSfx;
+
     [Header("Music Settings")]
     public float fadeDuration = 1.5f;
     public AudioSource currentBGMusic;
@@ -116,7 +118,7 @@ public class SoundManager : MonoBehaviour
             hatalogueNextPageSound, openInventory, dragUp, dragDrop,
             equipPotion, brewBtnClicked, brewPotion, itemCollectSound,
             questCompleteSound, pauseSound, leavesSound, walkOnForest,
-            walkOnSnow, walkOnCastleRuin
+            walkOnSnow, openMessageSfx , walkOnCastleRuin
         };
 
         // Collect all BGMs

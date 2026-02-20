@@ -57,7 +57,13 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     void Update()
     {
-        bool uiOpen = (InventorySystem.Instance != null && InventorySystem.Instance.isOpen) ||
+        bool tutorialOpen = TutorialManager.Instance != null &&
+                    TutorialManager.Instance.IsAnyTutorialUIOpen;
+
+
+
+        bool uiOpen = tutorialOpen || 
+                      (InventorySystem.Instance != null && InventorySystem.Instance.isOpen) ||
                       (CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen) ||
                       (DialogSystem.Instance != null && DialogSystem.Instance.dialogUIActive) ||
                       (QuestManager.Instance != null && QuestManager.Instance.isQuestMenuOpen) ||

@@ -10,6 +10,7 @@ public class NewHatalougeManager : MonoBehaviour
     [Header("Main Journal Panel")]
     public GameObject journalPanel;
     public bool isOpen = false;
+    public bool notTutorial = false;
 
     [Header("Section Parents")]
     public GameObject hatScreen;
@@ -131,7 +132,11 @@ public class NewHatalougeManager : MonoBehaviour
         // Initialize map screen
         UpdateMapScreen();
 
-        StartCoroutine(ShowPopupAfterDelay());
+        if (notTutorial)
+        {
+            StartCoroutine(ShowPopupAfterDelay());
+        }
+
     }
 
     public void Update()
@@ -162,6 +167,12 @@ public class NewHatalougeManager : MonoBehaviour
         if (journalPanel != null) journalPanel.SetActive(true);
         isOpen = true;
         OpenSection(0);
+
+        if (NewHatalougeManager.Instance != null &&
+        NewHatalougeManager.Instance.notTutorial == false)
+        {
+            TutorialManager.Instance.OnHatalogueOpened();
+        }
     }
 
     public void CloseJournal()
@@ -171,6 +182,12 @@ public class NewHatalougeManager : MonoBehaviour
         hatScreen.SetActive(true);
         if (journalPanel != null) journalPanel.SetActive(false);
         isOpen = false;
+
+        if (NewHatalougeManager.Instance != null &&
+        NewHatalougeManager.Instance.notTutorial == false)
+        {
+            TutorialManager.Instance.OnHatalogueClosed();
+        }
     }
 
     public void ToggleJournal()

@@ -93,7 +93,16 @@ public class FastHatMinigame : MonoBehaviour
 
         active = true;
         currentHits = 0;
-        timeLeft = totalTime;
+
+        if (NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.notTutorial == false)
+        {
+            timeLeft = 100f; // Tutorial mode: 100 seconds
+        }
+        else
+        {
+            timeLeft = totalTime; // Normal gameplay
+        }
+
         markerTime = 0f;
         currentMarkerSpeed = baseMarkerSpeed;
 

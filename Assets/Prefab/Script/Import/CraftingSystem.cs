@@ -10,6 +10,7 @@ public class CraftingSystem : MonoBehaviour
     public GameObject mainScreen;
     public GameObject inventoryBTN;
     public GameObject quickSlots;
+    public GameObject inventoryExitBTN;
 
     [Header("UI Screens")]
     public GameObject craftingScreenUI;
@@ -115,7 +116,9 @@ public class CraftingSystem : MonoBehaviour
         }
 
         StartCoroutine(calculate());
-        
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.OnPotionCrafted();
+
     }
     public IEnumerator calculate()
     {
@@ -164,11 +167,14 @@ public class CraftingSystem : MonoBehaviour
     IEnumerator OpenCraftingScreen()
     {
         mainScreen.SetActive(false);
-        quickSlots.SetActive(false);
-        inventoryBTN.SetActive(false);
+        inventoryExitBTN.SetActive(false);
+        //quickSlots.SetActive(false);
+        //inventoryBTN.SetActive(false);
 
         SoundManager.Instance.PlayBrewingMusic();
         isOpen = true;
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.OnCraftingScreenOpened();
 
         // Fade out
         yield return StartCoroutine(Fade(1f));
@@ -212,6 +218,11 @@ public class CraftingSystem : MonoBehaviour
         yield return StartCoroutine(Fade(0f));
 
         SoundManager.Instance.ReturnToBiomeMusic();
+
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.OnPotionPlacedInQuickslot();
+
+        inventoryExitBTN.SetActive(true);
     }
 
     IEnumerator Fade(float targetAlpha)
@@ -230,7 +241,7 @@ public class CraftingSystem : MonoBehaviour
 
     public void CraftingScreenOff()
     {
-        CloseCraftingScreen();
+        StartCoroutine(CloseCraftingScreen());
     }
 
     public void RefreshNeededItem()
@@ -280,6 +291,7 @@ public class CraftingSystem : MonoBehaviour
         if (star_count >= 1 && glitteroom_count >= 2 && InventorySystem.Instance.CheckSlotsAvailable(1))
         {
             craftCakePotionBTN.gameObject.SetActive(true);
+
         }
         else
         {

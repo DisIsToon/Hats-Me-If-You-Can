@@ -36,7 +36,7 @@ public class InteractableCauldron : MonoBehaviour
         // Player presses E while inside trigger
         if (playerInRange && Input.GetKeyDown(KeyCode.E) &&isOpen)
         {
-            CraftingSystem.Instance.CraftingScreenOff();
+            //CraftingSystem.Instance.CraftingScreenOff();
             SelectionManager.Instance.cauldronDetected = false;
             playerInRange = false;
         }

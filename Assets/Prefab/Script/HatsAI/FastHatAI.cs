@@ -52,8 +52,22 @@ public class FastHatAI : MonoBehaviour
     private bool isMoving = false;
     private int pointsSinceLastStop = 0;
 
+    bool IsTutorialActive()
+    {
+        return NewHatalougeManager.Instance != null &&
+               NewHatalougeManager.Instance.notTutorial == false;
+    }
+
     void Start()
     {
+
+        // 🚫 If in tutorial, completely disable AI movement
+        if (IsTutorialActive())
+        {
+            enabled = false;   // disables this entire script
+            return;
+        }
+
         // Auto-find player if not assigned
         if (player == null)
         {

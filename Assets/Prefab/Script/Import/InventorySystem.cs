@@ -85,41 +85,54 @@ public class InventorySystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Tab) && !isOpen)
         {
  
-			Debug.Log("i is pressed");
-            inventoryScreenUI.SetActive(true);
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
-
-
-
-            //SelectionManager.Instance.DisableSelection();
-            //SelectionManager.Instance.GetComponent<SelectionManager>().enabled = false;
-
-            isOpen = true;
+			OpenInventory();
  
         }
         else if (Input.GetKeyDown(KeyCode.Tab) && isOpen)
         {
-            inventoryScreenUI.SetActive(false);
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
-
-
-            isOpen = false;
+            CloseInventory();
         }
     }
 
     public void OpenInventory()
     {
-        if(!isOpen)
-        {
             SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
             inventoryScreenUI.SetActive(true);
             isOpen = true;
+
+        // Only trigger tutorial if tutorial is active
+        if (NewHatalougeManager.Instance != null &&
+            NewHatalougeManager.Instance.notTutorial == false)
+        {
+            TutorialManager.Instance.OnInventoryOpened();
+        }
+
+    }
+
+    public void CloseInventory()
+    {
+        inventoryScreenUI.SetActive(false);
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
+
+
+        isOpen = false;
+
+        if (NewHatalougeManager.Instance != null &&
+    NewHatalougeManager.Instance.notTutorial == false)
+        {
+            TutorialManager.Instance.OnInventoryClosed();
         }
 
     }
 
     public void AddToInventory(string itemName)
     {
+        if (NewHatalougeManager.Instance != null &&
+        NewHatalougeManager.Instance.notTutorial == false)
+        {
+            TutorialManager.Instance.OnMaterialCollected(itemName);
+        }
+
         // 1) Check if item already exists in inventory
         GameObject existingSlot = FindSlotWithItem(itemName);
 

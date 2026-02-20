@@ -49,8 +49,23 @@ public class ShyHatAI : MonoBehaviour
     private bool finished = false;         // Reached final point and done
     private bool isPreparingMove = false;  // waiting during shocked anim
 
+    [Header("Tutorial Float")]
+    public bool floatDuringTutorial = true;
+    public float floatAmplitude = 0.2f;   // How high it moves
+    public float floatSpeed = 2f;         // How fast it moves
+
+    private Vector3 startPosition;
+
+    bool IsTutorialActive()
+    {
+        return NewHatalougeManager.Instance != null &&
+               NewHatalougeManager.Instance.notTutorial == false;
+    }
+
     void Start()
     {
+        startPosition = transform.position;
+
         fleePoints = new Transform[]
         {
             fleePoint1,
@@ -90,6 +105,28 @@ public class ShyHatAI : MonoBehaviour
 
     void Update()
     {
+        bool tutorialActive =
+     NewHatalougeManager.Instance != null &&
+     NewHatalougeManager.Instance.notTutorial == false;
+
+        // 🔹 During tutorial: disable AI movement but allow floating
+        if (tutorialActive)
+        {
+            if (floatDuringTutorial)
+            {
+                float newY = startPosition.y +
+                             Mathf.Sin(Time.time * floatSpeed) * floatAmplitude;
+
+                transform.position = new Vector3(
+                    transform.position.x,
+                    newY,
+                    transform.position.z
+                );
+            }
+
+            return; // Skip AI movement logic
+        }
+
         if (finished) return;
         if (player == null) return;
 

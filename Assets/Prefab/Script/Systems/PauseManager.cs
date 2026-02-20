@@ -12,6 +12,9 @@ public class PauseManager : MonoBehaviour
     public GameObject pauseScreenUI;
     public GameObject settingScreenUI;
     public bool isOpen;
+    public bool isOpenPause;   // Tracks pause screen
+    public bool isOpenSetting; // Tracks settings screen
+
 
     public GameData data = new GameData();
 
@@ -45,24 +48,39 @@ public class PauseManager : MonoBehaviour
     public void ClosePauseScreen()
     {
         pauseScreenUI.SetActive(false);
+        CheckTutorialSettingClosed();
     }
 
     public void OpenSettingScreen()
     {
         settingScreenUI.SetActive(true);
+        isOpenSetting = true;
     }
 
     public void CloseSettingScreen()
     {
         settingScreenUI?.SetActive(false);
+        isOpenSetting = false;
+
+        CheckTutorialSettingClosed();
     }
 
     public void OpenPause()
     {
         SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
+
         OpenPauseScreen();
         Time.timeScale = 0f;       // Freeze the world
         isOpen = true;
+        isOpenPause = true;
+
+        if (NewHatalougeManager.Instance != null &&
+NewHatalougeManager.Instance.notTutorial == false)
+        {
+            TutorialManager.Instance.OnSettingsOpened();
+        }
+
+
     }
 
     public void ClosePause()
@@ -73,6 +91,8 @@ public class PauseManager : MonoBehaviour
         pauseScreenUI.SetActive(false);
         Time.timeScale = 1f;       // Unfreeze the world
         isOpen = false;
+        isOpenPause = false;
+        CheckTutorialSettingClosed();
 
     }
 
@@ -111,5 +131,18 @@ public class PauseManager : MonoBehaviour
         SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         Time.timeScale = 1f; // Just to be safe before switching scenes
         SceneManager.LoadScene("MainMenu");
+    }
+
+    private void CheckTutorialSettingClosed()
+    {
+        // Only trigger tutorial when both pause and settings are closed
+        if (!isOpenPause && !isOpenSetting)
+        {
+            if (NewHatalougeManager.Instance != null &&
+                NewHatalougeManager.Instance.notTutorial == false)
+            {
+                TutorialManager.Instance.OnSettingsClosedForTutorial();
+            }
+        }
     }
 }

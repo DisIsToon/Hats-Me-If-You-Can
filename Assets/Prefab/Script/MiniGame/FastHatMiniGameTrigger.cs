@@ -46,6 +46,20 @@ public class FastHatMinigameTrigger : MonoBehaviour
             hatRoot = gameObject;
     }
 
+    public void ShowTutorialAfterMinigame()
+    {
+        StartCoroutine(ShowTutorialUI16Delay());
+    }
+
+    private IEnumerator ShowTutorialUI16Delay()
+    {
+        yield return new WaitForSecondsRealtime(2f);  // wait 2 seconds after throwing
+        if (TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.ShowTutorialUI16AndPause();
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag(throwableTag))
@@ -83,6 +97,9 @@ public class FastHatMinigameTrigger : MonoBehaviour
             StopCoroutine(pendingStart);
 
         pendingStart = StartCoroutine(StartMinigameAfterDelay());
+
+        // Start tutorial after minigame (2s delay)
+    ShowTutorialAfterMinigame();
     }
 
     void FocusHatCamera()
@@ -155,6 +172,10 @@ public class FastHatMinigameTrigger : MonoBehaviour
             // ✅ SUCCESS: hat disappears, no more catching
             if (hatRoot != null)
                 hatRoot.SetActive(false);
+
+            // 🔹 Show tutorialUI17 after 1 second
+            if (TutorialManager.Instance != null)
+                TutorialManager.Instance.ShowTutorialUI17();
         }
         else
         {

@@ -73,6 +73,11 @@ public class EquipSystem : MonoBehaviour
 
                 SetEquippedModel(selectedItem);
 
+                if (TutorialManager.Instance != null)
+                {
+                    TutorialManager.Instance.OnPotionEquippedFromQuickslot();
+                }
+
                 // ChanGe Color
                 foreach (Transform child in numberHolder.transform)
                 {
@@ -161,7 +166,9 @@ public class EquipSystem : MonoBehaviour
         // Set transform of our object
         itemToEquip.transform.SetParent(availableSlot.transform, false);
 
- 
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.OnPotionPlacedInQuickslot();
+
         InventorySystem.Instance.ReCalculateList();
  
     }
