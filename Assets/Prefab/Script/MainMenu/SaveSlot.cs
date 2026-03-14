@@ -14,6 +14,9 @@ public class SaveSlot : MonoBehaviour
     [SerializeField] private GameObject hasDataContent;
     [SerializeField] private TextMeshProUGUI gamePlayTimeText;
 
+    [Header("Visual")]
+    [SerializeField] private Image slotImage;
+
     public bool hasData { get; private set; } = false;
     private Button saveSlotButton;
 
@@ -38,8 +41,15 @@ public class SaveSlot : MonoBehaviour
 
             // Call the function from GameData
             gamePlayTimeText.text = data.GetFinalGamePlayTime().ToString("F2");
-            // "F2" formats to 2 decimal places (optional) 
+            // "F2" formats to 2 decimal places (optional)
+            SetOpacity(255);
         }
+    }
+
+    private void SetOpacity(int alpha) {
+        Color c = slotImage.color;
+        c.a = alpha / 255f;
+        slotImage.color = c;
     }
 
     public string GetProfileId()
