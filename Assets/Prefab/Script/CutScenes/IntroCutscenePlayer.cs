@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class IntroCutscenePlayer : MonoBehaviour
 {
     public VideoPlayer videoPlayer;
+    public MenuManager menuManager;
 
     void Start()
     {
@@ -14,7 +15,9 @@ public class IntroCutscenePlayer : MonoBehaviour
 
     private void OnVideoFinished(VideoPlayer vp)
     {
-        SceneManager.LoadSceneAsync("BiomeOptimized");
+        if (menuManager != null) {
+            menuManager.ShowTutorialPopupAfterDelay();
+        }
     }
 
     void Update()
@@ -22,7 +25,9 @@ public class IntroCutscenePlayer : MonoBehaviour
         // Skip with any key
         if (Input.anyKeyDown)
         {
-            SceneManager.LoadSceneAsync("BiomeOptimized");
+            if (menuManager != null) {
+                menuManager.ShowTutorialPopupAfterDelay();
+            }
         }
     }
 }

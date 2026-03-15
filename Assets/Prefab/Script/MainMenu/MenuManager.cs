@@ -26,16 +26,15 @@ public class MenuManager : MonoBehaviour
 
     public void OnTutorialYesClicked()
     {
-        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
+        SoundManager.Instance?.PlaySFX(SoundManager.Instance.clickedSound.clip);
+        tutorialPopupUI?.SetActive(false);
         SceneManager.LoadScene("TutorialScene");
     }
 
     public void OnTutorialSkipClicked()
     {
-        if (tutorialPopupUI != null)
-        {
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
-            tutorialPopupUI.SetActive(false);
-        }
+        SoundManager.Instance?.PlaySFX(SoundManager.Instance.clickedSound.clip);
+        tutorialPopupUI?.SetActive(false);
+        SceneManager.LoadScene("BiomeOptimized");
     }
 }
