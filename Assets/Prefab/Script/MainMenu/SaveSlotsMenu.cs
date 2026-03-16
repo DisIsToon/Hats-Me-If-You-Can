@@ -62,7 +62,7 @@ public class SaveSlotsMenu : Menu
     {
         DataPersistenceManager.instance.SaveGame();
 
-        SceneManager.LoadSceneAsync("IntroCutsceneScene");
+        //SceneManager.LoadSceneAsync("IntroCutsceneScene");
 
         //SceneManager.LoadSceneAsync("BiomeOptimized");
     }
