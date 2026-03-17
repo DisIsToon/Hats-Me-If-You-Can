@@ -10,20 +10,16 @@ public class NotifUIManager : MonoBehaviour
     [Header("References")]
     public GameObject notifUIScreen;
     public TextMeshProUGUI notifText;
-    public CanvasGroup canvasGroup;
+    public Animator animator;
 
     [Header("Settings")]
-    public float showDuration = 0.6f;
-    public float fadeDuration = 0.6f;
+    public float showDuration = 1.5f;
 
     private Coroutine currentRoutine;
 
     private void Awake()
     {
         Instance = this;
-
-        if (canvasGroup == null)
-            canvasGroup = notifUIScreen.GetComponent<CanvasGroup>();
     }
 
     // ------------------------------
@@ -90,22 +86,19 @@ public class NotifUIManager : MonoBehaviour
         currentRoutine = StartCoroutine(NotificationRoutine());
     }
 
-    private IEnumerator NotificationRoutine()
-    {
+    private IEnumerator NotificationRoutine() {
         notifUIScreen.SetActive(true);
-        canvasGroup.alpha = 1f;
 
-        // Stay visible
+        // Play reveal animation (default state)
+        animator.Play("notifReveal", 0, 0f);
+
         yield return new WaitForSeconds(showDuration);
 
-        // Fade out
-        float t = 0;
-        while (t < fadeDuration)
-        {
-            t += Time.deltaTime;
-            canvasGroup.alpha = Mathf.Lerp(1, 0, t / fadeDuration);
-            yield return null;
-        }
+        // Trigger exit animation
+        animator.SetTrigger("Out");
+
+        // Wait for animation to finish (adjust based on your animation length)
+        yield return new WaitForSeconds(0.6f);
 
         notifUIScreen.SetActive(false);
     }
