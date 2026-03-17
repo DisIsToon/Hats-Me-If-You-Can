@@ -8,8 +8,8 @@ public class ASyncLoader : MonoBehaviour {
     [SerializeField] private GameObject loadingScreen;
     [SerializeField] private GameObject mainMenu;
 
-    [Header("Slider")]
-    [SerializeField] private Slider loadingSlider;
+    [Header("Progress Bar")]
+    [SerializeField] private Image loadingBar;
 
     private bool pausedOnce = false;
     private bool pausedTwice = false;
@@ -30,13 +30,13 @@ public class ASyncLoader : MonoBehaviour {
 
         // First 50% = real loading progress
         while (loadOperation.progress < 0.9f) {
-            float targetProgress = (loadOperation.progress / 0.9f) * 0.5f;
 
-            displayedProgress = Mathf.MoveTowards(displayedProgress, targetProgress, Time.deltaTime * 0.2f);
+            float targetProgress = loadOperation.progress;
 
-            loadingSlider.value = displayedProgress;
+            displayedProgress = Mathf.MoveTowards(displayedProgress, targetProgress, Time.deltaTime * 0.5f);
+            loadingBar.fillAmount = displayedProgress;
 
-            // Pause checkpoints
+            //pause Checkpoints
             if (displayedProgress > 0.15f && !pausedOnce) {
                 pausedOnce = true;
                 yield return new WaitForSeconds(0.6f);
@@ -55,15 +55,17 @@ public class ASyncLoader : MonoBehaviour {
             yield return null;
         }
 
-        // Scene is ready in background
-        // Fill remaining 50% smoothly
-        while (displayedProgress < 1f) {
-            displayedProgress += Time.deltaTime * 0.25f;
-            loadingSlider.value = displayedProgress;
+        // Wait until scene is fully ready
+        while (!loadOperation.isDone) {
+            // Smoothly fill the last 10%
+            displayedProgress = Mathf.MoveTowards(displayedProgress, 1f, Time.deltaTime * 0.5f);
+            loadingBar.fillAmount = displayedProgress;
+
+            // Only activate the scene when bar visually full
+            if (displayedProgress >= 1f)
+                loadOperation.allowSceneActivation = true;
 
             yield return null;
         }
-
-        loadOperation.allowSceneActivation = true;
     }
 }

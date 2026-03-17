@@ -30,7 +30,7 @@ public class MenuManager : MonoBehaviour
             SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         }
         tutorialPopupUI?.SetActive(false);
-        SceneManager.LoadScene("TutorialScene");
+        //SceneManager.LoadScene("TutorialScene");
     }
 
     public void OnTutorialSkipClicked()
@@ -39,6 +39,6 @@ public class MenuManager : MonoBehaviour
             SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         }
         tutorialPopupUI?.SetActive(false);
-        SceneManager.LoadScene("BiomeOptimized");
+        //SceneManager.LoadScene("BiomeOptimized");
     }
 }
