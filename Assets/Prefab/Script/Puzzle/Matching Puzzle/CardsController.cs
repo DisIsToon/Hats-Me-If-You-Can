@@ -180,7 +180,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
             Card card = Instantiate(cardPrefab, gridTransform);
 
             // Specify the size you want for this icon
-            Vector2 iconSize = new Vector2(60, 80); // change 100,100 to whatever you want
+            Vector2 iconSize = new Vector2(180, 180); // change 100,100 to whatever you want
             card.SetIconSprite(spritePairs[i], iconSize);
 
             card.controller = this;

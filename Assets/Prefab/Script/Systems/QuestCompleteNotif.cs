@@ -3,8 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class QuestCompleteNotif : MonoBehaviour
-{
+public class QuestCompleteNotif : MonoBehaviour {
     public static QuestCompleteNotif Instance { get; set; }
 
     [Header("Main Notification")]
@@ -24,8 +23,7 @@ public class QuestCompleteNotif : MonoBehaviour
     private Vector2 startPosition;
     private Coroutine currentRoutine;
 
-    private void Awake()
-    {
+    private void Awake() {
         Instance = this;
 
         if (canvasGroup == null)
@@ -38,18 +36,15 @@ public class QuestCompleteNotif : MonoBehaviour
     // PUBLIC FUNCTIONS TO CALL
     // ------------------------------
 
-    public void ShowLiraComplete()
-    {
+    public void ShowLiraComplete() {
         ShowNotification(liraImage);
     }
 
-    public void ShowTulipComplete()
-    {
+    public void ShowTulipComplete() {
         ShowNotification(tulipImage);
     }
 
-    public void ShowMallowComplete()
-    {
+    public void ShowMallowComplete() {
         ShowNotification(mallowImage);
     }
 
@@ -57,8 +52,7 @@ public class QuestCompleteNotif : MonoBehaviour
     // CORE NOTIFICATION LOGIC
     // ------------------------------
 
-    private void ShowNotification(GameObject characterImage)
-    {
+    private void ShowNotification(GameObject characterImage) {
         // Enable correct image, hide others
         liraImage.SetActive(characterImage == liraImage);
         tulipImage.SetActive(characterImage == tulipImage);
@@ -67,7 +61,7 @@ public class QuestCompleteNotif : MonoBehaviour
         // Reset visuals
         questCompleteNotif.gameObject.SetActive(true);
         questCompleteNotif.anchoredPosition = startPosition;
-        canvasGroup.alpha = 1f;
+        canvasGroup.alpha = 0f; // start invisible for fade in
 
         if (currentRoutine != null)
             StopCoroutine(currentRoutine);
@@ -75,14 +69,32 @@ public class QuestCompleteNotif : MonoBehaviour
         currentRoutine = StartCoroutine(PlayAnimation());
     }
 
-    private IEnumerator PlayAnimation()
-    {
+    private IEnumerator PlayAnimation() {
         float time = 0;
+
+        // ------------------------------
+        // FADE IN
+        // ------------------------------
+        while (time < fadeDuration) {
+            time += Time.deltaTime;
+            float t = time / fadeDuration;
+
+            canvasGroup.alpha = t;
+            yield return null;
+        }
+
+        canvasGroup.alpha = 1f;
+
+        // ------------------------------
+        // STAY (2 seconds)
+        // ------------------------------
+        yield return new WaitForSeconds(2f);
+
+        time = 0;
         Vector2 endPos = startPosition + new Vector2(0, -fallDistance);
 
         // Falling + fading
-        while (time < fallDuration)
-        {
+        while (time < fallDuration) {
             time += Time.deltaTime;
             float t = time / fallDuration;
 
@@ -90,7 +102,7 @@ public class QuestCompleteNotif : MonoBehaviour
             questCompleteNotif.anchoredPosition = Vector2.Lerp(startPosition, endPos, t);
 
             // Fade out simultaneously
-            canvasGroup.alpha = 1f - (t * (1f / (fadeDuration / fallDuration)));
+            canvasGroup.alpha = 1f - t;
 
             yield return null;
         }

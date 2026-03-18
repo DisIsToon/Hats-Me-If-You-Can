@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4242553970714623833}
   - component: {fileID: -6745207121342648869}
   m_Layer: 5
-  m_Name: Cottonflower
+  m_Name: CottonFlower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,8 +30,8 @@ RectTransform:
   m_GameObject: {fileID: 4242553970714623831}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.6, y: 1.6, z: 1.6}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4482707030925119432}
   m_Father: {fileID: 0}
@@ -39,7 +39,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 33.042, y: 35.6998}
+  m_SizeDelta: {x: 35, y: 420}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6152767141033159895
 CanvasRenderer:
@@ -71,7 +71,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 1839956432, guid: d1fde8f09d5fdcd488143b9a87e99e77, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -172,8 +172,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.000030517578}
-  m_SizeDelta: {x: 35.1, y: 41.7}
+  m_AnchoredPosition: {x: 6, y: 4}
+  m_SizeDelta: {x: 34.7, y: 40.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3476056931242316593
 CanvasRenderer:
@@ -205,8 +205,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c9429d3cffccd7b48a19dbfa5a10bc60, type: 2}
-  m_sharedMaterial: {fileID: 5506013996839828666, guid: c9429d3cffccd7b48a19dbfa5a10bc60, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6593fad5d576b804ea00d2c5cf2dbbe2, type: 2}
+  m_sharedMaterial: {fileID: -951591358872209501, guid: 6593fad5d576b804ea00d2c5cf2dbbe2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -230,8 +230,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16
-  m_fontSizeBase: 16
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
