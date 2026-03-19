@@ -15,6 +15,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
     [Header("UI")]
     public GameObject PuzzleScreen;
     public GameObject completePuzzlePopup;
+    public GameObject gridContainer;
     public TMP_Text timerText;
 
     [Header("Timer Settings")]
@@ -119,6 +120,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
         inventoryBTN.SetActive(false);
         SoundManager.Instance.PlayPuzzleMusic();
         PuzzleScreen.SetActive(true);
+        gridContainer.SetActive(true);
         isOpen = true;
 
         // Start timer
@@ -235,6 +237,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
         SoundManager.Instance.PlaySFX(SoundManager.Instance.rotatingPuzzlePartCompleteSound.clip);
         canPlayPuzzle = false;
         // Show complete popup
+        gridContainer.SetActive(false);
         completePuzzlePopup.SetActive(true);
 
         // Spawn the mirror shard at mirror's position and rotation
@@ -254,7 +257,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
 
     IEnumerator CompleteSequence()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.8f);
         PuzzleScreenOff();
         completePuzzlePopup.SetActive(false);
     }

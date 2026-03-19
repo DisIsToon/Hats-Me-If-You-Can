@@ -14,6 +14,8 @@ public class DialogSystem : MonoBehaviour
     public TMPro.TextMeshProUGUI speakerNameText;
     public string currentSpeakerName = "";
 
+    private bool nextClicked = false;
+    public Button nextBTN;
     public Button option1BTN;
     public Button option2BTN;
 
@@ -105,23 +107,31 @@ public class DialogSystem : MonoBehaviour
         StartCoroutine(ShowDialogSequence(lines));
     }
 
-    private IEnumerator ShowDialogSequence(string[] lines)
-    {
+    private IEnumerator ShowDialogSequence(string[] lines) {
         OpenDialogUI();
-        for (int i = 0; i < lines.Length; i++)
-        {
+
+        // Hide option buttons during normal dialogue
+        option1BTN.gameObject.SetActive(false);
+        option2BTN.gameObject.SetActive(false);
+
+        nextBTN.gameObject.SetActive(true);
+
+        for (int i = 0; i < lines.Length; i++) {
             dialogText.text = lines[i];
-            option1BTN.gameObject.SetActive(true);
-            option1BTN.onClick.RemoveAllListeners();
-            option1BTN.onClick.AddListener(() =>
+
+            nextClicked = false;
+
+            nextBTN.onClick.RemoveAllListeners();
+            nextBTN.onClick.AddListener(() =>
             {
-                // Close if last line
-                if (i == lines.Length - 1)
-                {
-                    CloseDialogUI();
-                }
+                Debug.Log("CLICK WORKS");
+                nextClicked = true;
             });
-            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E)); // Or wait for button press
+
+            yield return new WaitUntil(() => nextClicked);
         }
+
+        nextBTN.gameObject.SetActive(false);
+        CloseDialogUI();
     }
 }

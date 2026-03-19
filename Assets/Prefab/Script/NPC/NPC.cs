@@ -29,6 +29,7 @@ public class NPC : MonoBehaviour
     public bool isTalkingWithPlayer = false;
 
     [Header("Button Options")]
+    public Button nextButton;
     public bool disableOption2 = false;   // <--- NEW
 
     // UI References
@@ -72,6 +73,7 @@ public class NPC : MonoBehaviour
 
         npcDialogText = DialogSystem.Instance.dialogText;
 
+        nextButton = DialogSystem.Instance.nextBTN;
         optionButton1 = DialogSystem.Instance.option1BTN;
         optionButton2 = DialogSystem.Instance.option2BTN;
 
@@ -214,9 +216,13 @@ public class NPC : MonoBehaviour
                 SubmitRequiredItems();
                 DialogSystem.Instance.OpenDialogUI();
                 npcDialogText.text = currentActiveQuest.info.comebackCompleted;
+
+                // --- Reward button uses Option1 ---
+                optionButton1.gameObject.SetActive(true);
                 optionButton1Text.text = "Take Reward";
                 optionButton1.onClick.RemoveAllListeners();
                 optionButton1.onClick.AddListener(() => ReceiveRewardAndCompleteQuest());
+
                 if (!disableOption2)
                     optionButton2.gameObject.SetActive(false);
 
@@ -267,9 +273,15 @@ public class NPC : MonoBehaviour
     {
         DialogSystem.Instance.OpenDialogUI();
         npcDialogText.text = "Hmm… something’s missing. Come back when you've handled that puzzle.";
-        optionButton1Text.text = "Close";
-        optionButton1.onClick.RemoveAllListeners();
-        optionButton1.onClick.AddListener(() =>
+
+        // Hide Option buttons
+        optionButton1.gameObject.SetActive(false);
+        optionButton2.gameObject.SetActive(false);
+
+        // Show Next button to close dialogue
+        nextButton.gameObject.SetActive(true);
+        nextButton.onClick.RemoveAllListeners();
+        nextButton.onClick.AddListener(() =>
         {
             DialogSystem.Instance.CloseDialogUI();
             isTalkingWithPlayer = false;
@@ -359,9 +371,15 @@ public class NPC : MonoBehaviour
     {
         DialogSystem.Instance.OpenDialogUI();
         npcDialogText.text = currentActiveQuest.info.initialDialog[currentDialog];
-        optionButton1Text.text = "Next";
-        optionButton1.onClick.RemoveAllListeners();
-        optionButton1.onClick.AddListener(() =>
+
+        // Hide Accept/Decline buttons during dialogue
+        optionButton1.gameObject.SetActive(false);
+        optionButton2.gameObject.SetActive(false);
+
+        // Show Next button
+        DialogSystem.Instance.nextBTN.gameObject.SetActive(true);
+        DialogSystem.Instance.nextBTN.onClick.RemoveAllListeners();
+        DialogSystem.Instance.nextBTN.onClick.AddListener(() =>
         {
             currentDialog++;
             CheckIfDialogDone();
@@ -373,22 +391,18 @@ public class NPC : MonoBehaviour
 
     private void CheckIfDialogDone()
     {
-        if (currentDialog >= currentActiveQuest.info.initialDialog.Count - 1)
-        {
-            npcDialogText.text = currentActiveQuest.info.initialDialog[currentDialog];
+        if (currentDialog >= currentActiveQuest.info.initialDialog.Count) {
+            // Dialogue finished: hide Next, show Accept/Decline
+            DialogSystem.Instance.nextBTN.gameObject.SetActive(false);
             currentActiveQuest.initialDialogCompleted = true;
+
+            optionButton1.gameObject.SetActive(true);
+            optionButton2.gameObject.SetActive(!disableOption2);
+
             SetAcceptAndDeclineOptions();
-        }
-        else
-        {
+        } else {
+            // Continue dialogue
             npcDialogText.text = currentActiveQuest.info.initialDialog[currentDialog];
-            optionButton1Text.text = "Next";
-            optionButton1.onClick.RemoveAllListeners();
-            optionButton1.onClick.AddListener(() =>
-            {
-                currentDialog++;
-                CheckIfDialogDone();
-            });
         }
     }
 
@@ -418,9 +432,14 @@ public class NPC : MonoBehaviour
     public void CloseDialogUI()
     {
 
-        optionButton1Text.text = "Close";
-        optionButton1.onClick.RemoveAllListeners();
-        optionButton1.onClick.AddListener(() =>
+        // Hide Option buttons
+        optionButton1.gameObject.SetActive(false);
+        optionButton2.gameObject.SetActive(false);
+
+        // Show Next button to close dialogue
+        nextButton.gameObject.SetActive(true);
+        nextButton.onClick.RemoveAllListeners();
+        nextButton.onClick.AddListener(() =>
         {
             DialogSystem.Instance.CloseDialogUI();
             isTalkingWithPlayer = false;
