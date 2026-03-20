@@ -29,11 +29,11 @@ public class NPC : MonoBehaviour
     public bool isTalkingWithPlayer = false;
 
     [Header("Button Options")]
-    public Button nextButton;
     public bool disableOption2 = false;   // <--- NEW
 
     // UI References
     public TextMeshProUGUI npcDialogText;
+    public Button nextButton;
     public Button optionButton1;
     public TextMeshProUGUI optionButton1Text;
     public Button optionButton2;
@@ -60,11 +60,6 @@ public class NPC : MonoBehaviour
 
     void Start()
     {
-        if (disableOption2 && optionButton2 != null)
-        {
-            optionButton2.gameObject.SetActive(false);
-        }
-
         if (DialogSystem.Instance == null)
         {
             Debug.LogError("DialogSystem.Instance is NULL! Make sure DialogSystem exists in the scene.");
@@ -99,7 +94,7 @@ public class NPC : MonoBehaviour
 
         // Hide UI
         if (pressFUI != null) pressFUI.SetActive(false);
-        if (dialogUI != null) dialogUI.SetActive(false);
+        DialogSystem.Instance.ResetUI();
 
         // Find player
         GameObject found = GameObject.FindGameObjectWithTag("Player");
@@ -294,6 +289,7 @@ public class NPC : MonoBehaviour
 
     public void SetAcceptAndDeclineOptions()
     {
+        if (optionButton1 != null) optionButton1.gameObject.SetActive(true);
         optionButton1Text.text = currentActiveQuest.info.acceptOption;
         optionButton1.onClick.RemoveAllListeners();
         optionButton1.onClick.AddListener(AcceptedQuest);
@@ -377,7 +373,7 @@ public class NPC : MonoBehaviour
         optionButton2.gameObject.SetActive(false);
 
         // Show Next button
-        DialogSystem.Instance.nextBTN.gameObject.SetActive(true);
+        DialogSystem.Instance.ResetUI();
         DialogSystem.Instance.nextBTN.onClick.RemoveAllListeners();
         DialogSystem.Instance.nextBTN.onClick.AddListener(() =>
         {
@@ -396,8 +392,7 @@ public class NPC : MonoBehaviour
             DialogSystem.Instance.nextBTN.gameObject.SetActive(false);
             currentActiveQuest.initialDialogCompleted = true;
 
-            optionButton1.gameObject.SetActive(true);
-            optionButton2.gameObject.SetActive(!disableOption2);
+            DialogSystem.Instance.ShowChoices();
 
             SetAcceptAndDeclineOptions();
         } else {
@@ -432,12 +427,7 @@ public class NPC : MonoBehaviour
     public void CloseDialogUI()
     {
 
-        // Hide Option buttons
-        optionButton1.gameObject.SetActive(false);
-        optionButton2.gameObject.SetActive(false);
-
-        // Show Next button to close dialogue
-        nextButton.gameObject.SetActive(true);
+        DialogSystem.Instance.ResetUI();
         nextButton.onClick.RemoveAllListeners();
         nextButton.onClick.AddListener(() =>
         {

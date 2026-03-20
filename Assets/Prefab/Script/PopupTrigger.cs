@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class PopupTrigger : MonoBehaviour
 {
@@ -7,6 +9,7 @@ public class PopupTrigger : MonoBehaviour
     public GameObject popupScreen;
     public float visibleDuration = 2f;
     public float fadeDuration = 1f;
+    public Animator animator;
 
     private bool hasTriggered = false;
     private CanvasGroup canvasGroup;
@@ -38,19 +41,14 @@ public class PopupTrigger : MonoBehaviour
     private IEnumerator ShowAndFadePopup()
     {
         popupScreen.SetActive(true);
-        canvasGroup.alpha = 1f;
+        animator.Play("captureHint", 0, 0f);
 
         yield return new WaitForSeconds(visibleDuration);
 
-        float t = 0f;
-        while (t < fadeDuration)
-        {
-            t += Time.deltaTime;
-            canvasGroup.alpha = Mathf.Lerp(1f, 0f, t / fadeDuration);
-            yield return null;
-        }
+        animator.SetTrigger("Out");
 
-        canvasGroup.alpha = 0f;
+        yield return new WaitForSeconds(0.5f);
+
         popupScreen.SetActive(false);
     }
 }

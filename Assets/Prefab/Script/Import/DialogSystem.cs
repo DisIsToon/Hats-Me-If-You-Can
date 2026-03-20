@@ -73,8 +73,7 @@ public class DialogSystem : MonoBehaviour
     }
 
     public void HideAllPortraits()
-    {
-        
+    {   
         ClearSpeakerName();
         liraImage.SetActive(false);
         mallowImage.SetActive(false);
@@ -86,14 +85,14 @@ public class DialogSystem : MonoBehaviour
         MainScreen.SetActive(false);
         dialogUI.gameObject.SetActive(true);
         dialogUIActive = true;
-        
+
         //Cursor.lockState = CursorLockMode.None;
         //Cursor.visible = true;
+        ResetUI();
     }
 
     public void CloseDialogUI()
-    {
-        
+    {    
         MainScreen.SetActive(true);
         dialogUI.gameObject.SetActive(false);
         dialogUIActive = false;
@@ -102,6 +101,20 @@ public class DialogSystem : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
     }
+
+    public void ResetUI() {
+        // Default state: hide options, show next button
+        option1BTN.gameObject.SetActive(false);
+        option2BTN.gameObject.SetActive(false);
+        nextBTN.gameObject.SetActive(true);
+    }
+
+    public void ShowChoices() {
+        option1BTN.gameObject.SetActive(true);
+        option2BTN.gameObject.SetActive(true);
+        nextBTN.gameObject.SetActive(false);
+    }
+
     public void StartDialogSequence(string[] lines)
     {
         StartCoroutine(ShowDialogSequence(lines));
@@ -111,10 +124,7 @@ public class DialogSystem : MonoBehaviour
         OpenDialogUI();
 
         // Hide option buttons during normal dialogue
-        option1BTN.gameObject.SetActive(false);
-        option2BTN.gameObject.SetActive(false);
-
-        nextBTN.gameObject.SetActive(true);
+        ResetUI();
 
         for (int i = 0; i < lines.Length; i++) {
             dialogText.text = lines[i];

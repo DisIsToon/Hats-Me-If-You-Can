@@ -98,7 +98,7 @@ public class NotifUIManager : MonoBehaviour
         animator.SetTrigger("Out");
 
         // Wait for animation to finish (adjust based on your animation length)
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(1f);
 
         notifUIScreen.SetActive(false);
     }

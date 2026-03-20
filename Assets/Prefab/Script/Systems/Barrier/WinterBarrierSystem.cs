@@ -14,6 +14,7 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
     [Header("Message Object Settings")]
     public GameObject messageObject;
     public GameObject messageObject2;
+    public Animator animator;
     public float fadeDuration = 1f;
     public float showTime = 2f;
 
@@ -102,28 +103,15 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         isShowing = true;
         msgObj.SetActive(true);
 
+        // Play entry animation
+        animator.Play("captureHint", 0, 0f);
+
         yield return new WaitForSeconds(showTime);
 
-        float elapsed = 0f;
-        Image img = msgObj.GetComponent<Image>();
-        SpriteRenderer sr = msgObj.GetComponent<SpriteRenderer>();
+        // Play exit animation
+        animator.SetTrigger("Out");
 
-        while (elapsed < fadeDuration)
-        {
-            elapsed += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
-
-            if (img)
-            {
-                Color c = img.color; c.a = alpha; img.color = c;
-            }
-            else if (sr)
-            {
-                Color c = sr.color; c.a = alpha; sr.color = c;
-            }
-
-            yield return null;
-        }
+        yield return new WaitForSeconds(1f); // match animation length
 
         msgObj.SetActive(false);
         isShowing = false;
