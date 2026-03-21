@@ -143,14 +143,14 @@ public class ClickerBarrier : MonoBehaviour
     IEnumerator ShowVictoryPopup()
     {
         SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound.clip);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(3f);
         victoryScreen.SetActive(false);
         BarrierGameScreen.SetActive(false);
     }
 
     IEnumerator ShowGameOverPopup()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(3f);
         gameOverScreen.SetActive(false);
         BarrierGameScreen.SetActive(false);
 
