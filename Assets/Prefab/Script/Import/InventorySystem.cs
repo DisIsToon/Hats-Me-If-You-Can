@@ -65,13 +65,23 @@ public class InventorySystem : MonoBehaviour
         isOpen = false; 
         PopulateSlotList();
 
+        foreach (GameObject slot in slotList)
+        {
+            foreach (Transform child in slot.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
     }
 
     private void PopulateSlotList()
     {
-        foreach(Transform child in inventoryScreenUI.transform)
+        slotList.Clear(); // ✅ IMPORTANT
+
+        foreach (Transform child in inventoryScreenUI.transform)
         {
-            if(child.CompareTag("Slot"))
+            if (child.CompareTag("Slot"))
             {
                 slotList.Add(child.gameObject);
             }

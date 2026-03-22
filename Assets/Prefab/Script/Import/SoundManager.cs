@@ -117,8 +117,7 @@ public class SoundManager : MonoBehaviour
             matchingPuzzleCardMaatch,matchingPuzzleCardNotMatch, hatalogueOpenCloseSound,
             hatalogueNextPageSound, openInventory, dragUp, dragDrop,
             equipPotion, brewBtnClicked, brewPotion, itemCollectSound,
-            questCompleteSound, pauseSound, leavesSound, walkOnForest,
-            walkOnSnow, openMessageSfx , walkOnCastleRuin
+            questCompleteSound, pauseSound, leavesSound, openMessageSfx
         };
 
         // Collect all BGMs
@@ -126,7 +125,7 @@ public class SoundManager : MonoBehaviour
         {
             mainMenuBGMusic, forestZoneBGMusic, castleZoneBGMusic,
             winterZoneBGMusic, hatalougeViewingMusic, brewingMusic,
-            puzzlePlayingMusic, capturingHatMusic
+            puzzlePlayingMusic, capturingHatMusic, walkOnCastleRuin, walkOnSnow, walkOnForest
         };
     }
 
@@ -134,9 +133,9 @@ public class SoundManager : MonoBehaviour
     {
         bgmVolume = value;
 
-        foreach (AudioSource bgm in allBGMs)
+        if (currentBGMusic != null)
         {
-            bgm.volume = value;
+            currentBGMusic.volume = value;
         }
     }
 
@@ -169,11 +168,6 @@ public class SoundManager : MonoBehaviour
     public void SetSFXVolume(float value)
     {
         sfxVolume = value;
-
-        foreach (AudioSource sfx in allSFX)
-        {
-            sfx.volume = value;
-        }
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -260,13 +254,13 @@ public class SoundManager : MonoBehaviour
         if (!audio.isPlaying)
             audio.Play();
 
-        while (audio.volume < 1f)
+        while (audio.volume < bgmVolume)
         {
             audio.volume += Time.unscaledDeltaTime * 0.5f;
             yield return null;
         }
 
-        audio.volume = 1f;
+        audio.volume = bgmVolume;
     }
 
 

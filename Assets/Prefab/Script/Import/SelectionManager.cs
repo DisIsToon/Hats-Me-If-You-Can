@@ -139,12 +139,11 @@ public class SelectionManager : MonoBehaviour
         }
 
         // Puzzle Rotating
-        if (puzzleDetected == true)
+        if (puzzleDetected == true && PuzzleManagerUI.Instance != null && !PuzzleManagerUI.Instance.puzzleComplete)
         {
             playRotatingPuzzleUI.SetActive(true);
-
         }
-        else if (puzzleDetected == false)
+        else
         {
             playRotatingPuzzleUI.SetActive(false);
         }

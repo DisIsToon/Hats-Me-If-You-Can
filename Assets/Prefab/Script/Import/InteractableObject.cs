@@ -15,17 +15,20 @@ public class InteractableObject : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && playerInRange && canBePickedUp && !isPickingUp)
+        if (Input.GetKeyDown(KeyCode.E) &&
+            playerInRange &&
+            canBePickedUp &&
+            !isPickingUp &&
+            SelectionManager.Instance.selectedObject == gameObject)
+
         {
+            isPickingUp = true;
             StartCoroutine(PickupItem());
         }
     }
 
     private IEnumerator PickupItem()
     {
-
-        isPickingUp = true;
-
         // Always go to inventory now
         if (InventorySystem.Instance.CheckSlotsAvailable(1))
         {
@@ -58,9 +61,10 @@ public class InteractableObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (!playerInRange && other.CompareTag("Player"))
         {
             SelectionManager.Instance.pickableItemDetected = true;
+            SelectionManager.Instance.selectedObject = gameObject; 
             playerInRange = true;
             canBePickedUp = true;
         }
@@ -71,6 +75,7 @@ public class InteractableObject : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             SelectionManager.Instance.pickableItemDetected = false;
+            SelectionManager.Instance.selectedObject = null; //
             playerInRange = false;
             canBePickedUp = false;
         }

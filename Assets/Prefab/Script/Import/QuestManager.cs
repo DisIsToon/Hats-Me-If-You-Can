@@ -162,7 +162,7 @@ public class QuestManager : MonoBehaviour
 
         if (activeQuest.secondRequirementAmount > 0)
             InventorySystem.Instance.RemoveItem(activeQuest.secondRequirmentItem, activeQuest.secondRequirementAmount);
-
+ 
 
         // Coin reward
         if (activeQuest.coinReward > 0)
@@ -378,7 +378,7 @@ public class QuestManager : MonoBehaviour
             allCompletedQuests.Add(quest);
 
         UnTrackQuest(quest);
-        RefreshQuestList();
+        RefreshQuestList(); 
 
         string npcName = DialogSystem.Instance.GetSpeakerName();
 
@@ -407,12 +407,14 @@ public class QuestManager : MonoBehaviour
             QuestCompleteNotif.Instance.ShowTulipComplete();
         }
 
+        /*
         if (!headmasterNotifShown &&
-        (questCompleteLira || questCompleteMallow || questCompleteTulip))
+        (questCompleteLira && questCompleteMallow && questCompleteTulip))
         {
             headmasterNotifShown = true;
             NotifUIManager.Instance.NotifyMeetHeadMaster();
         }
+        */
     }
 
     public void RefreshQuestList()

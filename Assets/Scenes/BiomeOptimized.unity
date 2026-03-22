@@ -47289,7 +47289,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 330c8c81c16f4334d972ac0768666673, type: 3}
       insertIndex: -1
       addedObject: {fileID: 372550116}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 330c8c81c16f4334d972ac0768666673, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1250109059}
   m_SourcePrefab: {fileID: 100100000, guid: 330c8c81c16f4334d972ac0768666673, type: 3}
 --- !u!1001 &641190391
 PrefabInstance:
@@ -48052,7 +48055,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 3033.622, y: 50}
+  m_SizeDelta: {x: 1063.2, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &656660104
 MonoBehaviour:
@@ -48083,8 +48086,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4287522112
-  m_fontColor: {r: 0.2509804, g: 0.39607844, b: 0.5568628, a: 1}
+    rgba: 4291228671
+  m_fontColor: {r: 1, g: 0.9529412, b: 0.7764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -62128,7 +62131,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 775, y: 330}
+  m_SizeDelta: {x: 1102.77, y: 330}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &804640207
 MonoBehaviour:
@@ -62150,7 +62153,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 928486909, guid: ff6f7a41365833e4c9b26788b96d6498, type: 3}
+  m_Sprite: {fileID: 87043519, guid: ff6f7a41365833e4c9b26788b96d6498, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -99616,9 +99619,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1741229713}
-  shyHatCaptured: 1
-  fastHatCaptured: 0
-  jumpHatCaptured: 0
+  shyHatCaptured: 0
+  fastHatCaptured: 1
+  jumpHatCaptured: 1
   openedFrozenGate: 0
   puzzleComplete: 0
   questCompleteLira: 0
@@ -103230,6 +103233,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 330c8c81c16f4334d972ac0768666673, type: 3}
   m_PrefabInstance: {fileID: 639564895}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &1250109059
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1250109053}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1913360035785638085, guid: 330c8c81c16f4334d972ac0768666673, type: 3}
 --- !u!1 &1250632269
 GameObject:
   m_ObjectHideFlags: 0
@@ -139968,6 +139993,10 @@ PrefabInstance:
       propertyPath: centerDotImage
       value: 
       objectReference: {fileID: 1715615096}
+    - target: {fileID: 8187027927502979131, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: puzzleDetected
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8187027927502979131, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: characterNameText
       value: 

@@ -23,7 +23,7 @@ public class PuzzleManagerUI : MonoBehaviour
     public GameObject solvedPopup;
     public GameObject completePuzzlePopup;
     public bool isOpen;
-    private bool canPlayPuzzle = false;
+    public bool canPlayPuzzle = false;
     public RotatingRingUI[] rings;
     public bool puzzleComplete;
 
