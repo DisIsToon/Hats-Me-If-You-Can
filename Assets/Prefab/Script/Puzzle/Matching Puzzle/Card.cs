@@ -31,6 +31,14 @@ public class Card : MonoBehaviour
 
     public void OnCardClick()
     {
+        // Debug.Log($"[CLICK] {gameObject.name} clicked. isSelected: {isSelected}");
+
+        if (controller == null)
+        {
+            //  Debug.LogError($"[ERROR] Controller is NULL on {gameObject.name}");
+            return;
+        }
+
         controller.SetSelected(this);
     }
 
@@ -54,15 +62,23 @@ public class Card : MonoBehaviour
 
         isSelected = true;
     }
-
+    
     public void Hide()
     {
+        if (!gameObject.activeInHierarchy)
+        {
+            // Debug.LogWarning($"[Hide] Skipped inactive card: {name}");
+            return;
+        }
+
         Tween.Rotation(transform,
             new Vector3(0f, 0f, 0f),
             0.2f);
 
         Tween.Delay(0.1f, () =>
         {
+            if (iconImage == null || iconRect == null) return;
+
             iconImage.sprite = hiddenIconSprite;
             iconRect.sizeDelta = hiddenIconSize;
             isSelected = false;

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -34,6 +34,11 @@ public class CardsController : MonoBehaviour, IDataPersistence
 
     public bool isOpen;
     private bool canPlayPuzzle = false;
+
+    private float openCooldown = 0.3f;
+    private float openTime;
+
+    public bool isTransitioning = false;
 
     private List<Sprite> spritePairs;
     Card firstSelected;
@@ -89,6 +94,12 @@ public class CardsController : MonoBehaviour, IDataPersistence
         }
         else if (Input.GetKeyDown(KeyCode.E) && isOpen)
         {
+            if (Time.time - openTime < openCooldown)
+            {
+                //Debug.Log("[Puzzle] Prevented instant close");
+                return;
+            }
+
             PuzzleScreenOff();
         }
 
@@ -101,7 +112,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
             if (currentTime <= 0f)
             {
                 SoundManager.Instance.PlaySFX(SoundManager.Instance.puzzleGameOverSound.clip);
-                Debug.Log("Card Controller Time off");
+                //Debug.Log("Card Controller Time off");
                 timerRunning = false;
                 PuzzleScreenOff();
             }
@@ -115,18 +126,50 @@ public class CardsController : MonoBehaviour, IDataPersistence
 
     private void OpenPuzzle()
     {
+        //Debug.Log("[Puzzle] Opening puzzle");
+
+        isTransitioning = true; // BLOCK trigger exit
+
         mainScreen.SetActive(false);
         quickSlots.SetActive(false);
         inventoryBTN.SetActive(false);
-        SoundManager.Instance.PlayPuzzleMusic();
+
         PuzzleScreen.SetActive(true);
         gridContainer.SetActive(true);
-        isOpen = true;
 
-        // Start timer
+
+        //  Hide cards FIRST (while active)
+        foreach (Transform t in gridTransform)
+        {
+            Card c = t.GetComponent<Card>();
+
+            if (c.gameObject.activeInHierarchy)
+            {
+                c.Hide();
+            }
+            else
+            {
+                //Debug.LogWarning("[WARNING] Tried to hide inactive card: {c.name}");
+            }
+        }
+
+        isOpen = true;
+        openTime = Time.time;
+
         currentTime = puzzleDuration;
         timerText.gameObject.SetActive(true);
         timerRunning = true;
+
+        StartCoroutine(EndTransition());
+
+    }
+
+    IEnumerator EndTransition()
+    {
+        yield return new WaitForSeconds(0.5f); // adjust if needed
+        isTransitioning = false;
+
+        //Debug.Log("[Puzzle] Transition finished");
     }
 
     public void PuzzleScreenOff()
@@ -136,32 +179,33 @@ public class CardsController : MonoBehaviour, IDataPersistence
 
     IEnumerator ClosePuzzleSequence()
     {
-        mainScreen.SetActive(true);
-        quickSlots.SetActive(true);
-        inventoryBTN.SetActive(true);
+        //Debug.Log("[Puzzle] Closing puzzle");
 
-        SoundManager.Instance.ReturnToBiomeMusic();
-        timerRunning = false;
-        timerText.gameObject.SetActive(false);
-
-        // Hide puzzle screen
-        PuzzleScreen.SetActive(false);
-
-        // Reset selections
-        firstSelected = null;
-        secondSelected = null;
-
-        // Optionally, reset cards if you want puzzle to restart
+        //  Hide cards FIRST (while active)
         foreach (Transform t in gridTransform)
         {
             Card c = t.GetComponent<Card>();
-            c.Hide();
+
+            if (c.gameObject.activeInHierarchy)
+            {
+                c.Hide();
+            }
+            else
+            {
+                //Debug.LogWarning("[WARNING] Tried to hide inactive card: {c.name}");
+            }
         }
+
+        yield return new WaitForSeconds(0.2f);
+
+        //  THEN disable
+        PuzzleScreen.SetActive(false);
+
+        firstSelected = null;
+        secondSelected = null;
 
         matchCounts = 0;
         isOpen = false;
-
-        yield return null;
     }
 
     private void PrepareSprites()
@@ -191,41 +235,63 @@ public class CardsController : MonoBehaviour, IDataPersistence
 
     public void SetSelected(Card card)
     {
+        // Debug.Log($"[SetSelected] {card.name}");
         if (!card.isSelected)
         {
             card.Show();
             SoundManager.Instance.PlaySFX(SoundManager.Instance.puzzleInteractSound.clip);
+
             if (firstSelected == null)
             {
+                // Debug.Log("[SetSelected] First card selected");
                 firstSelected = card;
                 return;
             }
 
             if (secondSelected == null)
             {
+                //    Debug.Log("[SetSelected] Second card selected");
                 secondSelected = card;
                 StartCoroutine(CheckMatching(firstSelected, secondSelected));
                 firstSelected = null;
                 secondSelected = null;
             }
         }
+        else
+        {
+            // Debug.Log("[SetSelected] Card already selected, ignoring");
+        }
     }
 
     IEnumerator CheckMatching(Card a, Card b)
     {
+        //  Debug.Log("[Matching] Checking {a.name} vs {b.name}");
+
         yield return new WaitForSeconds(0.3f);
+
+        if (a == null || b == null)
+        {
+            //  Debug.LogError("[ERROR] One of the cards is NULL during matching");
+            yield break;
+        }
+
         if (a.iconSprite == b.iconSprite)
         {
+            //  Debug.Log("[Matching] MATCH");
             SoundManager.Instance.PlaySFX(SoundManager.Instance.matchingPuzzleCardMaatch.clip);
             matchCounts++;
+
+            //   Debug.Log("[Matching] Match count: {matchCounts}");
+
             if (matchCounts >= spritePairs.Count / 2)
             {
-                // Puzzle complete
+                //   Debug.Log("[Matching] PUZZLE COMPLETE");
                 PuzzleComplete();
             }
         }
         else
         {
+            //  Debug.Log("[Matching] NOT MATCH");
             SoundManager.Instance.PlaySFX(SoundManager.Instance.matchingPuzzleCardNotMatch.clip);
             a.Hide();
             b.Hide();

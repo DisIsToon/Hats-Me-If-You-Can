@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.Video;
+using TMPro;
 
 public class GameTracker : MonoBehaviour, IDataPersistence
 {
@@ -22,6 +24,16 @@ public class GameTracker : MonoBehaviour, IDataPersistence
     public bool questCompleteLira = false;
     public bool questCompleteMallow = false;
     public bool questCompleteTulip = false;
+
+    [Header("Video UI")]
+    public RawImage videoRawImage;          // assign the RawImage in inspector
+    public VideoPlayer FastHatVideoPlayer; // assign VideoPlayer in inspector
+    public VideoPlayer JumpHatVideoPlayer; // assign VideoPlayer in inspector
+    public VideoPlayer ShyHatVideoPlayer; // assign VideoPlayer in inspector
+
+    private bool hasPlayedShyHatVideo = false;
+    private bool hasPlayedFastHatVideo = false;
+    private bool hasPlayedJumpHatVideo = false;
 
     [Header("Current Biome")]
     public string currentBiome = "None";
@@ -185,6 +197,161 @@ public class GameTracker : MonoBehaviour, IDataPersistence
     {
         if (player == null)
             Debug.LogError("Player GameObject not assigned in GameManager!");
+
+        // Hide the RawImage at start
+        if (videoRawImage != null)
+            videoRawImage.gameObject.SetActive(false);
+
+    }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            PlayShyHatVideoAfterCapture();
+        }
+    }
+    public void PlayShyHatVideoAfterCapture()
+    {
+        if (hasPlayedShyHatVideo) return;
+
+        if (ShyHatVideoPlayer == null || videoRawImage == null)
+        {
+            Debug.LogWarning("Hat VideoPlayer or RawImage not assigned!");
+            return;
+        }
+
+        // Pause game time
+        Time.timeScale = 0f;
+
+        // Ensure video ignores timescale
+        ShyHatVideoPlayer.playbackSpeed = 1f;
+        ShyHatVideoPlayer.timeReference = VideoTimeReference.InternalTime;
+
+        // Pause all audio
+        if (SoundManager.Instance != null)
+        {
+            foreach (AudioSource sfx in SoundManager.Instance.allSFX)
+                sfx.Pause();
+
+            foreach (AudioSource bgm in SoundManager.Instance.allBGMs)
+                bgm.Pause();
+        }
+
+        // Show video UI
+        videoRawImage.gameObject.SetActive(true);
+        ShyHatVideoPlayer.gameObject.SetActive(true);
+
+        // Subscribe safely
+        ShyHatVideoPlayer.loopPointReached -= OnVideoFinished;
+        ShyHatVideoPlayer.loopPointReached += OnVideoFinished;
+
+        ShyHatVideoPlayer.Play();
+        hasPlayedShyHatVideo = true;
+    }
+
+    public void PlayFastHatVideoAfterCapture()
+    {
+        if (hasPlayedFastHatVideo) return;
+
+        if (FastHatVideoPlayer == null || videoRawImage == null)
+        {
+            Debug.LogWarning("Hat VideoPlayer or RawImage not assigned!");
+            return;
+        }
+
+        // Pause game time
+        Time.timeScale = 0f;
+
+        // Ensure video ignores timescale
+        FastHatVideoPlayer.playbackSpeed = 1f;
+        FastHatVideoPlayer.timeReference = VideoTimeReference.InternalTime;
+
+        // Pause all audio
+        if (SoundManager.Instance != null)
+        {
+            foreach (AudioSource sfx in SoundManager.Instance.allSFX)
+                sfx.Pause();
+
+            foreach (AudioSource bgm in SoundManager.Instance.allBGMs)
+                bgm.Pause();
+        }
+
+        // Show video UI
+        videoRawImage.gameObject.SetActive(true);
+        FastHatVideoPlayer.gameObject.SetActive(true);
+
+        // Subscribe safely
+        FastHatVideoPlayer.loopPointReached -= OnVideoFinished;
+        FastHatVideoPlayer.loopPointReached += OnVideoFinished;
+
+        FastHatVideoPlayer.Play();
+        hasPlayedFastHatVideo = true;
+    }
+
+    public void PlayJumpHatVideoAfterCapture()
+    {
+        if (hasPlayedJumpHatVideo) return;
+
+        if (JumpHatVideoPlayer == null || videoRawImage == null)
+        {
+            Debug.LogWarning("Hat VideoPlayer or RawImage not assigned!");
+            return;
+        }
+
+        // Pause game time
+        Time.timeScale = 0f;
+
+        // Ensure video ignores timescale
+        JumpHatVideoPlayer.playbackSpeed = 1f;
+        JumpHatVideoPlayer.timeReference = VideoTimeReference.InternalTime;
+
+        // Pause all audio
+        if (SoundManager.Instance != null)
+        {
+            foreach (AudioSource sfx in SoundManager.Instance.allSFX)
+                sfx.Pause();
+
+            foreach (AudioSource bgm in SoundManager.Instance.allBGMs)
+                bgm.Pause();
+        }
+
+        // Show video UI
+        videoRawImage.gameObject.SetActive(true);
+        JumpHatVideoPlayer.gameObject.SetActive(true);
+
+        // Subscribe safely
+        JumpHatVideoPlayer.loopPointReached -= OnVideoFinished;
+        JumpHatVideoPlayer.loopPointReached += OnVideoFinished;
+
+        JumpHatVideoPlayer.Play();
+        hasPlayedJumpHatVideo = true;
+    }
+
+    public void OnVideoFinished(VideoPlayer vp)
+    {
+        // Prevent duplicate calls
+        vp.loopPointReached -= OnVideoFinished;
+
+        // Hide video
+        if (videoRawImage != null)
+            videoRawImage.gameObject.SetActive(false);
+
+        if (vp != null)
+            vp.gameObject.SetActive(false);
+
+        // Resume game time
+        Time.timeScale = 1f;
+
+        // Resume audio
+        if (SoundManager.Instance != null)
+        {
+            foreach (AudioSource sfx in SoundManager.Instance.allSFX)
+                sfx.UnPause();
+
+            foreach (AudioSource bgm in SoundManager.Instance.allBGMs)
+                bgm.UnPause();
+        }
     }
 
     public void SetCurrentBiome(string biomeName)
@@ -271,18 +438,21 @@ public class GameTracker : MonoBehaviour, IDataPersistence
                 shyHatCaptured = true;
                 NewHatalougeManager.Instance.DiscoverShyHat();
                 NotifUIManager.Instance.NotifyHatCaptured("ShyHat");
+                PlayShyHatVideoAfterCapture();
                 Debug.Log("ShyHat captured!");
                 break;
             case "FastHat":
                 fastHatCaptured = true;
                 NewHatalougeManager.Instance.DiscoverFastHat();
                 NotifUIManager.Instance.NotifyHatCaptured("FastHat");
+                PlayFastHatVideoAfterCapture();
                 Debug.Log("FastHat captured!");
                 break;
             case "JumpHat":
                 jumpHatCaptured = true;
                 NewHatalougeManager.Instance.DiscoverLazyHat();
                 NotifUIManager.Instance.NotifyHatCaptured("JumpHat");
+                PlayJumpHatVideoAfterCapture();
                 Debug.Log("JumpHat captured!");
                 break;
             default:
