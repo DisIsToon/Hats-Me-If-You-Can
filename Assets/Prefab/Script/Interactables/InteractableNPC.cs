@@ -47,7 +47,8 @@ public class InteractableNPC : MonoBehaviour
 
             if (npc != null)
             {
-                npc.CloseDialogUI();
+                Debug.Log("npc is null");
+                //npc.CloseDialogUI();
             }
         }
     }

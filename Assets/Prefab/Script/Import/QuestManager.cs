@@ -31,6 +31,11 @@ public class QuestManager : MonoBehaviour
     public List<Quest> allActiveQuests;
     public List<Quest> allCompletedQuests;
 
+    [Header("Cotton")]
+    public GameObject cotton;
+    public GameObject cottonPrefab;
+    public GameObject position;
+
     [Header("Video UI")]
     public RawImage videoRawImage;          // assign the RawImage in inspector
     public VideoPlayer headmasterVideoPlayer; // assign VideoPlayer in inspector
@@ -389,6 +394,12 @@ public class QuestManager : MonoBehaviour
             questCompleteLira = true;
             GameTracker.Instance.CompleteQuest("Lira");
             QuestCompleteNotif.Instance.ShowLiraComplete();
+
+            // Spawn cotton reward
+            if (cottonPrefab != null && cotton != null)
+            {
+                Instantiate(cottonPrefab, position.transform.position, position.transform.rotation);
+            }
         }
 
         // Reward only for Mallow

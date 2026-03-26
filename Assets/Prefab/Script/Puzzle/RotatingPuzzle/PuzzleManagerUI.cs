@@ -13,6 +13,9 @@ public class PuzzleManagerUI : MonoBehaviour
     [Header("Puzzle Object")]
     public GameObject puzzleObject;   // assign your puzzle's GameObject here
 
+    [Header("NPC Reference")]
+    public NPC liraNPC;
+
     [Header("Screens")]
     public GameObject mainScreen;
     public GameObject inventoryBTN;
@@ -205,7 +208,7 @@ public class PuzzleManagerUI : MonoBehaviour
         completePuzzlePopup.SetActive(true);
         puzzleComplete = true;
 
-        // 🔥 Disable collider on puzzle object
+        //  Disable collider on puzzle object
         if (puzzleObject != null)
         {
             BoxCollider col = puzzleObject.GetComponent<BoxCollider>();
@@ -213,14 +216,8 @@ public class PuzzleManagerUI : MonoBehaviour
                 col.enabled = false;
         }
 
-        // 🔥 Prevent puzzle from ever opening again
+        //  Prevent puzzle from ever opening again
         canPlayPuzzle = false;
-
-        // Spawn cotton reward
-        if (cottonPrefab != null && cotton != null)
-        {
-            Instantiate(cottonPrefab, position.transform.position, position.transform.rotation);
-        }
 
         // Stop timer
         if (timerRoutine != null)
@@ -238,6 +235,27 @@ public class PuzzleManagerUI : MonoBehaviour
         rotatingPuzzleScreen.SetActive(false);
 
         NotifUIManager.Instance.NotifyPuzzleComplete();
+
+        yield return new WaitForSeconds(1f);
+
+        foreach (NPC npc in NPC.allNPCs)
+        {
+            if (npc.npcName == "Lira")
+            {
+                npc.StartConversation();
+                break;
+            }
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        /*
+        // Spawn cotton reward
+        if (cottonPrefab != null && cotton != null)
+        {
+            Instantiate(cottonPrefab, position.transform.position, position.transform.rotation);
+        }
+        */
     }
 
 

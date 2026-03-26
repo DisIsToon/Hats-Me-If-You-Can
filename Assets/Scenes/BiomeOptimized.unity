@@ -21601,7 +21601,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 131.2, y: -57}
-  m_SizeDelta: {x: 875, y: 134}
+  m_SizeDelta: {x: 840, y: 134}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &302032759
 MonoBehaviour:
@@ -21623,7 +21623,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 532f397f30d84a14382e4e6f51e8124b, type: 3}
+  m_Sprite: {fileID: -1040982568, guid: 28363ac27b0c53049addff1f535cf560, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -38743,7 +38743,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!225 &506818666
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -47775,7 +47775,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!222 &645926786
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -72877,7 +72877,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &873775660
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -122558,6 +122558,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: cotton
+      value: 
+      objectReference: {fileID: 4242553970714623831, guid: 1a9cffa938c7a784191a8d9563a47f18, type: 3}
+    - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: npcName
       value: Lira
       objectReference: {fileID: 0}
@@ -122565,6 +122569,10 @@ PrefabInstance:
       propertyPath: dialogUI
       value: 
       objectReference: {fileID: 317479571}
+    - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: position
+      value: 
+      objectReference: {fileID: 372550112}
     - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: MainScreen
       value: 
@@ -122577,6 +122585,10 @@ PrefabInstance:
       propertyPath: InventoryBTN
       value: 
       objectReference: {fileID: 1973363912}
+    - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: cottonPrefab
+      value: 
+      objectReference: {fileID: 6558373580587872047, guid: f46c1a73583b7b642aa1f953454286d4, type: 3}
     - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: npcDialogText
       value: 
@@ -139530,9 +139542,21 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2265038226195537072, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: cotton
+      value: 
+      objectReference: {fileID: 4242553970714623831, guid: 1a9cffa938c7a784191a8d9563a47f18, type: 3}
+    - target: {fileID: 2265038226195537072, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: lostHat
       value: 
       objectReference: {fileID: 1883437581}
+    - target: {fileID: 2265038226195537072, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: position
+      value: 
+      objectReference: {fileID: 372550112}
+    - target: {fileID: 2265038226195537072, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: cottonPrefab
+      value: 
+      objectReference: {fileID: 6558373580587872047, guid: f46c1a73583b7b642aa1f953454286d4, type: 3}
     - target: {fileID: 2265038226195537072, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: puzzleObject
       value: 
@@ -154716,12 +154740,24 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 792052581637130043, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: m_Size.x
-      value: 4
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 792052581637130043, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: m_Size.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 792052581637130043, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: m_Size.z
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 792052581637130043, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: m_Center.y
+      value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: cotton
+      value: 
+      objectReference: {fileID: 4242553970714623831, guid: 1a9cffa938c7a784191a8d9563a47f18, type: 3}
     - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: npcName
       value: Tulip
@@ -154780,8 +154816,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: quests.Array.data[0].questDescription
-      value: ' Tulip is a little girl wearing oversized boots, and is sad because
+      value: 'Tulip is a little girl wearing oversized boots, and is sad because
         she lost her favorite hat. '
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049830828946783180, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4140839671940744256, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: m_Enabled
@@ -154813,11 +154853,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8362043776866303405, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -105.88
+      value: -105.05
       objectReference: {fileID: 0}
     - target: {fileID: 8362043776866303405, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8362043776866303405, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: m_LocalPosition.z
@@ -167409,7 +167449,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 951800c97f650e44a8e630ff9377ddd1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.51
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 951800c97f650e44a8e630ff9377ddd1, type: 3}
       propertyPath: m_LocalPosition.z

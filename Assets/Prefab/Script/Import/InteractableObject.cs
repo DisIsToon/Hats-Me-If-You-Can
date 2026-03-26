@@ -32,6 +32,8 @@ public class InteractableObject : MonoBehaviour
         // Always go to inventory now
         if (InventorySystem.Instance.CheckSlotsAvailable(1))
         {
+            
+
             NotifUIManager.Instance.NotifyItemPicked(ItemName);
             //SoundManager.Instance.PlaySound(SoundManager.Instance.pickUpSound);
             InventorySystem.Instance.AddToInventory(ItemName);
@@ -46,6 +48,19 @@ public class InteractableObject : MonoBehaviour
                 SelectionManager.Instance.pickableItemDetected = false;
             SoundManager.Instance.PlaySFX(SoundManager.Instance.itemCollectSound.clip);
             Destroy(gameObject);
+
+            // Check if item is LostHat
+            if (ItemName == "LostHat")
+            {
+                foreach (NPC npc in NPC.allNPCs)
+                {
+                    if (npc.npcName == "Tulip")
+                    {
+                        npc.StartConversation();
+                        //break;
+                    }
+                }
+            }
         }
         else
         {

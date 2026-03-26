@@ -14,6 +14,8 @@ public class NPC : MonoBehaviour
     public GameObject QuickSlotScreen;
     public GameObject InventoryBTN;
     public bool isOpen;
+    public bool questDone = false;
+
 
     [Header("NPC Name")]
     public string npcName;   
@@ -128,7 +130,7 @@ public class NPC : MonoBehaviour
             optionButton2.gameObject.SetActive(false);
     }
 
-    void CompleteLiraQuest()
+    public void CompleteLiraQuest()
     {
         QuestManager.Instance.liraPuzzleQuest.isCompleted = true;
         QuestManager.Instance.winterForestPass = true;
@@ -208,19 +210,39 @@ public class NPC : MonoBehaviour
             // Check items and checkpoints
             if (AreQuestRequirmentsCompleted())
             {
-                SubmitRequiredItems();
-                DialogSystem.Instance.OpenDialogUI();
-                npcDialogText.text = currentActiveQuest.info.comebackCompleted;
+                if(questDone == false)
+                {
+                    SubmitRequiredItems();
+                    DialogSystem.Instance.OpenDialogUI();
+                    npcDialogText.text = currentActiveQuest.info.comebackCompleted;
 
-                // --- Reward button uses Option1 ---
-                optionButton1.gameObject.SetActive(true);
-                optionButton1Text.text = "Take Reward";
-                optionButton1.onClick.RemoveAllListeners();
-                optionButton1.onClick.AddListener(() => ReceiveRewardAndCompleteQuest());
+                    // --- Reward button uses Option1 ---
+                    optionButton1.gameObject.SetActive(true);
+                    optionButton1Text.text = "Take Reward";
+                    optionButton1.onClick.RemoveAllListeners();
+                    optionButton1.onClick.AddListener(() => ReceiveRewardAndCompleteQuest());
+                    questDone = true;
 
-                if (!disableOption2)
-                    optionButton2.gameObject.SetActive(false);
+                    if (!disableOption2)
+                        optionButton2.gameObject.SetActive(false);
+                }
+                else
+                {
+                    DialogSystem.Instance.OpenDialogUI();
+                    npcDialogText.text = currentActiveQuest.info.finalWords;
 
+                    // --- Reward button uses Option1 ---
+                    optionButton1.gameObject.SetActive(true);
+                    optionButton1Text.text = "Close";
+                    optionButton1.onClick.RemoveAllListeners();
+                    optionButton1.onClick.AddListener(() =>
+                    {
+                        DialogSystem.Instance.CloseDialogUI();
+                        isTalkingWithPlayer = false;
+                    });
+                    if (!disableOption2)
+                        optionButton2.gameObject.SetActive(false);
+                }
             }
             else
             {
@@ -441,8 +463,6 @@ public class NPC : MonoBehaviour
         if (!disableOption2)
             optionButton2.gameObject.SetActive(false);
 
-
-
     }
 
     private void ReceiveRewardAndCompleteQuest()
@@ -462,11 +482,13 @@ public class NPC : MonoBehaviour
             currentDialog = 0;
             DialogSystem.Instance.CloseDialogUI();
             isTalkingWithPlayer = false;
+            CloseDialogUI();
         }
         else
         {
             DialogSystem.Instance.CloseDialogUI();
             isTalkingWithPlayer = false;
+            CloseDialogUI();
         }
     }
 
