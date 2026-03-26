@@ -61,6 +61,19 @@ public class InteractableObject : MonoBehaviour
                     }
                 }
             }
+
+            // Check if item is LostHat
+            if (ItemName == "Luminshroom")
+            {
+                foreach (NPC npc in NPC.allNPCs)
+                {
+                    if (npc.npcName == "Mallow")
+                    {
+                        npc.StartConversation();
+                        //break;
+                    }
+                }
+            }
         }
         else
         {

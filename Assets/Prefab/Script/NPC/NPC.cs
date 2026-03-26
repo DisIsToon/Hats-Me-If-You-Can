@@ -467,7 +467,7 @@ public class NPC : MonoBehaviour
 
     private void ReceiveRewardAndCompleteQuest()
     {
-        QuestManager.Instance.MarkQuestCompleted(currentActiveQuest);
+        StartCoroutine(QuestManager.Instance.MarkQuestCompleted(currentActiveQuest));
 
         if (!string.IsNullOrEmpty(currentActiveQuest.info.rewardItem1))
             InventorySystem.Instance.AddToInventory(currentActiveQuest.info.rewardItem1);

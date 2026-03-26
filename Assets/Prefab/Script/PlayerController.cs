@@ -133,6 +133,26 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     #region Unity - Update
     void Update()
     {
+        // UI / menu gating with null checks
+        bool uiBlocked = false;
+        if (CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen) uiBlocked = true;
+        if (InventorySystem.Instance != null && InventorySystem.Instance.isOpen) uiBlocked = true;
+        if (CardsController.Instance != null && CardsController.Instance.isOpen) uiBlocked = true;
+        if (PuzzleManagerUI.Instance != null && PuzzleManagerUI.Instance.isOpen) uiBlocked = true;
+        if (NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.isOpen) uiBlocked = true;
+        if (DialogSystem.Instance != null && DialogSystem.Instance.dialogUIActive) uiBlocked = true;
+
+        if (uiBlocked)
+        {
+            moveInput = Vector2.zero;
+
+            // Stop sprinting & crouching while UI is open
+            isSprinting = false;
+            isCrouching = false;
+
+            return; // Skip the rest of Update
+        }
+
         // 1) Read input
         moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         moveInput = Vector2.ClampMagnitude(moveInput, 1f);

@@ -31,10 +31,13 @@ public class QuestManager : MonoBehaviour
     public List<Quest> allActiveQuests;
     public List<Quest> allCompletedQuests;
 
-    [Header("Cotton")]
+    [Header("SpawningObject")]
     public GameObject cotton;
     public GameObject cottonPrefab;
     public GameObject position;
+
+    public GameObject jumpHat;
+    public GameObject fastHat;
 
     [Header("Video UI")]
     public RawImage videoRawImage;          // assign the RawImage in inspector
@@ -79,6 +82,9 @@ public class QuestManager : MonoBehaviour
         liraPuzzleQuest.questDescription = "Complete the old puzzle Lira found.";
         liraPuzzleQuest.accepted = false;
         liraPuzzleQuest.isCompleted = false;
+
+        jumpHat.gameObject.SetActive(false);
+        fastHat.gameObject.SetActive(false);
 
         // Hide the RawImage at start
         if (videoRawImage != null)
@@ -374,7 +380,7 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    public void MarkQuestCompleted(Quest quest)
+    public IEnumerator MarkQuestCompleted(Quest quest)
     {
         if (allActiveQuests.Contains(quest))
             allActiveQuests.Remove(quest);
@@ -395,6 +401,8 @@ public class QuestManager : MonoBehaviour
             GameTracker.Instance.CompleteQuest("Lira");
             QuestCompleteNotif.Instance.ShowLiraComplete();
 
+            yield return new WaitForSeconds(1f);
+
             // Spawn cotton reward
             if (cottonPrefab != null && cotton != null)
             {
@@ -408,6 +416,13 @@ public class QuestManager : MonoBehaviour
             questCompleteMallow = true;
             GameTracker.Instance.CompleteQuest("Mallow");
             QuestCompleteNotif.Instance.ShowMallowComplete();
+
+            yield return new WaitForSeconds(2.5f);
+
+            if (jumpHat != null)
+            {
+                jumpHat.gameObject.SetActive(true);
+            }
         }
 
         // Reward only for Tulip
@@ -416,6 +431,13 @@ public class QuestManager : MonoBehaviour
             questCompleteTulip = true;
             GameTracker.Instance.CompleteQuest("Tulip");
             QuestCompleteNotif.Instance.ShowTulipComplete();
+
+            yield return new WaitForSeconds(2.5f);
+
+            if (fastHat != null)
+            {
+                fastHat.gameObject.SetActive(true);
+            }
         }
 
         /*
