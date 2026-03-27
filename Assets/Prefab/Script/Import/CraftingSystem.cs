@@ -306,11 +306,13 @@ public class CraftingSystem : MonoBehaviour
 
         if (star_count >= 2 && glitteroom_count >= 3 && cottonflower_count >= 1 && InventorySystem.Instance.CheckSlotsAvailable(1))
         {
+            Debug.Log("craftCottonCrazeBTN True");
             craftCottonCrazeBTN.gameObject.SetActive(true);
         }
         else
         {
-            craftCottonCrazeBTN.gameObject.SetActive(false);
+            Debug.Log("craftMirrorPotionBTN False");
+            craftMirrorPotionBTN.gameObject.SetActive(false);
         }
 
         //. ....MirrorPotion.... .//
@@ -321,10 +323,12 @@ public class CraftingSystem : MonoBehaviour
 
         if (star_count >= 3 && glitteroom_count >= 1 && mirrorshard_count >= 1 && InventorySystem.Instance.CheckSlotsAvailable(1))
         {
+            Debug.Log("craftMirrorPotionBTN True");
             craftMirrorPotionBTN.gameObject.SetActive(true);
         }
         else
         {
+            Debug.Log("craftMirrorPotionBTN False");
             craftMirrorPotionBTN.gameObject.SetActive(false);
         }
 
