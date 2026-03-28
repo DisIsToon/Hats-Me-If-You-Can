@@ -225,6 +225,7 @@ public class NPC : MonoBehaviour
 
                     if (!disableOption2)
                         optionButton2.gameObject.SetActive(false);
+                    Debug.Log("AreQuestRequirmentsCompleted 1111111111111");
                 }
                 else
                 {
@@ -242,12 +243,15 @@ public class NPC : MonoBehaviour
                     });
                     if (!disableOption2)
                         optionButton2.gameObject.SetActive(false);
+
+                    Debug.Log("AreQuestRequirmentsCompleted 22222222222");
                 }
             }
             else
             {
+                Debug.Log("AreQuestRequirmentsCompleted 3333333333");
                 DialogSystem.Instance.OpenDialogUI();
-                npcDialogText.text = currentActiveQuest.info.comebackInProgress;
+                npcDialogText.text = currentActiveQuest.info.finalWords;
                 optionButton1Text.text = "Close";
                 optionButton1.onClick.RemoveAllListeners();
                 optionButton1.onClick.AddListener(() =>

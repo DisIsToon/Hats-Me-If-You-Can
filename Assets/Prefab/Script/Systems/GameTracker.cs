@@ -394,7 +394,7 @@ public class GameTracker : MonoBehaviour, IDataPersistence
             {
                 
                 castleRuinNotified = true;
-                NotifUIManager.Instance.NotifyBiomeDiscovered("Castle Ruin");
+                NotifUIManager.Instance.NotifyBiomeDiscovered("Castle Ruins");
                 NewHatalougeManager.Instance.ReachCastle();
             }
             return;
@@ -412,7 +412,7 @@ public class GameTracker : MonoBehaviour, IDataPersistence
             {
                 
                 winterBiomeNotified = true;
-                NotifUIManager.Instance.NotifyBiomeDiscovered("Winter Biome");
+                NotifUIManager.Instance.NotifyBiomeDiscovered("Winter Forest");
                 NewHatalougeManager.Instance.ReachWinter();
             }
             return;

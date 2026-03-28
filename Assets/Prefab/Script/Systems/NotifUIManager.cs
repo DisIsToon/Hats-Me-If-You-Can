@@ -38,7 +38,7 @@ public class NotifUIManager : MonoBehaviour
 
     public void NotifyBiomeDiscovered(string biomeName)
     {
-        ShowNotification($"{biomeName}: Discovered");
+        ShowNotification($"{biomeName} Discovered");
     }
 
     public void NotifyHatCaptured(string hatName)
