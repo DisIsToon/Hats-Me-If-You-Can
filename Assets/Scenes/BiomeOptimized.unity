@@ -5047,6 +5047,60 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1945283763}
   m_SourcePrefab: {fileID: 100100000, guid: 7066f006074ae4d40879f44b3b4f6cf4, type: 3}
+--- !u!1 &73450193
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 73450194}
+  - component: {fileID: 73450195}
+  m_Layer: 0
+  m_Name: TheActualWinterBiomeBarrier (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &73450194
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 73450193}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1624911934}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &73450195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 73450193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65d52cb875191b64eb31e4976a24acab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barrierObject: {fileID: 873775659}
+  messageObject: {fileID: 1898347223}
+  messageObject2: {fileID: 1649285689}
+  animator: {fileID: 1355767800}
+  fadeDuration: 1
+  showTime: 2
+  mainCamera: {fileID: 1626438477}
+  puzzleCamera: {fileID: 544391525}
+  clickerGame: {fileID: 1938147696}
+  WBBarrierAlreadyOpened: 0
 --- !u!4 &74105591 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6004359065613302362, guid: c54572fe4e8791c4c8e1ef6bd238865b, type: 3}
@@ -33177,7 +33231,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &373365766
 Transform:
   m_ObjectHideFlags: 0
@@ -106071,7 +106125,7 @@ MonoBehaviour:
   maxBarrierHP: 20
   barrierHP: 0
   damagePerClick: 1
-  barrierRenderer: {fileID: 873775660}
+  barrierRenderer: {fileID: 1450536630}
   timerText: {fileID: 675507464}
   victoryScreen: {fileID: 1109217606}
   gameOverScreen: {fileID: 1621269280}
@@ -142437,6 +142491,7 @@ Transform:
   m_Children:
   - {fileID: 373365766}
   - {fileID: 1343732689}
+  - {fileID: 73450194}
   m_Father: {fileID: 666107846}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1626438475
@@ -168752,7 +168807,7 @@ MonoBehaviour:
   maxBarrierHP: 30
   barrierHP: 0
   damagePerClick: 1
-  barrierRenderer: {fileID: 1450536630}
+  barrierRenderer: {fileID: 873775660}
   timerText: {fileID: 1415688338}
   victoryScreen: {fileID: 1912903693}
   gameOverScreen: {fileID: 489924901}

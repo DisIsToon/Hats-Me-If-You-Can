@@ -6,6 +6,6 @@ public class CRBarrierObject : MonoBehaviour
     {
         if (!collision.gameObject.CompareTag("Player")) return;
 
-        CRBarrierSystem.Instance.PlayerHitBarrier();
+        RealWinterBarrierSystem.Instance.PlayerHitBarrier();
     }
 }
