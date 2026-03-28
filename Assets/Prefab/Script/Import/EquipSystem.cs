@@ -55,6 +55,37 @@ public class EquipSystem : MonoBehaviour
         }
     }
 
+    public GameObject FindSlotWithItem(string itemName)
+    {
+        foreach (GameObject slot in quickSlotsList)
+        {
+            if (slot.transform.childCount > 0)
+            {
+                string childName = slot.transform.GetChild(0).name.Replace("(Clone)", "");
+                if (childName == itemName)
+                    return slot;
+            }
+        }
+        return null;
+    }
+
+    public void IncreaseStack(GameObject slot)
+    {
+        Transform item = slot.transform.GetChild(0);
+
+        TextMeshProUGUI stackText = item.Find("StackText")?.GetComponent<TextMeshProUGUI>();
+
+        int currentStack = 1;
+
+        if (stackText != null && !string.IsNullOrEmpty(stackText.text))
+            int.TryParse(stackText.text, out currentStack);
+
+        currentStack++;
+
+        if (stackText != null)
+            stackText.text = currentStack.ToString();
+    }
+
     void SelectQuickSlot(int number)
     {
         if(checkIfSlotIsFull(number) == true)

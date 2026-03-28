@@ -6902,6 +6902,74 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 9175411569000620907, guid: 333529c2e63a1fb4a9ac78584745f6a2, type: 3}
   m_PrefabInstance: {fileID: 919722158}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &105519015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105519008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc8e4934b4401a438312ae48a4c5339, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressFUI: {fileID: 434753447}
+  dialogUI: {fileID: 317479571}
+  MainScreen: {fileID: 332791057}
+  QuickSlotScreen: {fileID: 2017156089}
+  InventoryBTN: {fileID: 1973363912}
+  isOpen: 0
+  questDone: 0
+  npcName: Lou
+  isSimpleNPC: 1
+  quests:
+  - questName: Just talk with Lou
+    questGiver: Lou
+    questDescription: just talk with lou
+    accepted: 0
+    declined: 0
+    initialDialogCompleted: 0
+    isCompleted: 0
+    hasNoRequirements: 0
+    info: {fileID: 11400000, guid: c04f5bbf0cf3968449a50b9e80f58acd, type: 2}
+  currentActiveQuest:
+    questName: 
+    questGiver: 
+    questDescription: 
+    accepted: 0
+    declined: 0
+    initialDialogCompleted: 0
+    isCompleted: 0
+    hasNoRequirements: 0
+    info: {fileID: 0}
+  activeQuestIndex: 0
+  firstTimeInteraction: 1
+  currentDialog: 0
+  playerInRange: 0
+  isTalkingWithPlayer: 0
+  disableOption2: 0
+  npcDialogText: {fileID: 1361478714}
+  nextButton: {fileID: 518795654}
+  optionButton1: {fileID: 1776411044}
+  optionButton1Text: {fileID: 477549031}
+  optionButton2: {fileID: 1876696089}
+  optionButton2Text: {fileID: 684675792}
+--- !u!114 &105519016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105519008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a04ee6fa206484db96c243cd7cf814, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInRange: 0
+  isOpen: 0
+  npc: {fileID: 105519015}
 --- !u!1 &106502022
 GameObject:
   m_ObjectHideFlags: 0
@@ -24138,6 +24206,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 45189d6c0e0eca14cadb45ccf5d7b5f3, type: 3}
   m_PrefabInstance: {fileID: 1174561252}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &269437909 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 241202754606852364, guid: 546fe7d90702b164d9088277d4e4f5d2, type: 3}
+  m_PrefabInstance: {fileID: 1943513285}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &269732184
 GameObject:
   m_ObjectHideFlags: 0
@@ -24769,6 +24842,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1887179278}
   m_SourcePrefab: {fileID: 100100000, guid: e4748ec7bd84b9740bf14e68ec0a61c8, type: 3}
+--- !u!1 &278244614 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4629398641805343428, guid: 5bce757e07a965b41b846349f2b0368e, type: 3}
+  m_PrefabInstance: {fileID: 1207202497}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &280270340
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38993,6 +39071,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba97dd2e943bbe448faae88c0ec6b97, type: 3}
+--- !u!1 &434753447 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3351497085991141425, guid: 333529c2e63a1fb4a9ac78584745f6a2, type: 3}
+  m_PrefabInstance: {fileID: 919722158}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &435404142
 GameObject:
   m_ObjectHideFlags: 0
@@ -49542,6 +49625,74 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4522595400703348355, guid: 546fe7d90702b164d9088277d4e4f5d2, type: 3}
   m_PrefabInstance: {fileID: 1943513285}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &587078024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587078017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc8e4934b4401a438312ae48a4c5339, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressFUI: {fileID: 269437909}
+  dialogUI: {fileID: 317479571}
+  MainScreen: {fileID: 332791057}
+  QuickSlotScreen: {fileID: 2017156089}
+  InventoryBTN: {fileID: 1973363912}
+  isOpen: 0
+  questDone: 0
+  npcName: Ivy
+  isSimpleNPC: 1
+  quests:
+  - questName: Just talk
+    questGiver: Ivy
+    questDescription: talk with ivy
+    accepted: 0
+    declined: 0
+    initialDialogCompleted: 0
+    isCompleted: 0
+    hasNoRequirements: 0
+    info: {fileID: 11400000, guid: 00191902699938e41a5dff1d2dcc3b95, type: 2}
+  currentActiveQuest:
+    questName: 
+    questGiver: 
+    questDescription: 
+    accepted: 0
+    declined: 0
+    initialDialogCompleted: 0
+    isCompleted: 0
+    hasNoRequirements: 0
+    info: {fileID: 0}
+  activeQuestIndex: 0
+  firstTimeInteraction: 1
+  currentDialog: 0
+  playerInRange: 0
+  isTalkingWithPlayer: 0
+  disableOption2: 0
+  npcDialogText: {fileID: 1361478714}
+  nextButton: {fileID: 518795654}
+  optionButton1: {fileID: 1776411044}
+  optionButton1Text: {fileID: 477549031}
+  optionButton2: {fileID: 1876696089}
+  optionButton2Text: {fileID: 684675792}
+--- !u!114 &587078025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587078017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a04ee6fa206484db96c243cd7cf814, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInRange: 0
+  isOpen: 0
+  npc: {fileID: 587078024}
 --- !u!1 &587151544 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 68fcacd9b28bc2242a7a3daa165051d7, type: 3}
@@ -78699,7 +78850,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &829946978
 RectTransform:
   m_ObjectHideFlags: 0
@@ -82700,7 +82851,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.27992412, y: 0.6626882, z: -0.6288677, w: -0.29497844}
   m_LocalPosition: {x: 22.531296, y: 3.5200005, z: 16.32523}
-  m_LocalScale: {x: -1.1, y: 1, z: -1.0199996}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 87470548}
@@ -83386,6 +83537,74 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8841874676374159603, guid: 5bce757e07a965b41b846349f2b0368e, type: 3}
   m_PrefabInstance: {fileID: 1207202497}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &898438362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898438355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc8e4934b4401a438312ae48a4c5339, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressFUI: {fileID: 278244614}
+  dialogUI: {fileID: 317479571}
+  MainScreen: {fileID: 332791057}
+  QuickSlotScreen: {fileID: 2017156089}
+  InventoryBTN: {fileID: 1973363912}
+  isOpen: 0
+  questDone: 0
+  npcName: Chase
+  isSimpleNPC: 1
+  quests:
+  - questName: Just talk with Chase
+    questGiver: Chase
+    questDescription: just talk with chase
+    accepted: 0
+    declined: 0
+    initialDialogCompleted: 0
+    isCompleted: 0
+    hasNoRequirements: 0
+    info: {fileID: 11400000, guid: ab21127971574fd48848b3e4b857d42a, type: 2}
+  currentActiveQuest:
+    questName: 
+    questGiver: 
+    questDescription: 
+    accepted: 0
+    declined: 0
+    initialDialogCompleted: 0
+    isCompleted: 0
+    hasNoRequirements: 0
+    info: {fileID: 0}
+  activeQuestIndex: 0
+  firstTimeInteraction: 1
+  currentDialog: 0
+  playerInRange: 0
+  isTalkingWithPlayer: 0
+  disableOption2: 0
+  npcDialogText: {fileID: 1361478714}
+  nextButton: {fileID: 518795654}
+  optionButton1: {fileID: 1776411044}
+  optionButton1Text: {fileID: 477549031}
+  optionButton2: {fileID: 1876696089}
+  optionButton2Text: {fileID: 684675792}
+--- !u!114 &898438363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898438355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a04ee6fa206484db96c243cd7cf814, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInRange: 0
+  isOpen: 0
+  npc: {fileID: 898438362}
 --- !u!1 &899513336
 GameObject:
   m_ObjectHideFlags: 0
@@ -87952,6 +88171,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 811006034367085654, guid: 333529c2e63a1fb4a9ac78584745f6a2, type: 3}
+      propertyPath: npc
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 811006034367085654, guid: 333529c2e63a1fb4a9ac78584745f6a2, type: 3}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
@@ -88008,11 +88231,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 811006034367085654, guid: 333529c2e63a1fb4a9ac78584745f6a2, type: 3}
     - {fileID: 3012411982696279220, guid: 333529c2e63a1fb4a9ac78584745f6a2, type: 3}
+    - {fileID: 811006034367085654, guid: 333529c2e63a1fb4a9ac78584745f6a2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9175411569000620907, guid: 333529c2e63a1fb4a9ac78584745f6a2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 105519016}
+    - targetCorrespondingSourceObject: {fileID: 9175411569000620907, guid: 333529c2e63a1fb4a9ac78584745f6a2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 105519015}
   m_SourcePrefab: {fileID: 100100000, guid: 333529c2e63a1fb4a9ac78584745f6a2, type: 3}
 --- !u!1 &920986245
 GameObject:
@@ -89692,9 +89921,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1536269312}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8152275336026296210, guid: e21e907c67f40c740828f31cad76d596, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1741229714}
     - targetCorrespondingSourceObject: {fileID: 8152275336026296210, guid: e21e907c67f40c740828f31cad76d596, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1741229719}
@@ -110567,7 +110793,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6200947791218226460, guid: 5bce757e07a965b41b846349f2b0368e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -86.09
+      value: -83.81
       objectReference: {fileID: 0}
     - target: {fileID: 6200947791218226460, guid: 5bce757e07a965b41b846349f2b0368e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -110575,7 +110801,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6200947791218226460, guid: 5bce757e07a965b41b846349f2b0368e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 27.8
+      value: 34.43
       objectReference: {fileID: 0}
     - target: {fileID: 6200947791218226460, guid: 5bce757e07a965b41b846349f2b0368e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -110618,7 +110844,13 @@ PrefabInstance:
     - {fileID: 5981306374828270612, guid: 5bce757e07a965b41b846349f2b0368e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8841874676374159603, guid: 5bce757e07a965b41b846349f2b0368e, type: 3}
+      insertIndex: 5
+      addedObject: {fileID: 898438363}
+    - targetCorrespondingSourceObject: {fileID: 8841874676374159603, guid: 5bce757e07a965b41b846349f2b0368e, type: 3}
+      insertIndex: 6
+      addedObject: {fileID: 898438362}
   m_SourcePrefab: {fileID: 100100000, guid: 5bce757e07a965b41b846349f2b0368e, type: 3}
 --- !u!4 &1208170527 stripped
 Transform:
@@ -126746,8 +126978,8 @@ Transform:
   m_GameObject: {fileID: 1450536629}
   serializedVersion: 2
   m_LocalRotation: {x: 0.19679843, y: 0.69816786, z: -0.6625366, w: 0.18675476}
-  m_LocalPosition: {x: 6.262474, y: -0.048070073, z: -24.980858}
-  m_LocalScale: {x: 0.37122336, y: 1, z: -0.7}
+  m_LocalPosition: {x: 6.262474, y: -1.46, z: -24.980858}
+  m_LocalScale: {x: 0.37122336, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1140684844}
@@ -129903,7 +130135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1488227846
 RectTransform:
   m_ObjectHideFlags: 0
@@ -132274,7 +132506,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.12474652, y: 0.7141475, z: -0.6797961, w: 0.1109464}
   m_LocalPosition: {x: 0.57, y: 0.87, z: -27.13}
-  m_LocalScale: {x: 0.37122336, y: 1, z: -0.7}
+  m_LocalScale: {x: 0.37122336, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1140684844}
@@ -145528,7 +145760,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1674549074
 RectTransform:
   m_ObjectHideFlags: 0
@@ -146027,7 +146259,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.26658902, y: 0.6741652, z: -0.6376635, w: 0.2604172}
   m_LocalPosition: {x: 10.42, y: 1.06, z: -20.83}
-  m_LocalScale: {x: 0.37122336, y: 1, z: -0.7}
+  m_LocalScale: {x: 0.37122336, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1140684844}
@@ -149832,6 +150064,10 @@ PrefabInstance:
     - target: {fileID: 6684849914146943438, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4283124555
+      objectReference: {fileID: 0}
+    - target: {fileID: 6684849914146943438, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6684849914146943438, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: m_hasFontAssetChanged
@@ -156743,18 +156979,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8152275336026296210, guid: e21e907c67f40c740828f31cad76d596, type: 3}
   m_PrefabInstance: {fileID: 942014476}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1741229714
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1741229713}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0e29f442e57fe540b96ec996f41fd4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1741229715 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2561941694268522009, guid: e21e907c67f40c740828f31cad76d596, type: 3}
@@ -173898,7 +174122,13 @@ PrefabInstance:
     - {fileID: 8711087286870468310, guid: 546fe7d90702b164d9088277d4e4f5d2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4522595400703348355, guid: 546fe7d90702b164d9088277d4e4f5d2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 587078025}
+    - targetCorrespondingSourceObject: {fileID: 4522595400703348355, guid: 546fe7d90702b164d9088277d4e4f5d2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 587078024}
   m_SourcePrefab: {fileID: 100100000, guid: 546fe7d90702b164d9088277d4e4f5d2, type: 3}
 --- !u!1 &1944297815
 GameObject:

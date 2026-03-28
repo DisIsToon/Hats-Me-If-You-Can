@@ -137,21 +137,36 @@ public class InventorySystem : MonoBehaviour
 
     public void AddToInventory(string itemName)
     {
+        // Tutorial trigger
         if (NewHatalougeManager.Instance != null &&
-        NewHatalougeManager.Instance.notTutorial == false)
+            NewHatalougeManager.Instance.notTutorial == false)
         {
             TutorialManager.Instance.OnMaterialCollected(itemName);
         }
 
-        // 1) Check if item already exists in inventory
+        // ✅ 0) Check QUICK SLOTS FIRST
+        GameObject equippedSlot = EquipSystem.Instance.FindSlotWithItem(itemName);
+
+        if (equippedSlot != null)
+        {
+            EquipSystem.Instance.IncreaseStack(equippedSlot);
+
+            Sprite icon = equippedSlot.transform.GetChild(0).GetComponent<Image>().sprite;
+            TriggerPickupPopUp(itemName, icon);
+
+            ReCalculateList();
+            CraftingSystem.Instance.RefreshNeededItem();
+            QuestManager.Instance.RefreshTrackerList();
+            return;
+        }
+
+        // ✅ 1) Check INVENTORY
         GameObject existingSlot = FindSlotWithItem(itemName);
 
         if (existingSlot != null)
         {
-            // Increase stack amount
             IncreaseStack(existingSlot);
 
-            // Show popup
             Sprite icon = existingSlot.transform.GetChild(0).GetComponent<Image>().sprite;
             TriggerPickupPopUp(itemName, icon);
 
@@ -161,7 +176,7 @@ public class InventorySystem : MonoBehaviour
             return;
         }
 
-        // 2) Item does NOT exist → add a new slot
+        // ❗ 2) Create NEW
         whatSlotToEquip = FindNextEmptySlot();
 
         itemToAdd = Instantiate(Resources.Load<GameObject>(itemName),

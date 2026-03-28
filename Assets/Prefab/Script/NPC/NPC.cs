@@ -18,7 +18,11 @@ public class NPC : MonoBehaviour
 
 
     [Header("NPC Name")]
-    public string npcName;   
+    public string npcName;
+
+    [Header("Simple NPC Settings")]
+    public bool isSimpleNPC = false;
+    private bool hasTalkedSimpleNPC = false;
 
     [Header("NPC & Quest Data")]
     public List<Quest> quests;
@@ -168,7 +172,17 @@ public class NPC : MonoBehaviour
         MainScreen.SetActive(false);
         InventoryBTN.SetActive(false);
         QuickSlotScreen.SetActive(false);
+
         DialogSystem.Instance.ShowNPCImage(npcName);
+
+        //  GET NAME FROM DIALOG SYSTEM (optional but you asked for it)
+        string speakerName = DialogSystem.Instance.GetSpeakerName();
+
+        if (isSimpleNPC)
+        {
+            StartSimpleDialogue();
+            return;
+        }
 
         // --- First-time interaction ---
         if (firstTimeInteraction)
@@ -287,6 +301,68 @@ public class NPC : MonoBehaviour
         // --- Safety fallback ---
         if (!currentActiveQuest.initialDialogCompleted)
             StartQuestInitialDialog();
+    }
+
+    private void StartSimpleDialogue()
+    {
+        DialogSystem.Instance.OpenDialogUI();
+
+        // If already talked → go straight to final words
+        if (hasTalkedSimpleNPC)
+        {
+            npcDialogText.text = quests[0].info.finalWords;
+
+            optionButton1.gameObject.SetActive(true);
+            optionButton1Text.text = "Close";
+            optionButton1.onClick.RemoveAllListeners();
+            optionButton1.onClick.AddListener(() =>
+            {
+                DialogSystem.Instance.CloseDialogUI();
+                isTalkingWithPlayer = false;
+            });
+
+            optionButton2.gameObject.SetActive(false);
+            nextButton.gameObject.SetActive(false);
+
+            return;
+        }
+
+        // FIRST TIME DIALOGUE
+        currentDialog = 0;
+        npcDialogText.text = quests[0].info.initialDialog[currentDialog];
+
+        optionButton1.gameObject.SetActive(false);
+        optionButton2.gameObject.SetActive(false);
+
+        nextButton.gameObject.SetActive(true);
+        nextButton.onClick.RemoveAllListeners();
+        nextButton.onClick.AddListener(() =>
+        {
+            currentDialog++;
+
+            if (currentDialog < quests[0].info.initialDialog.Count)
+            {
+                npcDialogText.text = quests[0].info.initialDialog[currentDialog];
+            }
+            else
+            {
+                // Mark as talked AFTER finishing dialogue
+                hasTalkedSimpleNPC = true;
+
+                npcDialogText.text = quests[0].info.finalWords;
+
+                nextButton.gameObject.SetActive(false);
+
+                optionButton1.gameObject.SetActive(true);
+                optionButton1Text.text = "Close";
+                optionButton1.onClick.RemoveAllListeners();
+                optionButton1.onClick.AddListener(() =>
+                {
+                    DialogSystem.Instance.CloseDialogUI();
+                    isTalkingWithPlayer = false;
+                });
+            }
+        });
     }
 
     // --- Helper function for showing "incomplete requirement" message ---
