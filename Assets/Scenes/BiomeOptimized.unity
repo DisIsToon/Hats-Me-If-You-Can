@@ -26100,7 +26100,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!136 &299638554
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -162244,17 +162244,19 @@ MonoBehaviour:
   toggleHighArcKey: 118
   lobElevationAngle: 38
   lobForceMultiplier: 1.4
-  destroyDelayAfterHit: 0.08
-  impactVFXPrefab: {fileID: 104829970813648393, guid: d3015b7eea383f64d8b81f965cc466e7, type: 3}
-  impactVFXLifetime: 2
-  impactVFXScale: {x: 1, y: 1, z: 1}
+  destroyDelayAfterHit: 0.12
+  impactVFXLifetime: 3
+  impactVFXScale: {x: 2, y: 2, z: 2}
   throwableItems:
   - itemName: Cake Potion
     prefab: {fileID: 7949281937635042838, guid: c321a1ecd8403cf488d25a1d4c3c83ae, type: 3}
+    impactVFXPrefab: {fileID: 104829970813648393, guid: d3015b7eea383f64d8b81f965cc466e7, type: 3}
   - itemName: Cotton Craze
     prefab: {fileID: 7949281937635042838, guid: fc3cf417b01c9494da701df4e2027249, type: 3}
+    impactVFXPrefab: {fileID: 104829970813648393, guid: bea37119186db7245a7412ac034d6cf2, type: 3}
   - itemName: Mirror Potion
     prefab: {fileID: 7949281937635042838, guid: d19f9189b4d19214f90818ce60280c45, type: 3}
+    impactVFXPrefab: {fileID: 104829970813648393, guid: 30a941d432f9b364e9af5c206a7425a1, type: 3}
   laserBeamMaterial: {fileID: 2100000, guid: 02cefe984a858ce47abd4d175431b350, type: 2}
   instanceLaserMaterial: 1
 --- !u!114 &1741229721 stripped

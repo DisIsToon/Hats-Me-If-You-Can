@@ -5,8 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Handles equipping a throwable item from inventory, aiming, arc preview,
 /// and throwing. Attach this to the Player.
-/// Thrown objects disappear shortly after collision so hit logic still works.
-/// Spawns an impact VFX on hit.
+/// Each potion can use its own impact VFX prefab.
 /// </summary>
 public class Throw : MonoBehaviour
 {
@@ -41,9 +40,6 @@ public class Throw : MonoBehaviour
 
     [Header("Impact")]
     public float destroyDelayAfterHit = 0.08f;
-
-    [Header("Impact VFX")]
-    public GameObject impactVFXPrefab;
     public float impactVFXLifetime = 2f;
     public Vector3 impactVFXScale = Vector3.one;
 
@@ -52,6 +48,7 @@ public class Throw : MonoBehaviour
     {
         public string itemName;
         public GameObject prefab;
+        public GameObject impactVFXPrefab;
     }
 
     [Header("Throwable Items (from Inventory)")]
@@ -73,6 +70,8 @@ public class Throw : MonoBehaviour
     private bool isHighArc;
 
     private RigidbodyPlayerWithSprintAndStamina player;
+
+    private GameObject currentImpactVFXPrefab;
 
     void Start()
     {
@@ -112,6 +111,7 @@ public class Throw : MonoBehaviour
             isHighArc = !isHighArc;
         }
 
+        // Auto-detect an item already parented to the hand
         if (heldItem == null && handPosition != null && handPosition.childCount > 0)
         {
             GameObject child = handPosition.GetChild(0).gameObject;
@@ -190,7 +190,14 @@ public class Throw : MonoBehaviour
             impact = thrownObject.AddComponent<ThrowableImpact>();
         }
 
-        impact.Arm(destroyDelayAfterHit, impactVFXPrefab, impactVFXLifetime, impactVFXScale);
+        Debug.Log("Throwing with VFX: " + (currentImpactVFXPrefab != null ? currentImpactVFXPrefab.name : "NULL"));
+
+        impact.Arm(
+            destroyDelayAfterHit,
+            currentImpactVFXPrefab,
+            impactVFXLifetime,
+            impactVFXScale
+        );
 
         heldItem = null;
         heldRb = null;
@@ -328,6 +335,27 @@ public class Throw : MonoBehaviour
 
         heldItem.transform.localPosition = normalHoldOffset;
         heldItem.transform.localRotation = Quaternion.identity;
+
+        // Match held object to throwable definition and assign proper impact VFX
+        currentImpactVFXPrefab = null;
+
+        string heldName = heldItem.name.Replace("(Clone)", "").Trim();
+
+        foreach (ThrowableDefinition def in throwableItems)
+        {
+            if (def.prefab == null) continue;
+
+            string defName = def.prefab.name.Replace("(Clone)", "").Trim();
+
+            if (heldName == defName)
+            {
+                currentImpactVFXPrefab = def.impactVFXPrefab;
+                break;
+            }
+        }
+
+        Debug.Log("Held item: " + heldName + " | Impact VFX: " +
+            (currentImpactVFXPrefab != null ? currentImpactVFXPrefab.name : "NULL"));
     }
 
     public void EquipFromInventory(string itemName)
@@ -350,6 +378,8 @@ public class Throw : MonoBehaviour
             Destroy(heldItem);
         }
 
+        currentImpactVFXPrefab = def.impactVFXPrefab;
+
         GameObject newItem = Instantiate(def.prefab, handPosition);
         SetupHeldItem(newItem);
     }
@@ -366,6 +396,7 @@ public class Throw : MonoBehaviour
         heldRb = null;
         heldCol = null;
         heldEquippable = null;
+        currentImpactVFXPrefab = null;
 
         arcRenderer.enabled = false;
         if (landingMarker) landingMarker.SetActive(false);
@@ -403,20 +434,29 @@ public class ThrowableImpact : MonoBehaviour
         hasHit = true;
 
         Vector3 hitPoint = transform.position;
+        Vector3 hitNormal = Vector3.up;
         Quaternion hitRotation = Quaternion.identity;
 
         if (collision.contactCount > 0)
         {
             ContactPoint contact = collision.contacts[0];
-            hitPoint = contact.point;
-            hitRotation = Quaternion.identity;
+            hitPoint = contact.point + contact.normal * 0.15f;
+            hitNormal = contact.normal;
+            hitRotation = Quaternion.LookRotation(hitNormal);
         }
 
         if (impactVFXPrefab != null)
         {
             GameObject vfx = Instantiate(impactVFXPrefab, hitPoint, hitRotation);
             vfx.transform.localScale = impactVFXScale;
+
+            Debug.Log("Spawned VFX: " + vfx.name);
+
             Destroy(vfx, impactVFXLifetime);
+        }
+        else
+        {
+            Debug.LogWarning("Impact VFX Prefab is NULL on thrown object.");
         }
 
         Destroy(gameObject, destroyDelay);
