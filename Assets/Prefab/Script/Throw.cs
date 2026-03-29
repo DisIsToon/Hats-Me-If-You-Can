@@ -19,7 +19,7 @@ public class Throw : MonoBehaviour
     public float throwElevationAngle = 18f;
 
     public Vector3 normalHoldOffset = Vector3.zero;
-    public Vector3 aimHoldOffset = new Vector3(0f, 0.1f, 0.4f);
+    public Vector3 aimHoldOffset = new Vector3(0f, 0f, 0f);
     public float aimSmoothSpeed = 10f;
 
     [Header("Throw Arc Settings")]
@@ -247,7 +247,7 @@ public class Throw : MonoBehaviour
     {
         if (!heldItem || !handPosition) return;
 
-        Vector3 startPos = handPosition.position + (transform.forward * 0.08f);
+        Vector3 startPos = handPosition.position ;
         float force = GetCurrentThrowForce();
 
         Vector3 throwDir = GetThrowDirection();
