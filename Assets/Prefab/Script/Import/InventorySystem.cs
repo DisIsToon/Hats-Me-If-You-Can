@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class InventorySystem : MonoBehaviour
+public class InventorySystem : MonoBehaviour, IDataPersistence
 {
     public GameObject ItemInfoUI;
 
@@ -75,6 +75,66 @@ public class InventorySystem : MonoBehaviour
 
     }
 
+    public void SaveData(GameData data)
+    {
+        if (NewHatalougeManager.Instance != null &&
+            NewHatalougeManager.Instance.notTutorial == false)
+            return;
+
+        data.inventoryItems.Clear();
+        data.inventoryStacks.Clear();
+
+        foreach (GameObject slot in slotList)
+        {
+            if (slot.transform.childCount > 0)
+            {
+                GameObject item = slot.transform.GetChild(0).gameObject;
+                string itemName = item.name.Replace("(Clone)", "");
+
+                TextMeshProUGUI stackText = item.transform.Find("StackText").GetComponent<TextMeshProUGUI>();
+
+                int stack = 1;
+                int.TryParse(stackText.text, out stack);
+
+                data.inventoryItems.Add(itemName);
+                data.inventoryStacks.Add(stack);
+            }
+        }
+    }
+
+    public void LoadData(GameData data)
+    {
+        if (NewHatalougeManager.Instance != null &&
+            NewHatalougeManager.Instance.notTutorial == false)
+            return;
+
+        // CLEAR EXISTING
+        foreach (GameObject slot in slotList)
+        {
+            foreach (Transform child in slot.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        // REBUILD
+        for (int i = 0; i < data.inventoryItems.Count; i++)
+        {
+            string itemName = data.inventoryItems[i];
+            int stack = data.inventoryStacks[i];
+
+            GameObject slot = FindNextEmptySlot();
+
+            GameObject item = Instantiate(Resources.Load<GameObject>(itemName),
+                slot.transform);
+
+            TextMeshProUGUI stackText = item.transform.Find("StackText").GetComponent<TextMeshProUGUI>();
+            stackText.text = stack.ToString();
+        }
+
+        ReCalculateList();
+    }
+
     private void PopulateSlotList()
     {
         slotList.Clear(); // ✅ IMPORTANT
@@ -137,21 +197,36 @@ public class InventorySystem : MonoBehaviour
 
     public void AddToInventory(string itemName)
     {
+        // Tutorial trigger
         if (NewHatalougeManager.Instance != null &&
-        NewHatalougeManager.Instance.notTutorial == false)
+            NewHatalougeManager.Instance.notTutorial == false)
         {
             TutorialManager.Instance.OnMaterialCollected(itemName);
         }
 
-        // 1) Check if item already exists in inventory
+        // ✅ 0) Check QUICK SLOTS FIRST
+        GameObject equippedSlot = EquipSystem.Instance.FindSlotWithItem(itemName);
+
+        if (equippedSlot != null)
+        {
+            EquipSystem.Instance.IncreaseStack(equippedSlot);
+
+            Sprite icon = equippedSlot.transform.GetChild(0).GetComponent<Image>().sprite;
+            TriggerPickupPopUp(itemName, icon);
+
+            ReCalculateList();
+            CraftingSystem.Instance.RefreshNeededItem();
+            QuestManager.Instance.RefreshTrackerList();
+            return;
+        }
+
+        // ✅ 1) Check INVENTORY
         GameObject existingSlot = FindSlotWithItem(itemName);
 
         if (existingSlot != null)
         {
-            // Increase stack amount
             IncreaseStack(existingSlot);
 
-            // Show popup
             Sprite icon = existingSlot.transform.GetChild(0).GetComponent<Image>().sprite;
             TriggerPickupPopUp(itemName, icon);
 
@@ -161,7 +236,7 @@ public class InventorySystem : MonoBehaviour
             return;
         }
 
-        // 2) Item does NOT exist → add a new slot
+        // ❗ 2) Create NEW
         whatSlotToEquip = FindNextEmptySlot();
 
         itemToAdd = Instantiate(Resources.Load<GameObject>(itemName),

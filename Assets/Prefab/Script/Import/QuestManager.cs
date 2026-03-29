@@ -83,9 +83,6 @@ public class QuestManager : MonoBehaviour
         liraPuzzleQuest.accepted = false;
         liraPuzzleQuest.isCompleted = false;
 
-        jumpHat.gameObject.SetActive(false);
-        fastHat.gameObject.SetActive(false);
-
         // Hide the RawImage at start
         if (videoRawImage != null)
             videoRawImage.gameObject.SetActive(false);

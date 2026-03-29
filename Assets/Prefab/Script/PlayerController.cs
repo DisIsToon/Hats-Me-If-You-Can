@@ -137,10 +137,10 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         bool uiBlocked = false;
         if (CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen) uiBlocked = true;
         if (InventorySystem.Instance != null && InventorySystem.Instance.isOpen) uiBlocked = true;
-        if (CardsController.Instance != null && CardsController.Instance.isOpen) uiBlocked = true;
+        // if (CardsController.Instance != null && CardsController.Instance.isOpen) uiBlocked = true;
         if (PuzzleManagerUI.Instance != null && PuzzleManagerUI.Instance.isOpen) uiBlocked = true;
         if (NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.isOpen) uiBlocked = true;
-        if (DialogSystem.Instance != null && DialogSystem.Instance.dialogUIActive) uiBlocked = true;
+        // if (DialogSystem.Instance != null && DialogSystem.Instance.dialogUIActive) uiBlocked = true;
 
         if (uiBlocked)
         {

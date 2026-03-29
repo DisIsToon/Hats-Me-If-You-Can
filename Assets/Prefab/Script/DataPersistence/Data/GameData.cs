@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 [System.Serializable]
 public class GameData
 {
@@ -29,13 +28,26 @@ public class GameData
 
     public SerializableDictionary<string, bool> potionsCollected;
 
-    // the values defined in this constructor will be the default values
-    // the game starts with when there's no data to load
-    public GameData() 
+    //  MOVE HERE (CLASS LEVEL)
+    public List<string> inventoryItems;
+    public List<int> inventoryStacks;
+
+    public List<string> equippedItems;
+    public List<int> equippedStacks;
+
+    // Constructor
+    public GameData()
     {
         this.playTime = 0.0f;
         playerPosition = new Vector3(16f, -0.8f, -2f);
         potionsCollected = new SerializableDictionary<string, bool>();
+
+        //  Initialize lists HERE (no "public")
+        inventoryItems = new List<string>();
+        inventoryStacks = new List<int>();
+
+        equippedItems = new List<string>();
+        equippedStacks = new List<int>();
 
         shyHatAlreadyCaptured = false;
         fastHatAlreadyCaptured = false;
@@ -52,9 +64,8 @@ public class GameData
         castleRuinAlreadyDiscovered = false;
         winterBiomeAlreadyDiscovered = false;
         springGardenAlreadyDiscovered = false;
-}
+    }
 
-    // Public function to get playtime
     public float GetFinalGamePlayTime()
     {
         return playTime;

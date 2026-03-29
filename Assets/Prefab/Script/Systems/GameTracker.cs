@@ -90,8 +90,16 @@ public class GameTracker : MonoBehaviour, IDataPersistence
         }
     }
 
+    public bool IsTutorial()
+    {
+        return NewHatalougeManager.Instance != null &&
+               NewHatalougeManager.Instance.notTutorial == false;
+    }
+
     public void LoadData(GameData data)
     {
+        if (IsTutorial()) return; // skip loading in tutorial
+
         // ----- LOAD RAW BOOLS -----
         this.shyHatAlreadyCaptured = data.shyHatAlreadyCaptured;
         this.fastHatAlreadyCaptured = data.fastHatAlreadyCaptured;
@@ -180,6 +188,8 @@ public class GameTracker : MonoBehaviour, IDataPersistence
 
     public void SaveData(GameData data)
     {
+        if (IsTutorial()) return; // skip saving in tutorial
+
         data.shyHatAlreadyCaptured = this.shyHatAlreadyCaptured;
         data.fastHatAlreadyCaptured = this.fastHatAlreadyCaptured;
         data.jumpHatAlreadyCaptured = this.jumpHatAlreadyCaptured;
@@ -213,6 +223,8 @@ public class GameTracker : MonoBehaviour, IDataPersistence
     }
     public void PlayShyHatVideoAfterCapture()
     {
+        if (IsTutorial()) return; // no video in tutorial
+
         if (hasPlayedShyHatVideo) return;
 
         if (ShyHatVideoPlayer == null || videoRawImage == null)
@@ -252,6 +264,8 @@ public class GameTracker : MonoBehaviour, IDataPersistence
 
     public void PlayFastHatVideoAfterCapture()
     {
+        if (IsTutorial()) return; // no video in tutorial
+
         if (hasPlayedFastHatVideo) return;
 
         if (FastHatVideoPlayer == null || videoRawImage == null)
@@ -291,6 +305,8 @@ public class GameTracker : MonoBehaviour, IDataPersistence
 
     public void PlayJumpHatVideoAfterCapture()
     {
+        if (IsTutorial()) return; // no video in tutorial
+
         if (hasPlayedJumpHatVideo) return;
 
         if (JumpHatVideoPlayer == null || videoRawImage == null)
@@ -394,7 +410,7 @@ public class GameTracker : MonoBehaviour, IDataPersistence
             {
                 
                 castleRuinNotified = true;
-                NotifUIManager.Instance.NotifyBiomeDiscovered("Castle Ruin");
+                NotifUIManager.Instance.NotifyBiomeDiscovered("Castle Ruins");
                 NewHatalougeManager.Instance.ReachCastle();
             }
             return;
@@ -412,7 +428,7 @@ public class GameTracker : MonoBehaviour, IDataPersistence
             {
                 
                 winterBiomeNotified = true;
-                NotifUIManager.Instance.NotifyBiomeDiscovered("Winter Biome");
+                NotifUIManager.Instance.NotifyBiomeDiscovered("Winter Forest");
                 NewHatalougeManager.Instance.ReachWinter();
             }
             return;
@@ -429,45 +445,66 @@ public class GameTracker : MonoBehaviour, IDataPersistence
     {
         return puzzleComplete;
     }
+
     // --- Capture a hat ---
     public void CaptureHat(string hatName)
     {
+        bool isTutorial = IsTutorial();
+
         switch (hatName)
         {
             case "ShyHat":
-                shyHatCaptured = true;
-                NewHatalougeManager.Instance.DiscoverShyHat();
+                if (!isTutorial) //  don't record in tutorial
+                {
+                    shyHatCaptured = true;
+                    NewHatalougeManager.Instance.DiscoverShyHat();
+                }
+
                 NotifUIManager.Instance.NotifyHatCaptured("ShyHat");
-                PlayShyHatVideoAfterCapture();
+
+                if (!isTutorial)
+                    PlayShyHatVideoAfterCapture();
+
                 Debug.Log("ShyHat captured!");
                 break;
+
             case "FastHat":
-                fastHatCaptured = true;
-                NewHatalougeManager.Instance.DiscoverFastHat();
+                if (!isTutorial)
+                {
+                    fastHatCaptured = true;
+                    NewHatalougeManager.Instance.DiscoverFastHat();
+                }
+
                 NotifUIManager.Instance.NotifyHatCaptured("FastHat");
-                PlayFastHatVideoAfterCapture();
+
+                if (!isTutorial)
+                    PlayFastHatVideoAfterCapture();
+
                 Debug.Log("FastHat captured!");
                 break;
+
             case "JumpHat":
-                jumpHatCaptured = true;
-                NewHatalougeManager.Instance.DiscoverLazyHat();
+                if (!isTutorial)
+                {
+                    jumpHatCaptured = true;
+                    NewHatalougeManager.Instance.DiscoverLazyHat();
+                }
+
                 NotifUIManager.Instance.NotifyHatCaptured("JumpHat");
-                PlayJumpHatVideoAfterCapture();
+
+                if (!isTutorial)
+                    PlayJumpHatVideoAfterCapture();
+
                 Debug.Log("JumpHat captured!");
-                break;
-            default:
-                Debug.LogWarning("Unknown hat: " + hatName);
                 break;
         }
 
-        // Check if all hats are captured
-        if (AllHatsCaptured() && allHatsCapturedObject != null && !allHatsPopupShown)
+        //  also prevent "all hats" popup during tutorial
+        if (!isTutorial && AllHatsCaptured() && allHatsCapturedObject != null && !allHatsPopupShown)
         {
             allHatsCapturedObject.SetActive(true);
             StartCoroutine(ShowAllHatsCapturedPopup());
-            Debug.Log("All hats captured! Popup shown.");
         }
-
     }
 
     // --- Complete a quest ---

@@ -117,6 +117,8 @@ public class SaveSlotsMenu : Menu
         {
             saveSlot.SetInteractable(false);
         }
-        backButton.interactable = false;
+        if (backButton != null) {
+            backButton.interactable = false;
+        }
     }
 }

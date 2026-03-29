@@ -430,8 +430,8 @@ public class TutorialManager : MonoBehaviour
 
     public void ExitTutorialSaveGameAndLoadScene()
     {
-        DataPersistenceManager.instance.SaveGame();
+        // DataPersistenceManager.instance.SaveGame();
 
-        SceneManager.LoadSceneAsync("IntroCutsceneScene");
+        SceneManager.LoadSceneAsync("BiomeOptimized");
     }
 }

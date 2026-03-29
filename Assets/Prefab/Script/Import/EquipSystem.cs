@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class EquipSystem : MonoBehaviour
+public class EquipSystem : MonoBehaviour, IDataPersistence
 {
     public static EquipSystem Instance { get; set; }
  
@@ -39,6 +39,59 @@ public class EquipSystem : MonoBehaviour
         PopulateSlotList();
     }
 
+    public void SaveData(GameData data)
+    {
+        data.equippedItems.Clear();
+        data.equippedStacks.Clear();
+
+        foreach (GameObject slot in quickSlotsList)
+        {
+            if (slot.transform.childCount > 0)
+            {
+                GameObject item = slot.transform.GetChild(0).gameObject;
+                string itemName = item.name.Replace("(Clone)", "");
+
+                TextMeshProUGUI stackText = item.transform.Find("StackText")?.GetComponent<TextMeshProUGUI>();
+
+                int stack = 1;
+                if (stackText != null)
+                    int.TryParse(stackText.text, out stack);
+
+                data.equippedItems.Add(itemName);
+                data.equippedStacks.Add(stack);
+            }
+        }
+    }
+
+    public void LoadData(GameData data)
+    {
+        // CLEAR
+        foreach (GameObject slot in quickSlotsList)
+        {
+            foreach (Transform child in slot.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        // REBUILD
+        for (int i = 0; i < data.equippedItems.Count; i++)
+        {
+            string itemName = data.equippedItems[i];
+            int stack = data.equippedStacks[i];
+
+            GameObject slot = FindNextEmptySlot();
+
+            GameObject item = Instantiate(Resources.Load<GameObject>(itemName),
+                slot.transform);
+
+            TextMeshProUGUI stackText = item.transform.Find("StackText")?.GetComponent<TextMeshProUGUI>();
+            if (stackText != null)
+                stackText.text = stack.ToString();
+        }
+    }
+
+
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Alpha1))
@@ -53,6 +106,37 @@ public class EquipSystem : MonoBehaviour
         {
             SelectQuickSlot(3);
         }
+    }
+
+    public GameObject FindSlotWithItem(string itemName)
+    {
+        foreach (GameObject slot in quickSlotsList)
+        {
+            if (slot.transform.childCount > 0)
+            {
+                string childName = slot.transform.GetChild(0).name.Replace("(Clone)", "");
+                if (childName == itemName)
+                    return slot;
+            }
+        }
+        return null;
+    }
+
+    public void IncreaseStack(GameObject slot)
+    {
+        Transform item = slot.transform.GetChild(0);
+
+        TextMeshProUGUI stackText = item.Find("StackText")?.GetComponent<TextMeshProUGUI>();
+
+        int currentStack = 1;
+
+        if (stackText != null && !string.IsNullOrEmpty(stackText.text))
+            int.TryParse(stackText.text, out currentStack);
+
+        currentStack++;
+
+        if (stackText != null)
+            stackText.text = currentStack.ToString();
     }
 
     void SelectQuickSlot(int number)

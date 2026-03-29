@@ -28,6 +28,10 @@ public class DialogSystem : MonoBehaviour
     public GameObject liraImage;
     public GameObject mallowImage;
     public GameObject tulipImage;
+    public GameObject ivyImage;
+    public GameObject chaseImage;
+    public GameObject louImage;
+    public GameObject snowmanImage;
 
     private void Awake()
     {
@@ -63,6 +67,12 @@ public class DialogSystem : MonoBehaviour
         mallowImage.SetActive(npcName == "Mallow");
         tulipImage.SetActive(npcName == "Tulip");
 
+        ivyImage.SetActive(npcName == "Ivy");
+        chaseImage.SetActive(npcName == "Chase");
+        louImage.SetActive(npcName == "Lou");
+
+        snowmanImage.SetActive(npcName == "Snowman");
+
         speakerNameText.text = npcName;
     }
 
@@ -78,6 +88,10 @@ public class DialogSystem : MonoBehaviour
         liraImage.SetActive(false);
         mallowImage.SetActive(false);
         tulipImage.SetActive(false);
+        ivyImage.SetActive(false);
+        chaseImage.SetActive(false);
+        louImage.SetActive(false);
+        snowmanImage.SetActive(false);
     }
 
     public void OpenDialogUI()
