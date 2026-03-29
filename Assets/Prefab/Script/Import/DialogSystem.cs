@@ -31,6 +31,7 @@ public class DialogSystem : MonoBehaviour
     public GameObject ivyImage;
     public GameObject chaseImage;
     public GameObject louImage;
+    public GameObject snowmanImage;
 
     private void Awake()
     {
@@ -70,6 +71,8 @@ public class DialogSystem : MonoBehaviour
         chaseImage.SetActive(npcName == "Chase");
         louImage.SetActive(npcName == "Lou");
 
+        snowmanImage.SetActive(npcName == "Snowman");
+
         speakerNameText.text = npcName;
     }
 
@@ -88,6 +91,7 @@ public class DialogSystem : MonoBehaviour
         ivyImage.SetActive(false);
         chaseImage.SetActive(false);
         louImage.SetActive(false);
+        snowmanImage.SetActive(false);
     }
 
     public void OpenDialogUI()
