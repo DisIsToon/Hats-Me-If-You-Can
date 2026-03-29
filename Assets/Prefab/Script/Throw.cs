@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Handles equipping a throwable item from inventory, aiming, arc preview,
 /// and throwing. Attach this to the Player.
-/// Uses a LineRenderer with a custom laser beam material (e.g. MinionsArt Laser).
+/// Thrown objects disappear shortly after collision so hit logic still works.
 /// </summary>
 public class Throw : MonoBehaviour
 {
@@ -19,8 +19,8 @@ public class Throw : MonoBehaviour
     public float throwElevationAngle = 18f;
 
     public Vector3 normalHoldOffset = Vector3.zero;
-    public Vector3 aimHoldOffset = Vector3.zero; // you can adjust if aiming should move slightly
-    public float aimSmoothSpeed = 10f; // no longer used
+    public Vector3 aimHoldOffset = Vector3.zero;
+    public float aimSmoothSpeed = 10f;
 
     [Header("Throw Arc Settings")]
     public LayerMask arcCollisionMask;
@@ -38,22 +38,21 @@ public class Throw : MonoBehaviour
     [Range(0f, 80f)] public float lobElevationAngle = 38f;
     public float lobForceMultiplier = 1.4f;
 
+    [Header("Impact")]
+    public float destroyDelayAfterHit = 0.08f;
+
     [System.Serializable]
     public class ThrowableDefinition
     {
-        public string itemName;      // name used in InventorySystem
-        public GameObject prefab;    // prefab to equip in hand
+        public string itemName;
+        public GameObject prefab;
     }
 
     [Header("Throwable Items (from Inventory)")]
     public List<ThrowableDefinition> throwableItems = new List<ThrowableDefinition>();
 
-    // 🔹 Arc visuals (MinionsArt laser)
     [Header("Arc Visuals (Laser Beam)")]
-    [Tooltip("Material that uses the MinionsArt Laser shader (LaserBeam/LaserBeam2D/BirpLaser).")]
     public Material laserBeamMaterial;
-
-    [Tooltip("Create a unique instance of the material for this LineRenderer.")]
     public bool instanceLaserMaterial = true;
 
     LineRenderer arcRenderer;
@@ -73,22 +72,14 @@ public class Throw : MonoBehaviour
     {
         player = GetComponent<RigidbodyPlayerWithSprintAndStamina>();
 
-        // Arc Renderer setup
         arcRenderer = gameObject.AddComponent<LineRenderer>();
         arcRenderer.useWorldSpace = true;
         arcRenderer.positionCount = arcResolution;
-
-        // Width
         arcRenderer.startWidth = lineWidth;
         arcRenderer.endWidth = lineWidth;
-
-        // Texture mode: for laser shaders this is usually TILED
         arcRenderer.textureMode = LineTextureMode.Tile;
-
-        // Alignment (View makes it face the camera nicely)
         arcRenderer.alignment = LineAlignment.View;
 
-        // Material
         if (laserBeamMaterial != null)
         {
             arcRenderer.material = instanceLaserMaterial
@@ -97,16 +88,12 @@ public class Throw : MonoBehaviour
         }
         else
         {
-            // Fallback if you forget to assign the laser material
             arcRenderer.material = new Material(Shader.Find("Sprites/Default"));
             arcRenderer.material.color = Color.white;
         }
 
-        // IMPORTANT: do NOT mess with UV offset here – MinionsArt shader
-        // already scrolls textures using its own Speed properties.
         arcRenderer.enabled = false;
 
-        // Landing marker
         landingMarker = landingMarkerPrefab ? Instantiate(landingMarkerPrefab)
                                             : CreateDefaultLandingMarker();
         landingMarker.SetActive(false);
@@ -114,20 +101,17 @@ public class Throw : MonoBehaviour
 
     void Update()
     {
-        // Toggle lob mode
         if (enableHighArc && Input.GetKeyDown(toggleHighArcKey))
         {
             isHighArc = !isHighArc;
         }
 
-        // Auto-detect an item in the hand if something is parented but heldItem is not set
         if (heldItem == null && handPosition != null && handPosition.childCount > 0)
         {
             GameObject child = handPosition.GetChild(0).gameObject;
             SetupHeldItem(child);
         }
 
-        // If still nothing equipped → no aiming or throwing
         if (heldItem == null)
         {
             arcRenderer.enabled = false;
@@ -135,10 +119,8 @@ public class Throw : MonoBehaviour
             return;
         }
 
-        // Aiming (right mouse) - NO pushing/drifting
         isAiming = Input.GetMouseButton(1);
 
-        // Arc preview
         if (isAiming)
         {
             arcRenderer.enabled = true;
@@ -150,7 +132,6 @@ public class Throw : MonoBehaviour
             if (landingMarker) landingMarker.SetActive(false);
         }
 
-        // UI / menu gating with null checks
         bool uiBlocked = false;
         if (DialogSystem.Instance != null && DialogSystem.Instance.dialogUIActive) uiBlocked = true;
         if (CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen) uiBlocked = true;
@@ -167,14 +148,12 @@ public class Throw : MonoBehaviour
             uiBlocked = true;
         }
 
-        // Throw (left mouse) if not blocked
         if (!uiBlocked && Input.GetMouseButtonDown(0))
         {
             ThrowHeldItem();
         }
     }
 
-    #region Core Throw Logic
     void ThrowHeldItem()
     {
         if (!heldItem || !heldRb) return;
@@ -184,23 +163,25 @@ public class Throw : MonoBehaviour
             heldEquippable.OnThrow();
         }
 
-        // Cache reference before clearing so coroutine still has the object
         GameObject thrownObject = heldItem;
+        Rigidbody thrownRb = heldRb;
 
-        // Detach & enable physics
         thrownObject.transform.SetParent(null);
-        heldRb.isKinematic = false;
-        heldRb.useGravity = true;
+        thrownRb.isKinematic = false;
+        thrownRb.useGravity = true;
         if (heldCol) heldCol.enabled = true;
 
         float force = GetCurrentThrowForce();
         Vector3 throwDir = GetThrowDirection();
-        heldRb.AddForce(throwDir * force, ForceMode.Impulse);
+        thrownRb.AddForce(throwDir * force, ForceMode.Impulse);
 
-        // 🔹 Bottle-style: destroy after it lands / slows down
-        StartCoroutine(DestroyAfterThrow(thrownObject));
+        ThrowableImpact impact = thrownObject.GetComponent<ThrowableImpact>();
+        if (impact == null)
+        {
+            impact = thrownObject.AddComponent<ThrowableImpact>();
+        }
+        impact.Arm(destroyDelayAfterHit);
 
-        // Clear state on this component
         heldItem = null;
         heldRb = null;
         heldCol = null;
@@ -268,6 +249,7 @@ public class Throw : MonoBehaviour
                     break;
                 }
             }
+
             lastPoint = point;
         }
 
@@ -284,49 +266,7 @@ public class Throw : MonoBehaviour
             }
         }
     }
-    #endregion
 
-    #region Destroy After Throw
-    private IEnumerator DestroyAfterThrow(GameObject item)
-    {
-        if (item == null) yield break;
-
-        Rigidbody rb = item.GetComponent<Rigidbody>();
-
-        if (rb == null)
-        {
-            yield return new WaitForSeconds(2f);
-            if (item != null) Destroy(item);
-            yield break;
-        }
-
-        float elapsed = 0f;
-        float minLifetime = 0.1f;
-        float maxLifetime = 3f;
-
-        while (item != null && elapsed < maxLifetime)
-        {
-            elapsed += Time.deltaTime;
-
-            if (elapsed > minLifetime)
-            {
-                if (rb.linearVelocity.sqrMagnitude < 0.01f)
-                {
-                    break;
-                }
-            }
-
-            yield return null;
-        }
-
-        if (item != null)
-        {
-            Destroy(item);
-        }
-    }
-    #endregion
-
-    #region Utils & Public API
     GameObject CreateDefaultLandingMarker()
     {
         GameObject ring = new GameObject("LandingMarker_Auto");
@@ -335,14 +275,17 @@ public class Throw : MonoBehaviour
         lr.widthMultiplier = 0.02f;
         lr.material = new Material(Shader.Find("Sprites/Default"));
         lr.material.color = new Color(1, 1, 1, 0.9f);
+
         int segs = 40;
         lr.positionCount = segs;
         float r = landingMarkerScale;
+
         for (int i = 0; i < segs; i++)
         {
             float a = (i / (float)segs) * Mathf.PI * 2f;
             lr.SetPosition(i, new Vector3(Mathf.Cos(a) * r, 0, Mathf.Sin(a) * r));
         }
+
         return ring;
     }
 
@@ -374,7 +317,6 @@ public class Throw : MonoBehaviour
             heldEquippable.OnEquip();
         }
 
-        // Snap to normal hold offset immediately
         heldItem.transform.localPosition = normalHoldOffset;
         heldItem.transform.localRotation = Quaternion.identity;
     }
@@ -419,5 +361,34 @@ public class Throw : MonoBehaviour
         arcRenderer.enabled = false;
         if (landingMarker) landingMarker.SetActive(false);
     }
-    #endregion
+}
+
+public class ThrowableImpact : MonoBehaviour
+{
+    bool armed = false;
+    bool hasHit = false;
+    float destroyDelay = 0.08f;
+
+    public void Arm(float delay)
+    {
+        destroyDelay = delay;
+        StartCoroutine(ArmNextFrame());
+    }
+
+    IEnumerator ArmNextFrame()
+    {
+        yield return null;
+        armed = true;
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (!armed || hasHit) return;
+
+        hasHit = true;
+
+        // Let your existing collision / minigame scripts react first,
+        // then remove the bottle shortly after.
+        Destroy(gameObject, destroyDelay);
+    }
 }
