@@ -18,6 +18,11 @@ public class PauseManager : MonoBehaviour
 
     public GameData data = new GameData();
 
+    [Header("Save Popup Settings")]
+    public GameObject savedPopup; // Assign in Inspector
+    public float popupFadeDuration = 1f; // how long it fades out
+    public float popupDelay = 1f; // wait before showing
+
 
     private void Awake()
     {
@@ -101,13 +106,49 @@ NewHatalougeManager.Instance.notTutorial == false)
         ClosePause();
     }
 
+    private IEnumerator ShowSavePopup()
+    {
+        Debug.Log("Saving");
+
+        // Wait before showing, ignoring pause
+        yield return new WaitForSecondsRealtime(popupDelay);
+
+        // Activate popup
+        savedPopup.SetActive(true);
+
+        // Make sure it has a CanvasGroup for fading
+        CanvasGroup cg = savedPopup.GetComponent<CanvasGroup>();
+        if (cg == null)
+        {
+            cg = savedPopup.AddComponent<CanvasGroup>();
+        }
+        cg.alpha = 1f;
+
+        float elapsed = 0f;
+
+        // Fade out
+        while (elapsed < popupFadeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime; // still ignore timescale
+            cg.alpha = Mathf.Lerp(1f, 0f, elapsed / popupFadeDuration);
+            yield return null;
+        }
+
+        cg.alpha = 0f;
+        savedPopup.SetActive(false);
+        Debug.Log("Save Complete");
+    }
     public void OnSaveButton()
     {
+        Debug.Log("Save Clicked");
         SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         CardsController.Instance.SaveData(data);
         WinterBarrierSystem.Instance.SaveData(data);
-        CRBarrierSystem.Instance.SaveData(data);
+        RealWinterBarrierSystem.Instance.SaveData(data);
         GameTracker.Instance.SaveData(data);
+
+        // Start the popup coroutine
+        StartCoroutine(ShowSavePopup());
     }
 
     public void OnLoadButton()
@@ -115,7 +156,7 @@ NewHatalougeManager.Instance.notTutorial == false)
         SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         CardsController.Instance.LoadData(data);
         WinterBarrierSystem.Instance.LoadData(data);
-        CRBarrierSystem.Instance.LoadData(data);
+        RealWinterBarrierSystem.Instance.LoadData(data);
         GameTracker.Instance.LoadData(data);
     }
 
