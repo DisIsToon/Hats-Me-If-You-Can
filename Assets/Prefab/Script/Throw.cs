@@ -19,8 +19,8 @@ public class Throw : MonoBehaviour
     public float throwElevationAngle = 18f;
 
     public Vector3 normalHoldOffset = Vector3.zero;
-    public Vector3 aimHoldOffset = new Vector3(0f, 0f, 0f);
-    public float aimSmoothSpeed = 10f;
+    public Vector3 aimHoldOffset = Vector3.zero; // you can adjust if aiming should move slightly
+    public float aimSmoothSpeed = 10f; // no longer used
 
     [Header("Throw Arc Settings")]
     public LayerMask arcCollisionMask;
@@ -135,16 +135,8 @@ public class Throw : MonoBehaviour
             return;
         }
 
-        // Aiming (right mouse)
+        // Aiming (right mouse) - NO pushing/drifting
         isAiming = Input.GetMouseButton(1);
-        if (handPosition)
-        {
-            Vector3 targetOffset = isAiming ? aimHoldOffset : normalHoldOffset;
-            heldItem.transform.localPosition = Vector3.Lerp(
-                heldItem.transform.localPosition,
-                targetOffset,
-                Time.deltaTime * aimSmoothSpeed);
-        }
 
         // Arc preview
         if (isAiming)
@@ -247,7 +239,7 @@ public class Throw : MonoBehaviour
     {
         if (!heldItem || !handPosition) return;
 
-        Vector3 startPos = handPosition.position ;
+        Vector3 startPos = handPosition.position;
         float force = GetCurrentThrowForce();
 
         Vector3 throwDir = GetThrowDirection();
@@ -282,9 +274,6 @@ public class Throw : MonoBehaviour
         arcRenderer.positionCount = arcResolution;
         arcRenderer.SetPositions(points);
 
-        // NOTE: Do NOT manually scroll mainTextureOffset here.
-        // MinionsArt shader handles UV scrolling internally using Speed properties.
-
         if (landingMarker)
         {
             landingMarker.SetActive(hitFound);
@@ -298,17 +287,12 @@ public class Throw : MonoBehaviour
     #endregion
 
     #region Destroy After Throw
-    /// <summary>
-    /// Waits until the thrown object slows down / lands, then destroys it.
-    /// Makes the throwable behave like a bottle that breaks and disappears.
-    /// </summary>
     private IEnumerator DestroyAfterThrow(GameObject item)
     {
         if (item == null) yield break;
 
         Rigidbody rb = item.GetComponent<Rigidbody>();
 
-        // If no rigidbody, just destroy after a short delay
         if (rb == null)
         {
             yield return new WaitForSeconds(2f);
@@ -317,8 +301,8 @@ public class Throw : MonoBehaviour
         }
 
         float elapsed = 0f;
-        float minLifetime = 0.1f;   // ensure it exists at least briefly
-        float maxLifetime = 3f;     // safety timeout
+        float minLifetime = 0.1f;
+        float maxLifetime = 3f;
 
         while (item != null && elapsed < maxLifetime)
         {
@@ -326,7 +310,6 @@ public class Throw : MonoBehaviour
 
             if (elapsed > minLifetime)
             {
-                // sqrMagnitude cheaper than magnitude
                 if (rb.linearVelocity.sqrMagnitude < 0.01f)
                 {
                     break;
@@ -390,6 +373,10 @@ public class Throw : MonoBehaviour
         {
             heldEquippable.OnEquip();
         }
+
+        // Snap to normal hold offset immediately
+        heldItem.transform.localPosition = normalHoldOffset;
+        heldItem.transform.localRotation = Quaternion.identity;
     }
 
     public void EquipFromInventory(string itemName)
@@ -400,7 +387,6 @@ public class Throw : MonoBehaviour
             return;
         }
 
-        // Find definition
         ThrowableDefinition def = throwableItems.Find(t => t.itemName == itemName);
         if (def == null || def.prefab == null)
         {
@@ -408,17 +394,12 @@ public class Throw : MonoBehaviour
             return;
         }
 
-        // Clear old item if any
         if (heldItem != null)
         {
             Destroy(heldItem);
         }
 
-        // Spawn new instance in hand
         GameObject newItem = Instantiate(def.prefab, handPosition);
-        newItem.transform.localPosition = normalHoldOffset;
-        newItem.transform.localRotation = Quaternion.identity;
-
         SetupHeldItem(newItem);
     }
 
