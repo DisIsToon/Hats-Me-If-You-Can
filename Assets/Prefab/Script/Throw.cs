@@ -6,6 +6,7 @@ using UnityEngine;
 /// Handles equipping a throwable item from inventory, aiming, arc preview,
 /// and throwing. Attach this to the Player.
 /// Thrown objects disappear shortly after collision so hit logic still works.
+/// Spawns an impact VFX on hit.
 /// </summary>
 public class Throw : MonoBehaviour
 {
@@ -41,6 +42,11 @@ public class Throw : MonoBehaviour
     [Header("Impact")]
     public float destroyDelayAfterHit = 0.08f;
 
+    [Header("Impact VFX")]
+    public GameObject impactVFXPrefab;
+    public float impactVFXLifetime = 2f;
+    public Vector3 impactVFXScale = Vector3.one;
+
     [System.Serializable]
     public class ThrowableDefinition
     {
@@ -55,18 +61,18 @@ public class Throw : MonoBehaviour
     public Material laserBeamMaterial;
     public bool instanceLaserMaterial = true;
 
-    LineRenderer arcRenderer;
-    GameObject landingMarker;
+    private LineRenderer arcRenderer;
+    private GameObject landingMarker;
 
-    GameObject heldItem;
-    Rigidbody heldRb;
-    Collider heldCol;
-    EquippableItem heldEquippable;
+    private GameObject heldItem;
+    private Rigidbody heldRb;
+    private Collider heldCol;
+    private EquippableItem heldEquippable;
 
-    bool isAiming;
-    bool isHighArc;
+    private bool isAiming;
+    private bool isHighArc;
 
-    RigidbodyPlayerWithSprintAndStamina player;
+    private RigidbodyPlayerWithSprintAndStamina player;
 
     void Start()
     {
@@ -156,7 +162,7 @@ public class Throw : MonoBehaviour
 
     void ThrowHeldItem()
     {
-        if (!heldItem || !heldRb) return;
+        if (heldItem == null || heldRb == null) return;
 
         if (heldEquippable != null)
         {
@@ -165,11 +171,14 @@ public class Throw : MonoBehaviour
 
         GameObject thrownObject = heldItem;
         Rigidbody thrownRb = heldRb;
+        Collider thrownCol = heldCol;
 
         thrownObject.transform.SetParent(null);
         thrownRb.isKinematic = false;
         thrownRb.useGravity = true;
-        if (heldCol) heldCol.enabled = true;
+
+        if (thrownCol != null)
+            thrownCol.enabled = true;
 
         float force = GetCurrentThrowForce();
         Vector3 throwDir = GetThrowDirection();
@@ -180,7 +189,8 @@ public class Throw : MonoBehaviour
         {
             impact = thrownObject.AddComponent<ThrowableImpact>();
         }
-        impact.Arm(destroyDelayAfterHit);
+
+        impact.Arm(destroyDelayAfterHit, impactVFXPrefab, impactVFXLifetime, impactVFXScale);
 
         heldItem = null;
         heldRb = null;
@@ -218,7 +228,7 @@ public class Throw : MonoBehaviour
 
     void DrawThrowArcAndMarker()
     {
-        if (!heldItem || !handPosition) return;
+        if (heldItem == null || handPosition == null) return;
 
         Vector3 startPos = handPosition.position;
         float force = GetCurrentThrowForce();
@@ -239,8 +249,7 @@ public class Throw : MonoBehaviour
 
             if (i > 0)
             {
-                if (Physics.Linecast(lastPoint, point, out RaycastHit hit, arcCollisionMask,
-                    QueryTriggerInteraction.Ignore))
+                if (Physics.Linecast(lastPoint, point, out RaycastHit hit, arcCollisionMask, QueryTriggerInteraction.Ignore))
                 {
                     points[i] = hit.point;
                     for (int j = i + 1; j < arcResolution; j++) points[j] = hit.point;
@@ -256,7 +265,7 @@ public class Throw : MonoBehaviour
         arcRenderer.positionCount = arcResolution;
         arcRenderer.SetPositions(points);
 
-        if (landingMarker)
+        if (landingMarker != null)
         {
             landingMarker.SetActive(hitFound);
             if (hitFound)
@@ -365,13 +374,19 @@ public class Throw : MonoBehaviour
 
 public class ThrowableImpact : MonoBehaviour
 {
-    bool armed = false;
-    bool hasHit = false;
-    float destroyDelay = 0.08f;
+    private bool armed = false;
+    private bool hasHit = false;
+    private float destroyDelay = 0.08f;
+    private GameObject impactVFXPrefab;
+    private float impactVFXLifetime = 2f;
+    private Vector3 impactVFXScale = Vector3.one;
 
-    public void Arm(float delay)
+    public void Arm(float delay, GameObject vfxPrefab, float vfxLifetime, Vector3 vfxScale)
     {
         destroyDelay = delay;
+        impactVFXPrefab = vfxPrefab;
+        impactVFXLifetime = vfxLifetime;
+        impactVFXScale = vfxScale;
         StartCoroutine(ArmNextFrame());
     }
 
@@ -387,8 +402,23 @@ public class ThrowableImpact : MonoBehaviour
 
         hasHit = true;
 
-        // Let your existing collision / minigame scripts react first,
-        // then remove the bottle shortly after.
+        Vector3 hitPoint = transform.position;
+        Quaternion hitRotation = Quaternion.identity;
+
+        if (collision.contactCount > 0)
+        {
+            ContactPoint contact = collision.contacts[0];
+            hitPoint = contact.point;
+            hitRotation = Quaternion.identity;
+        }
+
+        if (impactVFXPrefab != null)
+        {
+            GameObject vfx = Instantiate(impactVFXPrefab, hitPoint, hitRotation);
+            vfx.transform.localScale = impactVFXScale;
+            Destroy(vfx, impactVFXLifetime);
+        }
+
         Destroy(gameObject, destroyDelay);
     }
 }
