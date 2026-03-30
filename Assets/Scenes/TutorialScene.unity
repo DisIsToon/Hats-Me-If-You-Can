@@ -3777,7 +3777,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 44704660}
-  player: {fileID: 1741229713}
+  player: {fileID: 328022731}
 --- !u!4 &44704660
 Transform:
   m_ObjectHideFlags: 0
@@ -32266,6 +32266,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 654d7f0844687074585c85167b8b3f32, type: 3}
+--- !u!1 &328022731 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1665634351505971579, guid: 654d7f0844687074585c85167b8b3f32, type: 3}
+  m_PrefabInstance: {fileID: 328022730}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &328056122 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 83bb25ce5238d9c49bb82b4c3c9c2289, type: 3}
@@ -183689,6 +183694,10 @@ MonoBehaviour:
   destroyDelayAfterHit: 0.08
   impactVFXLifetime: 2
   impactVFXScale: {x: 1, y: 1, z: 1}
+  throwSFX: {fileID: 0}
+  throwVolume: 2
+  breakSFX: {fileID: 0}
+  breakVolume: 3
   throwableItems:
   - itemName: Cake Potion
     prefab: {fileID: 7949281937635042838, guid: c321a1ecd8403cf488d25a1d4c3c83ae, type: 3}
