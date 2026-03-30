@@ -5167,60 +5167,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1945283763}
   m_SourcePrefab: {fileID: 100100000, guid: 7066f006074ae4d40879f44b3b4f6cf4, type: 3}
---- !u!1 &73450193
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 73450194}
-  - component: {fileID: 73450195}
-  m_Layer: 0
-  m_Name: TheActualWinterBiomeBarrier (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &73450194
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 73450193}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1624911934}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &73450195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 73450193}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d52cb875191b64eb31e4976a24acab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  barrierObject: {fileID: 873775659}
-  messageObject: {fileID: 1898347223}
-  messageObject2: {fileID: 1649285689}
-  animator: {fileID: 1355767800}
-  fadeDuration: 1
-  showTime: 2
-  mainCamera: {fileID: 1626438477}
-  puzzleCamera: {fileID: 544391525}
-  clickerGame: {fileID: 1938147696}
-  WBBarrierAlreadyOpened: 0
 --- !u!4 &74105591 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6004359065613302362, guid: c54572fe4e8791c4c8e1ef6bd238865b, type: 3}
@@ -33688,62 +33634,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1250109056}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &373365765
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 373365766}
-  - component: {fileID: 373365767}
-  m_Layer: 0
-  m_Name: CasteRuinBarrier
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &373365766
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 373365765}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1624911934}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &373365767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 373365765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56587a721bf278a4e97e4e2e98c10d48, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  barrierObject: {fileID: 873775659}
-  messageObject: {fileID: 1898347223}
-  messageObject2: {fileID: 1649285689}
-  animator: {fileID: 1355767800}
-  fadeDuration: 1
-  showTime: 2
-  barrierGameScreen: {fileID: 1244916714}
-  clickerGame: {fileID: 1938147696}
-  mainCamera: {fileID: 1626438477}
-  puzzleCamera: {fileID: 544391525}
-  fadeImage: {fileID: 1145593920}
-  CRBarrierAlreadyOpened: 0
 --- !u!4 &374609790 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ca186d24ab4f9f144bfcce5a704a87ad, type: 3}
@@ -80967,7 +80857,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 849748289}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.038126007, y: 0.0030669768, z: -0.000117017196, w: 0.99926823}
+  m_LocalRotation: {x: 0.0381261, y: 0.0021660146, z: -0.00008264197, w: 0.9992706}
   m_LocalPosition: {x: -47.73, y: 8.049748, z: 4.713253}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -99381,62 +99271,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1080395428}
   m_CullTransparentMesh: 1
---- !u!1 &1082515691
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1082515692}
-  - component: {fileID: 1082515693}
-  m_Layer: 0
-  m_Name: CastleRuinBarrierTrigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1082515692
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1082515691}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1780426737}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1082515693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1082515691}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56587a721bf278a4e97e4e2e98c10d48, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  barrierObject: {fileID: 0}
-  messageObject: {fileID: 0}
-  messageObject2: {fileID: 0}
-  animator: {fileID: 0}
-  fadeDuration: 1
-  showTime: 2
-  barrierGameScreen: {fileID: 0}
-  clickerGame: {fileID: 0}
-  mainCamera: {fileID: 0}
-  puzzleCamera: {fileID: 0}
-  fadeImage: {fileID: 0}
-  CRBarrierAlreadyOpened: 0
 --- !u!1 &1082773204
 GameObject:
   m_ObjectHideFlags: 0
@@ -107880,69 +107714,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1142019616}
   m_CullTransparentMesh: 1
---- !u!1 &1142174071
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1142174072}
-  - component: {fileID: 1142174073}
-  m_Layer: 0
-  m_Name: BarrierCastleRuinGame
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1142174072
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1142174071}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1289244189}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1142174073
+--- !u!114 &1142174073 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 3486103618260999272, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+  m_PrefabInstance: {fileID: 8215880680005593777}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1142174071}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b21339f4a652c6d4091b1f78fc14e5f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxBarrierHP: 20
-  barrierHP: 0
-  damagePerClick: 1
-  barrierRenderer: {fileID: 1450536630}
-  timerText: {fileID: 675507464}
-  victoryScreen: {fileID: 1109217606}
-  gameOverScreen: {fileID: 1621269280}
-  BarrierGameScreen: {fileID: 1823918589}
-  MainScreen: {fileID: 332791057}
-  QuickSlotScreen: {fileID: 2017156089}
-  InventoryBTN: {fileID: 1973363912}
-  timeLimit: 10
-  timeRemaining: 0
-  gameEnded: 0
-  clickEffectPrefab: {fileID: 2692317553811430744, guid: e1924a60a3bdd9c439c9d4ce888ef9f9, type: 3}
-  effectParent: {fileID: 764503378}
-  fadeDuration: 0.5
-  randomSpawnOffset: {x: 300, y: 150}
-  fallSpeed: 100
 --- !u!1001 &1142752602
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -112152,37 +111934,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6004359065613302362, guid: c54572fe4e8791c4c8e1ef6bd238865b, type: 3}
   m_PrefabInstance: {fileID: 744441047}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1201944404
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1201944405}
-  m_Layer: 0
-  m_Name: WinterBarrierTrigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1201944405
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1201944404}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1780426737}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1204238750
 GameObject:
   m_ObjectHideFlags: 0
@@ -117486,39 +117237,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1288171735}
   m_CullTransparentMesh: 1
---- !u!1 &1289244188
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1289244189}
-  m_Layer: 0
-  m_Name: BarrierGameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1289244189
+--- !u!4 &1289244189 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 5018576827588904175, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+  m_PrefabInstance: {fileID: 8215880680005593777}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1289244188}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1142174072}
-  - {fileID: 1938147695}
-  m_Father: {fileID: 666107846}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1290582963
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -121087,60 +120810,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -5790593718672215946, guid: 14e4ea3e716eed942903c6561669d922, type: 3}
---- !u!1 &1343732688
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1343732689}
-  - component: {fileID: 1343732690}
-  m_Layer: 0
-  m_Name: WinterBiomeBarrier
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1343732689
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1343732688}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1624911934}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1343732690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1343732688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7f45ce8ede7fcb43b81016d2806902c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  barrierObject: {fileID: 1450536629}
-  messageObject: {fileID: 1898347223}
-  messageObject2: {fileID: 1649285689}
-  animator: {fileID: 1355767800}
-  fadeDuration: 1
-  showTime: 2
-  mainCamera: {fileID: 1626438477}
-  puzzleCamera: {fileID: 1551207416}
-  clickerGame: {fileID: 1142174073}
-  WBBarrierAlreadyOpened: 0
 --- !u!1001 &1343927321
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -140312,40 +139981,11 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!1 &1624911933
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1624911934}
-  m_Layer: 0
-  m_Name: BarrierManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1624911934
+--- !u!4 &1624911934 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 3460338898819915478, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+  m_PrefabInstance: {fileID: 8688049014693843131}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1624911933}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 373365766}
-  - {fileID: 1343732689}
-  - {fileID: 73450194}
-  m_Father: {fileID: 666107846}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1626438475
 GameObject:
   m_ObjectHideFlags: 0
@@ -140433,7 +140073,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1626438475}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.038126003, y: 0.0030669768, z: -0.0001170172, w: 0.99926823}
+  m_LocalRotation: {x: 0.0381261, y: 0.0021660144, z: -0.00008264197, w: 0.9992706}
   m_LocalPosition: {x: -47.73, y: 8.049748, z: 4.713253}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -156985,39 +156625,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2130903592}
   m_LocalEulerAnglesHint: {x: 50, y: -62.8, z: 0}
---- !u!1 &1780426736
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1780426737}
-  m_Layer: 0
-  m_Name: ClickerBarrierGame
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1780426737
+--- !u!4 &1780426737 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 7303912069267335623, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+  m_PrefabInstance: {fileID: 5289045362313851016}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1780426736}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1082515692}
-  - {fileID: 1201944405}
-  m_Father: {fileID: 666107846}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1781826415
 GameObject:
   m_ObjectHideFlags: 0
@@ -171862,69 +171474,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1933033677}
   m_CullTransparentMesh: 1
---- !u!1 &1938147694
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1938147695}
-  - component: {fileID: 1938147696}
-  m_Layer: 0
-  m_Name: 'BarrierWinterGame '
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1938147695
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1938147694}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1289244189}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1938147696
+--- !u!114 &1938147696 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 257808451525572786, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+  m_PrefabInstance: {fileID: 8215880680005593777}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1938147694}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b21339f4a652c6d4091b1f78fc14e5f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxBarrierHP: 30
-  barrierHP: 0
-  damagePerClick: 1
-  barrierRenderer: {fileID: 873775660}
-  timerText: {fileID: 1415688338}
-  victoryScreen: {fileID: 1912903693}
-  gameOverScreen: {fileID: 489924901}
-  BarrierGameScreen: {fileID: 1244916714}
-  MainScreen: {fileID: 332791057}
-  QuickSlotScreen: {fileID: 2017156089}
-  InventoryBTN: {fileID: 1973363912}
-  timeLimit: 10
-  timeRemaining: 0
-  gameEnded: 0
-  clickEffectPrefab: {fileID: 2692317553811430744, guid: e1924a60a3bdd9c439c9d4ce888ef9f9, type: 3}
-  effectParent: {fileID: 2009016476}
-  fadeDuration: 0.5
-  randomSpawnOffset: {x: 300, y: 150}
-  fallSpeed: 100
 --- !u!1001 &1940996631
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -186664,6 +186224,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e493da8b207a2b54481a397d46b71a83, type: 3}
+--- !u!1001 &5289045362313851016
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 666107846}
+    m_Modifications:
+    - target: {fileID: 1833118862383899536, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+      propertyPath: m_Name
+      value: ClickerBarrierGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 7303912069267335623, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7303912069267335623, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7303912069267335623, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7303912069267335623, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7303912069267335623, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7303912069267335623, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7303912069267335623, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7303912069267335623, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7303912069267335623, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7303912069267335623, guid: f67f26e403cd56949b0563a571058f43, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f67f26e403cd56949b0563a571058f43, type: 3}
 --- !u!1001 &5621931702156010185
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -187325,11 +186942,289 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c54572fe4e8791c4c8e1ef6bd238865b, type: 3}
+--- !u!1001 &8215880680005593777
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 666107846}
+    m_Modifications:
+    - target: {fileID: 257808451525572786, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: timerText
+      value: 
+      objectReference: {fileID: 1415688338}
+    - target: {fileID: 257808451525572786, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: MainScreen
+      value: 
+      objectReference: {fileID: 332791057}
+    - target: {fileID: 257808451525572786, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: InventoryBTN
+      value: 
+      objectReference: {fileID: 1973363912}
+    - target: {fileID: 257808451525572786, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: effectParent
+      value: 
+      objectReference: {fileID: 2009016476}
+    - target: {fileID: 257808451525572786, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: victoryScreen
+      value: 
+      objectReference: {fileID: 1912903693}
+    - target: {fileID: 257808451525572786, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: gameOverScreen
+      value: 
+      objectReference: {fileID: 489924901}
+    - target: {fileID: 257808451525572786, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: QuickSlotScreen
+      value: 
+      objectReference: {fileID: 2017156089}
+    - target: {fileID: 257808451525572786, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: barrierRenderer
+      value: 
+      objectReference: {fileID: 873775660}
+    - target: {fileID: 257808451525572786, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: BarrierGameScreen
+      value: 
+      objectReference: {fileID: 1244916714}
+    - target: {fileID: 3486103618260999272, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: timerText
+      value: 
+      objectReference: {fileID: 675507464}
+    - target: {fileID: 3486103618260999272, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: MainScreen
+      value: 
+      objectReference: {fileID: 332791057}
+    - target: {fileID: 3486103618260999272, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: InventoryBTN
+      value: 
+      objectReference: {fileID: 1973363912}
+    - target: {fileID: 3486103618260999272, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: effectParent
+      value: 
+      objectReference: {fileID: 764503378}
+    - target: {fileID: 3486103618260999272, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: victoryScreen
+      value: 
+      objectReference: {fileID: 1109217606}
+    - target: {fileID: 3486103618260999272, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: gameOverScreen
+      value: 
+      objectReference: {fileID: 1621269280}
+    - target: {fileID: 3486103618260999272, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: QuickSlotScreen
+      value: 
+      objectReference: {fileID: 2017156089}
+    - target: {fileID: 3486103618260999272, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: barrierRenderer
+      value: 
+      objectReference: {fileID: 1450536630}
+    - target: {fileID: 3486103618260999272, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: BarrierGameScreen
+      value: 
+      objectReference: {fileID: 1823918589}
+    - target: {fileID: 4258786708707468180, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_Name
+      value: BarrierGameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5018576827588904175, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5018576827588904175, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5018576827588904175, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5018576827588904175, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5018576827588904175, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5018576827588904175, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5018576827588904175, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5018576827588904175, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5018576827588904175, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5018576827588904175, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 55365791c2563b94e907895467bc5b86, type: 3}
 --- !u!1 &8445372978987238726 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2089111360088296539, guid: 8696eac9282508a48aeb2fdc5ceda8aa, type: 3}
   m_PrefabInstance: {fileID: 5878208170083081554}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8688049014693843131
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 666107846}
+    m_Modifications:
+    - target: {fileID: 2623753079766023190, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: m_Name
+      value: BarrierManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460338898819915478, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460338898819915478, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460338898819915478, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460338898819915478, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460338898819915478, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460338898819915478, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460338898819915478, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460338898819915478, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460338898819915478, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460338898819915478, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3885696012698841428, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 1355767800}
+    - target: {fileID: 3885696012698841428, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 1626438477}
+    - target: {fileID: 3885696012698841428, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: clickerGame
+      value: 
+      objectReference: {fileID: 1938147696}
+    - target: {fileID: 3885696012698841428, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: puzzleCamera
+      value: 
+      objectReference: {fileID: 544391525}
+    - target: {fileID: 3885696012698841428, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: barrierObject
+      value: 
+      objectReference: {fileID: 873775659}
+    - target: {fileID: 3885696012698841428, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: messageObject
+      value: 
+      objectReference: {fileID: 1898347223}
+    - target: {fileID: 3885696012698841428, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: messageObject2
+      value: 
+      objectReference: {fileID: 1649285689}
+    - target: {fileID: 5884191390959321194, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 1355767800}
+    - target: {fileID: 5884191390959321194, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: fadeImage
+      value: 
+      objectReference: {fileID: 1145593920}
+    - target: {fileID: 5884191390959321194, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 1626438477}
+    - target: {fileID: 5884191390959321194, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: clickerGame
+      value: 
+      objectReference: {fileID: 1938147696}
+    - target: {fileID: 5884191390959321194, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: puzzleCamera
+      value: 
+      objectReference: {fileID: 544391525}
+    - target: {fileID: 5884191390959321194, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: barrierObject
+      value: 
+      objectReference: {fileID: 873775659}
+    - target: {fileID: 5884191390959321194, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: messageObject
+      value: 
+      objectReference: {fileID: 1898347223}
+    - target: {fileID: 5884191390959321194, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: messageObject2
+      value: 
+      objectReference: {fileID: 1649285689}
+    - target: {fileID: 5884191390959321194, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: barrierGameScreen
+      value: 
+      objectReference: {fileID: 1244916714}
+    - target: {fileID: 6230832157224444766, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 1355767800}
+    - target: {fileID: 6230832157224444766, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 1626438477}
+    - target: {fileID: 6230832157224444766, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: clickerGame
+      value: 
+      objectReference: {fileID: 1142174073}
+    - target: {fileID: 6230832157224444766, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: puzzleCamera
+      value: 
+      objectReference: {fileID: 1551207416}
+    - target: {fileID: 6230832157224444766, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: barrierObject
+      value: 
+      objectReference: {fileID: 1450536629}
+    - target: {fileID: 6230832157224444766, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: messageObject
+      value: 
+      objectReference: {fileID: 1898347223}
+    - target: {fileID: 6230832157224444766, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
+      propertyPath: messageObject2
+      value: 
+      objectReference: {fileID: 1649285689}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2205f42e21a1d0248a7c56631b813640, type: 3}
 --- !u!1001 &8937421502820270678
 PrefabInstance:
   m_ObjectHideFlags: 0
