@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class CraftingSystem : MonoBehaviour
 {
@@ -18,30 +19,29 @@ public class CraftingSystem : MonoBehaviour
 
     [Header("Cameras")]
     public Camera mainCamera;
-    public Camera craftingCamera;
+    public CinemachineCamera craftingCamera;
+
+    [Tooltip("Optional: your normal gameplay Cinemachine camera")]
+    public CinemachineCamera gameplayCamera;
 
     [Header("Fade Transition")]
-    public Image fadeImage; // UI Image covering screen for fade (black or any color)
+    public Image fadeImage;
     public float fadeDuration = 0.5f;
 
     public bool canCraft = false;
 
-    public List<string>inventoryItemList = new List<string>();
+    public List<string> inventoryItemList = new List<string>();
 
-    //Craft Tools Buttons
     Button craftCakePotionBTN;
     Button craftCottonCrazeBTN;
     Button craftMirrorPotionBTN;
 
-    //Requirement Tool Text
     TextMeshProUGUI cakePotionReq1, cakePotionReq2, cakePotionReq3;
     TextMeshProUGUI cottonCrazeReq1, cottonCrazeReq2, cottonCrazeReq3;
     TextMeshProUGUI mirrorPotionReq1, mirrorPotionReq2, mirrorPotionReq3;
 
     public bool isOpen;
 
-    //All Blueprint
-    // Tools
     public ItemBlueprints cakePotionBLP = new ItemBlueprints("CakePotion", 3, 2, "Star", 1, "Glitteroom", 2, "", 0);
     public ItemBlueprints cottonCrazeBLP = new ItemBlueprints("CottonCraze", 3, 2, "Star", 2, "Glitteroom", 3, "Cottonflower", 1);
     public ItemBlueprints mirrorPotionBLP = new ItemBlueprints("MirrorPotion", 3, 2, "Star", 3, "Glitteroom", 1, "Mirrorshard", 1);
@@ -50,19 +50,30 @@ public class CraftingSystem : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance != null && Instance != this)
+        if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);    
+            Destroy(gameObject);
         }
         else
         {
             Instance = this;
         }
     }
-    // Start is called before the first frame update
+
     void Start()
     {
         isOpen = false;
+
+        // Make sure the real camera stays on
+        if (mainCamera != null)
+            mainCamera.gameObject.SetActive(true);
+
+        // Set starting camera priorities
+        if (craftingCamera != null)
+            craftingCamera.Priority = 0;
+
+        if (gameplayCamera != null)
+            gameplayCamera.Priority = 10;
 
         // CakePotion
         cakePotionReq1 = craftingScreenUI.transform.Find("CakePotion").transform.Find("req1").GetComponent<TextMeshProUGUI>();
@@ -86,9 +97,7 @@ public class CraftingSystem : MonoBehaviour
 
         craftMirrorPotionBTN = craftingScreenUI.transform.Find("MirrorPotion").transform.Find("Button").GetComponent<Button>();
         craftMirrorPotionBTN.onClick.AddListener(delegate { CraftAnyItem(mirrorPotionBLP); });
-  
     }
-    
 
     void CraftAnyItem(ItemBlueprints blueprintToCraft)
     {
@@ -96,14 +105,12 @@ public class CraftingSystem : MonoBehaviour
         SoundManager.Instance.PlaySound(SoundManager.Instance.brewPotion);
 
         StartCoroutine(craftingDelayForSound(blueprintToCraft));
-        
-        
 
-        if(blueprintToCraft.numOfRequirements == 1)
+        if (blueprintToCraft.numOfRequirements == 1)
         {
             InventorySystem.Instance.RemoveItem(blueprintToCraft.Req1, blueprintToCraft.Req1Amount);
         }
-        else if(blueprintToCraft.numOfRequirements == 2)
+        else if (blueprintToCraft.numOfRequirements == 2)
         {
             InventorySystem.Instance.RemoveItem(blueprintToCraft.Req1, blueprintToCraft.Req1Amount);
             InventorySystem.Instance.RemoveItem(blueprintToCraft.Req2, blueprintToCraft.Req2Amount);
@@ -116,24 +123,23 @@ public class CraftingSystem : MonoBehaviour
         }
 
         StartCoroutine(calculate());
+
         if (TutorialManager.Instance != null)
             TutorialManager.Instance.OnPotionCrafted();
-
     }
+
     public IEnumerator calculate()
     {
-        yield return 0;
-
+        yield return null;
         InventorySystem.Instance.ReCalculateList();
-        RefreshNeededItem();   
+        RefreshNeededItem();
     }
 
     IEnumerator craftingDelayForSound(ItemBlueprints blueprintToCraft)
     {
-      
         yield return new WaitForSeconds(1f);
         SoundManager.Instance.brewPotion.Stop();
-        // Produce the amount of items according to the blueprint
+
         for (var i = 0; i < blueprintToCraft.numOfItemsToProduce; i++)
         {
             InventorySystem.Instance.AddToInventory(blueprintToCraft.itemName);
@@ -141,10 +147,8 @@ public class CraftingSystem : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.E) && canCraft && !isOpen)
         {
             StartCoroutine(OpenCraftingScreen());
@@ -154,42 +158,46 @@ public class CraftingSystem : MonoBehaviour
             StartCoroutine(CloseCraftingScreen());
         }
 
-        if(canCraft ==  false && isOpen)
+        if (canCraft == false && isOpen)
         {
             StartCoroutine(CloseCraftingScreen());
         }
     }
+
     public void SetCanCraft(bool value)
     {
-        canCraft = value; 
+        canCraft = value;
     }
 
     IEnumerator OpenCraftingScreen()
     {
         mainScreen.SetActive(false);
         inventoryExitBTN.SetActive(false);
-        //quickSlots.SetActive(false);
-        //inventoryBTN.SetActive(false);
 
         SoundManager.Instance.PlayBrewingMusic();
         isOpen = true;
+
         if (TutorialManager.Instance != null)
             TutorialManager.Instance.OnCraftingScreenOpened();
 
-        // Fade out
         yield return StartCoroutine(Fade(1f));
 
-        // Switch camera
-        mainCamera.gameObject.SetActive(false);
-        craftingCamera.gameObject.SetActive(true);
+        // Keep Main Camera ON
+        if (mainCamera != null)
+            mainCamera.gameObject.SetActive(true);
 
-        // Show UI
+        // Switch Cinemachine priority
+        if (gameplayCamera != null)
+            gameplayCamera.Priority = 0;
+
+        if (craftingCamera != null)
+            craftingCamera.Priority = 20;
+
         craftingScreenUI.SetActive(true);
         inventoryScreenUI.SetActive(true);
 
         RefreshNeededItem();
 
-        // Fade in
         yield return StartCoroutine(Fade(0f));
 
         SoundManager.Instance.PlayBrewingMusic();
@@ -201,20 +209,24 @@ public class CraftingSystem : MonoBehaviour
         quickSlots.SetActive(true);
         inventoryBTN.SetActive(true);
 
-        // Fade out
         yield return StartCoroutine(Fade(1f));
 
-        // Hide UI
         craftingScreenUI.SetActive(false);
         inventoryScreenUI.SetActive(false);
 
-        // Switch back camera
-        craftingCamera.gameObject.SetActive(false);
-        mainCamera.gameObject.SetActive(true);
+        // Keep Main Camera ON
+        if (mainCamera != null)
+            mainCamera.gameObject.SetActive(true);
+
+        // Switch back Cinemachine priority
+        if (craftingCamera != null)
+            craftingCamera.Priority = 0;
+
+        if (gameplayCamera != null)
+            gameplayCamera.Priority = 20;
 
         isOpen = false;
 
-        // Fade in
         yield return StartCoroutine(Fade(0f));
 
         SoundManager.Instance.ReturnToBiomeMusic();
@@ -229,6 +241,7 @@ public class CraftingSystem : MonoBehaviour
     {
         float startAlpha = fadeImage.color.a;
         float t = 0f;
+
         while (t < fadeDuration)
         {
             t += Time.deltaTime;
@@ -236,6 +249,7 @@ public class CraftingSystem : MonoBehaviour
             fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, alpha);
             yield return null;
         }
+
         fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, targetAlpha);
     }
 
@@ -254,12 +268,11 @@ public class CraftingSystem : MonoBehaviour
         int stone_count = 0;
         int wood_count = 0;
 
-
         inventoryItemList = InventorySystem.Instance.itemList;
 
-        foreach(string itemName in inventoryItemList)
+        foreach (string itemName in inventoryItemList)
         {
-            switch(itemName)
+            switch (itemName)
             {
                 case "Star":
                     star_count += 1;
@@ -279,58 +292,33 @@ public class CraftingSystem : MonoBehaviour
                 case "Wood":
                     wood_count += 1;
                     break;
-
             }
         }
-
-        //. ....Red CakePotion.... .//
 
         cakePotionReq1.text = "1 Star [" + star_count + "]";
         cakePotionReq2.text = "2 Glitteroom [" + glitteroom_count + "]";
 
         if (star_count >= 1 && glitteroom_count >= 2 && InventorySystem.Instance.CheckSlotsAvailable(1))
-        {
             craftCakePotionBTN.gameObject.SetActive(true);
-
-        }
         else
-        {
             craftCakePotionBTN.gameObject.SetActive(false);
-        }
-
-        //. ....CottonCraze.... .//
 
         cottonCrazeReq1.text = "2 Star [" + star_count + "]";
         cottonCrazeReq2.text = "3 Glitteroom [" + glitteroom_count + "]";
         cottonCrazeReq3.text = "1 Cottonflower [" + cottonflower_count + "]";
 
         if (star_count >= 2 && glitteroom_count >= 3 && cottonflower_count >= 1 && InventorySystem.Instance.CheckSlotsAvailable(1))
-        {
-            //Debug.Log("craftCottonCrazeBTN True");
             craftCottonCrazeBTN.gameObject.SetActive(true);
-        }
         else
-        {
-            //Debug.Log("craftMirrorPotionBTN False");
             craftCottonCrazeBTN.gameObject.SetActive(false);
-        }
-
-        //. ....MirrorPotion.... .//
 
         mirrorPotionReq1.text = "3 Star [" + star_count + "]";
         mirrorPotionReq2.text = "1 Glitteroom [" + glitteroom_count + "]";
         mirrorPotionReq3.text = "1 Mirrorshard [" + mirrorshard_count + "]";
 
         if (star_count >= 3 && glitteroom_count >= 1 && mirrorshard_count >= 1 && InventorySystem.Instance.CheckSlotsAvailable(1))
-        {
-            //Debug.Log("craftMirrorPotionBTN True");
             craftMirrorPotionBTN.gameObject.SetActive(true);
-        }
         else
-        {
-            //Debug.Log("craftMirrorPotionBTN False");
             craftMirrorPotionBTN.gameObject.SetActive(false);
-        }
-
     }
 }

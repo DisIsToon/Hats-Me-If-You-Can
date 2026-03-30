@@ -43,6 +43,13 @@ public class Throw : MonoBehaviour
     public float impactVFXLifetime = 2f;
     public Vector3 impactVFXScale = Vector3.one;
 
+    [Header("Audio")]
+    public AudioClip throwSFX;
+    [Range(0f, 5f)] public float throwVolume = 2f;
+
+    public AudioClip breakSFX;
+    [Range(0f, 5f)] public float breakVolume = 3f;
+
     [System.Serializable]
     public class ThrowableDefinition
     {
@@ -184,6 +191,13 @@ public class Throw : MonoBehaviour
         Vector3 throwDir = GetThrowDirection();
         thrownRb.AddForce(throwDir * force, ForceMode.Impulse);
 
+        // Play throw sound near the player/camera so it is easier to hear
+        if (throwSFX != null)
+        {
+            Vector3 soundPos = cameraTransform != null ? cameraTransform.position : transform.position;
+            AudioSource.PlayClipAtPoint(throwSFX, soundPos, throwVolume);
+        }
+
         ThrowableImpact impact = thrownObject.GetComponent<ThrowableImpact>();
         if (impact == null)
         {
@@ -196,7 +210,9 @@ public class Throw : MonoBehaviour
             destroyDelayAfterHit,
             currentImpactVFXPrefab,
             impactVFXLifetime,
-            impactVFXScale
+            impactVFXScale,
+            breakSFX,
+            breakVolume
         );
 
         heldItem = null;
@@ -412,12 +428,17 @@ public class ThrowableImpact : MonoBehaviour
     private float impactVFXLifetime = 2f;
     private Vector3 impactVFXScale = Vector3.one;
 
-    public void Arm(float delay, GameObject vfxPrefab, float vfxLifetime, Vector3 vfxScale)
+    private AudioClip impactSFX;
+    private float impactSFXVolume = 1f;
+
+    public void Arm(float delay, GameObject vfxPrefab, float vfxLifetime, Vector3 vfxScale, AudioClip sfx, float sfxVolume)
     {
         destroyDelay = delay;
         impactVFXPrefab = vfxPrefab;
         impactVFXLifetime = vfxLifetime;
         impactVFXScale = vfxScale;
+        impactSFX = sfx;
+        impactSFXVolume = sfxVolume;
         StartCoroutine(ArmNextFrame());
     }
 
@@ -457,6 +478,13 @@ public class ThrowableImpact : MonoBehaviour
         else
         {
             Debug.LogWarning("Impact VFX Prefab is NULL on thrown object.");
+        }
+
+        // Play break sound near the camera/player so it is easier to hear
+        if (impactSFX != null)
+        {
+            Vector3 soundPos = Camera.main != null ? Camera.main.transform.position : hitPoint;
+            AudioSource.PlayClipAtPoint(impactSFX, soundPos, impactSFXVolume);
         }
 
         Destroy(gameObject, destroyDelay);
