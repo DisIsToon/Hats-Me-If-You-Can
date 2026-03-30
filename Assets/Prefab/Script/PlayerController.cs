@@ -81,6 +81,30 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     public bool shouldFaceMoveDirection = true;
     #endregion
 
+    #region Inspector - Dust VFX
+    [Header("Dust VFX")]
+    [Tooltip("Looping dust particle attached near the player's feet.")]
+    public ParticleSystem runDust;
+
+    [Tooltip("Burst particle spawned when jumping.")]
+    public ParticleSystem jumpDustPrefab;
+
+    [Tooltip("Burst particle spawned when landing.")]
+    public ParticleSystem landDustPrefab;
+
+    [Tooltip("Where jump/landing dust spawns. Usually near the feet.")]
+    public Transform dustSpawnPoint;
+
+    [Tooltip("Minimum horizontal speed before run dust plays.")]
+    public float minDustSpeed = 2f;
+
+    [Tooltip("Rotation for jump dust prefab.")]
+    public Vector3 jumpDustRotation;
+
+    [Tooltip("Rotation for landing dust prefab.")]
+    public Vector3 landDustRotation;
+    #endregion
+
     #region Private Cached
     Rigidbody rb;
     CapsuleCollider col;
@@ -98,6 +122,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     float currentStamina;
     float lastGroundedTime;
     bool isHidden;
+    bool wasGroundedLastFrame;
 
     // Move input cached between Update and FixedUpdate
     Vector2 moveInput;
@@ -115,6 +140,11 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
 
         // Prevent physics tipping the player over
         rb.freezeRotation = true;
+
+        if (runDust != null)
+            runDust.Stop();
+
+        wasGroundedLastFrame = true;
     }
     #endregion
 
@@ -137,20 +167,19 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         bool uiBlocked = false;
         if (CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen) uiBlocked = true;
         if (InventorySystem.Instance != null && InventorySystem.Instance.isOpen) uiBlocked = true;
-        // if (CardsController.Instance != null && CardsController.Instance.isOpen) uiBlocked = true;
         if (PuzzleManagerUI.Instance != null && PuzzleManagerUI.Instance.isOpen) uiBlocked = true;
         if (NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.isOpen) uiBlocked = true;
-        // if (DialogSystem.Instance != null && DialogSystem.Instance.dialogUIActive) uiBlocked = true;
 
         if (uiBlocked)
         {
             moveInput = Vector2.zero;
-
-            // Stop sprinting & crouching while UI is open
             isSprinting = false;
             isCrouching = false;
 
-            return; // Skip the rest of Update
+            if (runDust != null && runDust.isPlaying)
+                runDust.Stop();
+
+            return;
         }
 
         // 1) Read input
@@ -163,6 +192,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         HandleJump();
         HandleFallBoost();
         HandleStamina();
+        HandleDustVFX();
 
         // 3) Animator parameters
         UpdateAnimator();
@@ -182,18 +212,15 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         forward.Normalize();
         right.Normalize();
 
-        // x = strafe, y = forward/back
         Vector3 moveDir = right * moveInput.x + forward * moveInput.y;
         if (moveDir.sqrMagnitude > 1f)
             moveDir.Normalize();
 
         Vector3 targetHorizontalVel = moveDir * speed;
 
-        // Current planar velocity
         Vector3 currentVel = rb.linearVelocity;
         Vector3 currentHorizontalVel = new Vector3(currentVel.x, 0f, currentVel.z);
 
-        // Accel / decel
         float moveAmount = moveDir.sqrMagnitude;
         float accel = (moveAmount > 0.01f) ? acceleration : deceleration;
         if (!isGrounded) accel *= airControlMultiplier;
@@ -204,10 +231,8 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
             accel * Time.fixedDeltaTime
         );
 
-        // Apply (keep vertical)
         rb.linearVelocity = new Vector3(newHorizontalVel.x, currentVel.y, newHorizontalVel.z);
 
-        // Face move direction
         if (shouldFaceMoveDirection && moveDir.sqrMagnitude > 0.001f)
         {
             Quaternion targetRot = Quaternion.LookRotation(moveDir);
@@ -225,7 +250,6 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         {
             if (!isGrounded)
             {
-                // Just landed
                 jumpCount = 0;
             }
 
@@ -234,7 +258,6 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         }
         else
         {
-            // Coyote time
             isGrounded = (Time.time - lastGroundedTime) <= coyoteTime;
         }
     }
@@ -259,12 +282,12 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     {
         if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps && !isCrouching)
         {
-            // Reset vertical velocity for consistent jump height
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             jumpCount++;
 
-            // Fire jump animation ONLY on first jump
+            SpawnDust(jumpDustPrefab, jumpDustRotation, 2f);
+
             if (animator && jumpCount == 1 && !string.IsNullOrEmpty(jumpTriggerParam))
             {
                 animator.SetTrigger(jumpTriggerParam);
@@ -276,7 +299,6 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     {
         if (!isGrounded && rb.linearVelocity.y < 0f)
         {
-            // Faster fall for snappier jumps
             rb.linearVelocity += Vector3.up * Physics.gravity.y * 3f * Time.deltaTime;
         }
     }
@@ -287,7 +309,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         flatVel.y = 0;
         bool moving = flatVel.sqrMagnitude > 0.01f;
 
-        bool wantsToSprint = Input.GetKey(KeyCode.LeftShift);
+        bool wantsToSprint = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
         // Sprint only when: Shift, stamina, not crouching, and moving
         isSprinting = wantsToSprint && currentStamina > 0f && !isCrouching && moving;
@@ -300,6 +322,49 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         {
             currentStamina = Mathf.Min(maxStamina, currentStamina + staminaRegenRate * Time.deltaTime);
         }
+    }
+
+    void HandleDustVFX()
+    {
+        Vector3 flatVel = rb.linearVelocity;
+        flatVel.y = 0f;
+        float horizontalSpeed = flatVel.magnitude;
+
+        bool shouldPlayRunDust = isGrounded && isSprinting && horizontalSpeed > minDustSpeed && !isCrouching;
+
+        if (runDust != null)
+        {
+            if (shouldPlayRunDust)
+            {
+                if (!runDust.isPlaying)
+                    runDust.Play();
+            }
+            else
+            {
+                if (runDust.isPlaying)
+                    runDust.Stop();
+            }
+        }
+
+        if (!wasGroundedLastFrame && isGrounded)
+        {
+            SpawnDust(landDustPrefab, landDustRotation, 2f);
+        }
+
+        wasGroundedLastFrame = isGrounded;
+    }
+
+    void SpawnDust(ParticleSystem prefab, Vector3 rotationEuler, float destroyAfter = 2f)
+    {
+        if (prefab == null) return;
+
+        Vector3 spawnPos = dustSpawnPoint ? dustSpawnPoint.position : groundCheck.position;
+        Quaternion rot = Quaternion.Euler(rotationEuler);
+
+        ParticleSystem spawned = Instantiate(prefab, spawnPos, rot);
+        spawned.Play();
+
+        Destroy(spawned.gameObject, destroyAfter);
     }
     #endregion
 
@@ -318,19 +383,16 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
 
         if (!isGrounded)
         {
-            // In air: freeze locomotion speed (jump anim handled by Jump state)
             animSpeed = 0f;
         }
         else
         {
             if (!hasInput)
             {
-                // Grounded + no input = idle
                 animSpeed = 0f;
             }
             else
             {
-                // Grounded + input = walk/run
                 animSpeed = rawSpeed * speedMultiplier;
                 if (animSpeed < speedDeadzone)
                     animSpeed = speedDeadzone;
