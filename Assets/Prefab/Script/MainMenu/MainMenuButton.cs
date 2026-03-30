@@ -45,6 +45,12 @@ public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         OnClick(); // call your existing method
     }
 
+    public void OnLoadClick()
+    {
+        Debug.Log("OnLoadClick LoadGame ");
+        TogglePanels(loadGamePanel);
+    }
+
     public void OnClick()
     {
         switch (buttonFunction)

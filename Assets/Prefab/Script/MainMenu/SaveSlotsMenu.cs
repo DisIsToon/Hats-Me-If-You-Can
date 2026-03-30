@@ -26,15 +26,18 @@ public class SaveSlotsMenu : Menu
 
     public void OnSaveSlotClicked(SaveSlot saveSlot)
     {
+        Debug.Log("OnSaveSlotClicked");
         DisableMenuButtons();
 
         if(isLoadingGame)
         {
+            Debug.Log("OnSaveSlotClicked and isLoadingGame");
             DataPersistenceManager.instance.ChangeSelectedProfileId(saveSlot.GetProfileId());
             SaveGameAndLoadScene();
         }
         else if(saveSlot.hasData)
         {
+            Debug.Log("OnSaveSlotClicked and saveSlot.hasData");
             confirmationPopupMenu.ActivateMenu(
                 "Starting a New Game with this slot will override the currently saved data. Are you sure?",
                 () =>
@@ -51,6 +54,7 @@ public class SaveSlotsMenu : Menu
         }
         else
         {
+            Debug.Log("OnSaveSlotClicked else");
             DataPersistenceManager.instance.ChangeSelectedProfileId(saveSlot.GetProfileId());
             DataPersistenceManager.instance.NewGame();
             SaveGameAndLoadScene();
@@ -60,6 +64,7 @@ public class SaveSlotsMenu : Menu
 
     private void SaveGameAndLoadScene()
     {
+        Debug.Log("SaveGameAndLoadScene");
         DataPersistenceManager.instance.SaveGame();
 
         //SceneManager.LoadSceneAsync("IntroCutsceneScene");

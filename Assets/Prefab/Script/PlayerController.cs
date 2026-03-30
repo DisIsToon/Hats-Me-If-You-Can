@@ -264,7 +264,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
 
     void HandleCrouch()
     {
-        isCrouching = Input.GetKey(KeyCode.C);
+        //isCrouching = Input.GetKey(KeyCode.C);
 
         if (isCrouching)
         {

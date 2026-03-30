@@ -218,7 +218,7 @@ public class GameTracker : MonoBehaviour, IDataPersistence
     {
         if (Input.GetKeyDown(KeyCode.G))
         {
-            PlayShyHatVideoAfterCapture();
+            //PlayShyHatVideoAfterCapture();
         }
     }
     public void PlayShyHatVideoAfterCapture()
