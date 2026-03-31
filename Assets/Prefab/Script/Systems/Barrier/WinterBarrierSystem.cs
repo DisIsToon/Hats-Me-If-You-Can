@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using Unity.Cinemachine;
 
 public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
 {
@@ -18,9 +19,11 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
     public float fadeDuration = 1f;
     public float showTime = 2f;
 
-    [Header("Cameras")]
-    public Camera mainCamera;
-    public Camera puzzleCamera;
+    [Header("Main Camera")]
+    public Camera mainCamera; // only one real Unity camera
+
+    [Header("Puzzle Cinemachine Camera")]
+    public CinemachineCamera puzzleCamera;
 
     [Header("Mini Game")]
     public ClickerBarrier clickerGame;
@@ -30,9 +33,6 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
 
     public bool WBBarrierAlreadyOpened;
 
-    // -------------------------------------------------------
-    //  SINGLETON
-    // -------------------------------------------------------
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -49,9 +49,6 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         }
     }
 
-    // -------------------------------------------------------
-    //  SAVE / LOAD
-    // -------------------------------------------------------
     public void LoadData(GameData data)
     {
         WBBarrierAlreadyOpened = data.WBBarrierAlreadyOpened;
@@ -65,9 +62,6 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         data.WBBarrierAlreadyOpened = WBBarrierAlreadyOpened;
     }
 
-    // -------------------------------------------------------
-    //  START
-    // -------------------------------------------------------
     private void Start()
     {
         gt = FindObjectOfType<GameTracker>();
@@ -75,14 +69,11 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         if (messageObject) messageObject.SetActive(false);
         if (messageObject2) messageObject2.SetActive(false);
 
-        // Make sure main camera is on
-        if (mainCamera) mainCamera.gameObject.SetActive(true);
-        if (puzzleCamera) puzzleCamera.gameObject.SetActive(false);
+        // keep puzzle camera inactive at start
+        if (puzzleCamera)
+            puzzleCamera.Priority = 0;
     }
 
-    // -------------------------------------------------------
-    //  WHEN PLAYER COLLIDES WITH BARRIER
-    // -------------------------------------------------------
     public void PlayerHitBarrier()
     {
         if (isShowing) return;
@@ -93,9 +84,6 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
             StartCoroutine(ShowAndFade(messageObject));
     }
 
-    // -------------------------------------------------------
-    //  FADE MESSAGE
-    // -------------------------------------------------------
     private IEnumerator ShowAndFade(GameObject msgObj)
     {
         if (msgObj == null) yield break;
@@ -103,23 +91,18 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         isShowing = true;
         msgObj.SetActive(true);
 
-        // Play entry animation
         animator.Play("captureHint", 0, 0f);
 
         yield return new WaitForSeconds(showTime);
 
-        // Play exit animation
         animator.SetTrigger("Out");
 
-        yield return new WaitForSeconds(1f); // match animation length
+        yield return new WaitForSeconds(1f);
 
         msgObj.SetActive(false);
         isShowing = false;
     }
 
-    // -------------------------------------------------------
-    //  SHOW MESSAGE, THEN START MINIGAME CAMERA VIEW
-    // -------------------------------------------------------
     private IEnumerator ShowAndStartGame(GameObject msgObj)
     {
         if (msgObj == null) yield break;
@@ -132,10 +115,8 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         msgObj.SetActive(false);
         isShowing = false;
 
-        // Switch cameras
         SwitchToPuzzleCamera();
 
-        // Start the clicker minigame
         if (clickerGame != null)
         {
             SoundManager.Instance.PlayPuzzleMusic();
@@ -145,15 +126,11 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         }
     }
 
-    // -------------------------------------------------------
-    //  WAIT FOR CLICKER GAME RESULT
-    // -------------------------------------------------------
     private IEnumerator WaitForVictory()
     {
         while (!clickerGame.gameEnded)
             yield return null;
 
-        // Return to main camera
         SwitchToMainCamera();
 
         if (clickerGame.victoryScreen.activeSelf)
@@ -166,29 +143,22 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         }
         else
         {
-            // If failed, still go back to normal
             SoundManager.Instance.ReturnToBiomeMusic();
         }
     }
 
-    // -------------------------------------------------------
-    //  CAMERA SWITCHING
-    // -------------------------------------------------------
     private void SwitchToPuzzleCamera()
     {
-        if (mainCamera) mainCamera.gameObject.SetActive(false);
-        if (puzzleCamera) puzzleCamera.gameObject.SetActive(true);
+        if (puzzleCamera)
+            puzzleCamera.Priority = 20;
     }
 
     private void SwitchToMainCamera()
     {
-        if (puzzleCamera) puzzleCamera.gameObject.SetActive(false);
-        if (mainCamera) mainCamera.gameObject.SetActive(true);
+        if (puzzleCamera)
+            puzzleCamera.Priority = 0;
     }
 
-    // -------------------------------------------------------
-    //  DISABLE BARRIER OBJECT
-    // -------------------------------------------------------
     private void DisableBarrier()
     {
         if (boxCollider) boxCollider.enabled = false;
