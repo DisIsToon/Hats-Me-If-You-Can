@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using TMPro;
+using Unity.Cinemachine;
 
 public class PuzzleManagerUI : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class PuzzleManagerUI : MonoBehaviour
 
     [Header("Cameras")]
     public Camera mainCamera;
-    public Camera puzzleCamera;
+    public CinemachineCamera puzzleCamera;
 
     [Header("Puzzle Object")]
     public GameObject puzzleObject;   // assign your puzzle's GameObject here
@@ -44,7 +45,7 @@ public class PuzzleManagerUI : MonoBehaviour
     private Coroutine timerRoutine;
 
     [Header("Timer UI")]
-    public TMP_Text timerText;     // ⏳ TMP text to show time
+    public TMP_Text timerText;
 
     private void Awake()
     {
@@ -62,7 +63,9 @@ public class PuzzleManagerUI : MonoBehaviour
     {
         rotatingPuzzleScreen.SetActive(false);
         isOpen = false;
-        puzzleCamera.enabled = false;
+
+        if (puzzleCamera != null)
+            puzzleCamera.Priority = 0;
 
         fadePanel.alpha = 0;
 
@@ -91,14 +94,13 @@ public class PuzzleManagerUI : MonoBehaviour
 
         yield return StartCoroutine(Fade(0, 1));
 
-        mainCamera.enabled = false;
-        puzzleCamera.enabled = true;
+        if (puzzleCamera != null)
+            puzzleCamera.Priority = 20;
 
         yield return StartCoroutine(Fade(1, 0));
 
         rotatingPuzzleScreen.SetActive(true);
 
-        // Start puzzle timer
         timerRoutine = StartCoroutine(PuzzleTimer());
     }
 
@@ -146,15 +148,14 @@ public class PuzzleManagerUI : MonoBehaviour
 
         rotatingPuzzleScreen.SetActive(false);
 
-        puzzleCamera.enabled = false;
-        mainCamera.enabled = true;
+        if (puzzleCamera != null)
+            puzzleCamera.Priority = 0;
 
         yield return StartCoroutine(Fade(1, 0));
 
         isOpen = false;
     }
 
-    // ⏳ TIMER ROUTINE WITH TMP UPDATE
     IEnumerator PuzzleTimer()
     {
         float t = puzzleTimeLimit;
@@ -163,17 +164,15 @@ public class PuzzleManagerUI : MonoBehaviour
         {
             t -= Time.deltaTime;
 
-            // Update timer UI
             if (timerText != null)
             {
                 float display = Mathf.Max(0, t);
-                timerText.text = display.ToString("F1"); // shows one decimal
+                timerText.text = display.ToString("F1");
             }
 
             yield return null;
         }
 
-        // Timer expired
         if (!puzzleComplete && isOpen)
         {
             Debug.Log("Rotating Puzzle Time off");
@@ -208,7 +207,6 @@ public class PuzzleManagerUI : MonoBehaviour
         completePuzzlePopup.SetActive(true);
         puzzleComplete = true;
 
-        //  Disable collider on puzzle object
         if (puzzleObject != null)
         {
             BoxCollider col = puzzleObject.GetComponent<BoxCollider>();
@@ -216,10 +214,8 @@ public class PuzzleManagerUI : MonoBehaviour
                 col.enabled = false;
         }
 
-        //  Prevent puzzle from ever opening again
         canPlayPuzzle = false;
 
-        // Stop timer
         if (timerRoutine != null)
             StopCoroutine(timerRoutine);
 
@@ -250,15 +246,12 @@ public class PuzzleManagerUI : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         /*
-        // Spawn cotton reward
         if (cottonPrefab != null && cotton != null)
         {
             Instantiate(cottonPrefab, position.transform.position, position.transform.rotation);
         }
         */
     }
-
-
 
     void CheckIfAllSolved()
     {

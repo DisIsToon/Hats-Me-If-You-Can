@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using Unity.Cinemachine;
 
 public class RealWinterBarrierSystem : MonoBehaviour, IDataPersistence
 {
@@ -20,7 +21,7 @@ public class RealWinterBarrierSystem : MonoBehaviour, IDataPersistence
 
     [Header("Cameras")]
     public Camera mainCamera;
-    public Camera puzzleCamera;
+    public CinemachineCamera puzzleCamera;
 
     [Header("Mini Game")]
     public ClickerBarrier clickerGame;
@@ -75,9 +76,8 @@ public class RealWinterBarrierSystem : MonoBehaviour, IDataPersistence
         if (messageObject) messageObject.SetActive(false);
         if (messageObject2) messageObject2.SetActive(false);
 
-        // Make sure main camera is on
-        if (mainCamera) mainCamera.gameObject.SetActive(true);
-        if (puzzleCamera) puzzleCamera.gameObject.SetActive(false);
+        // Keep puzzle Cinemachine camera lower priority at start
+        if (puzzleCamera) puzzleCamera.Priority = 0;
     }
 
     // -------------------------------------------------------
@@ -176,14 +176,12 @@ public class RealWinterBarrierSystem : MonoBehaviour, IDataPersistence
     // -------------------------------------------------------
     private void SwitchToPuzzleCamera()
     {
-        if (mainCamera) mainCamera.gameObject.SetActive(false);
-        if (puzzleCamera) puzzleCamera.gameObject.SetActive(true);
+        if (puzzleCamera) puzzleCamera.Priority = 20;
     }
 
     private void SwitchToMainCamera()
     {
-        if (puzzleCamera) puzzleCamera.gameObject.SetActive(false);
-        if (mainCamera) mainCamera.gameObject.SetActive(true);
+        if (puzzleCamera) puzzleCamera.Priority = 0;
     }
 
     // -------------------------------------------------------
