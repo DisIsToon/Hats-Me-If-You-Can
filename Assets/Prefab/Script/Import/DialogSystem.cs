@@ -50,15 +50,24 @@ public class DialogSystem : MonoBehaviour
         dialogUIActive = false;
     }
 
-    public void SetSpeakerName(string name)
+    void TryDiscoverCharacter(string npcName)
     {
-        currentSpeakerName = name ?? "";
-        if (speakerNameText != null)
-            speakerNameText.text = currentSpeakerName;
-    }
-    public string GetSpeakerName()
-    {
-        return currentSpeakerName;
+        if (NewHatalougeManager.Instance == null) return;
+
+        switch (npcName)
+        {
+            case "Ivy":
+                NewHatalougeManager.Instance.DiscoverCharIvy();
+                break;
+
+            case "Chase":
+                NewHatalougeManager.Instance.DiscoverCharChase();
+                break;
+
+            case "Lou":
+                NewHatalougeManager.Instance.DiscoverCharLouire();
+                break;
+        }
     }
 
     public void ShowNPCImage(string npcName)
@@ -74,6 +83,20 @@ public class DialogSystem : MonoBehaviour
         snowmanImage.SetActive(npcName == "Snowman");
 
         speakerNameText.text = npcName;
+
+        //  ADD THIS LINE
+        TryDiscoverCharacter(npcName);
+    }
+
+    public void SetSpeakerName(string name)
+    {
+        currentSpeakerName = name ?? "";
+        if (speakerNameText != null)
+            speakerNameText.text = currentSpeakerName;
+    }
+    public string GetSpeakerName()
+    {
+        return currentSpeakerName;
     }
 
     public void ClearSpeakerName()
