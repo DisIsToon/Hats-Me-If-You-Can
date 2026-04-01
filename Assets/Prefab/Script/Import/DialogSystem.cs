@@ -32,6 +32,7 @@ public class DialogSystem : MonoBehaviour
     public GameObject chaseImage;
     public GameObject louImage;
     public GameObject snowmanImage;
+    public GameObject headMasterImage;
 
     private void Awake()
     {
@@ -92,6 +93,7 @@ public class DialogSystem : MonoBehaviour
         louImage.SetActive(npcName == "Lou");
 
         snowmanImage.SetActive(npcName == "Snowman");
+        headMasterImage.SetActive(npcName == "Headmaster");
 
         speakerNameText.text = npcName;
         //  ADD THIS LINE
@@ -116,6 +118,7 @@ public class DialogSystem : MonoBehaviour
         chaseImage.SetActive(false);
         louImage.SetActive(false);
         snowmanImage.SetActive(false);
+        headMasterImage.SetActive(false);
     }
 
     public void OpenDialogUI()
