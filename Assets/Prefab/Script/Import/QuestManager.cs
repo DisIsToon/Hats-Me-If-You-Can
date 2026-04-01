@@ -360,14 +360,18 @@ public class QuestManager : MonoBehaviour
             puzzleObject.SetActive(true);     // activate puzzle
             NotifUIManager.Instance.NotifyQuestAccepted("Forest Sprite");
             NewHatalougeManager.Instance.quest1Found = true;   // unlock quest page 1
+            NewHatalougeManager.Instance.DiscoverCharLira();
             NewHatalougeManager.Instance.UpdateQuestScreen();
+            NewHatalougeManager.Instance.UpdateCharacterScreen();
         }
         else if (npcName == "Mallow")
         {
             mallowQuestAccepted = true;
             NotifUIManager.Instance.NotifyQuestAccepted("Sickly Stranger");
             NewHatalougeManager.Instance.quest1Found = true;   // unlock quest page 1
+            NewHatalougeManager.Instance.DiscoverCharMallow();
             NewHatalougeManager.Instance.UpdateQuestScreen();
+            NewHatalougeManager.Instance.UpdateCharacterScreen();
         }
         else if (npcName == "Tulip")
         {
@@ -375,7 +379,9 @@ public class QuestManager : MonoBehaviour
             lostHat.SetActive(true);    
             NotifUIManager.Instance.NotifyQuestAccepted("Lost Hat");
             NewHatalougeManager.Instance.quest1Found = true;   // unlock quest page 1
+            NewHatalougeManager.Instance.DiscoverCharTulip();
             NewHatalougeManager.Instance.UpdateQuestScreen();
+            NewHatalougeManager.Instance.UpdateCharacterScreen();
         }
         else if (npcName == "Headmaster")
         {

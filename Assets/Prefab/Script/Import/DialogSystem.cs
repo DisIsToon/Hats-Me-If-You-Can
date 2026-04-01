@@ -61,6 +61,26 @@ public class DialogSystem : MonoBehaviour
         return currentSpeakerName;
     }
 
+    public void TryDiscoverCharacter(string npcName)
+    {
+        if (NewHatalougeManager.Instance == null) return;
+
+        switch (npcName)
+        {
+            case "Ivy":
+                NewHatalougeManager.Instance.DiscoverCharIvy();
+                break;
+
+            case "Chase":
+                NewHatalougeManager.Instance.DiscoverCharChase();
+                break;
+
+            case "Lou":
+                NewHatalougeManager.Instance.DiscoverCharLouire();
+                break;
+        }
+    }
+
     public void ShowNPCImage(string npcName)
     {
         liraImage.SetActive(npcName == "Lira");
@@ -74,7 +94,11 @@ public class DialogSystem : MonoBehaviour
         snowmanImage.SetActive(npcName == "Snowman");
 
         speakerNameText.text = npcName;
+        //  ADD THIS LINE
+        TryDiscoverCharacter(npcName);
     }
+
+    
 
     public void ClearSpeakerName()
     {
