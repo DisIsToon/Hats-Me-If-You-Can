@@ -26316,6 +26316,10 @@ PrefabInstance:
       value: Player Variant Variant
       objectReference: {fileID: 0}
     - target: {fileID: 2987668079932253651, guid: 654d7f0844687074585c85167b8b3f32, type: 3}
+      propertyPath: handPosition
+      value: 
+      objectReference: {fileID: 539358432}
+    - target: {fileID: 2987668079932253651, guid: 654d7f0844687074585c85167b8b3f32, type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 849748295}
@@ -43752,6 +43756,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1473260661853491144, guid: 0ba97dd2e943bbe448faae88c0ec6b97, type: 3}
   m_PrefabInstance: {fileID: 448834398}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &539358431 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5091437201588261796, guid: 654d7f0844687074585c85167b8b3f32, type: 3}
+  m_PrefabInstance: {fileID: 328022730}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &539358432 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3748252306474375836, guid: 654d7f0844687074585c85167b8b3f32, type: 3}
+  m_PrefabInstance: {fileID: 328022730}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &540162223
 GameObject:
   m_ObjectHideFlags: 0
@@ -58480,11 +58494,6 @@ GameObject:
 Transform:
   m_CorrespondingSourceObject: {fileID: 6004359065613302362, guid: c54572fe4e8791c4c8e1ef6bd238865b, type: 3}
   m_PrefabInstance: {fileID: 485083821}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &681393412 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8666102313051852401, guid: 654d7f0844687074585c85167b8b3f32, type: 3}
-  m_PrefabInstance: {fileID: 328022730}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &681577561
 PrefabInstance:
@@ -147098,7 +147107,7 @@ PrefabInstance:
     - target: {fileID: 6720355300191393902, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: toolHolder
       value: 
-      objectReference: {fileID: 681393412}
+      objectReference: {fileID: 539358431}
     - target: {fileID: 6720355300191393902, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: numberHolder
       value: 
