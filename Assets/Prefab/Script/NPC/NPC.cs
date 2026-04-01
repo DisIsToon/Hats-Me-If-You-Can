@@ -543,6 +543,10 @@ public class NPC : MonoBehaviour
         if (!disableOption2)
             optionButton2.gameObject.SetActive(false);
 
+        MainScreen.SetActive(true);
+        QuickSlotScreen.SetActive(true);
+        InventoryBTN.SetActive(true);
+
     }
 
     private void ReceiveRewardAndCompleteQuest()

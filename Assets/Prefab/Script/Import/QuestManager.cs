@@ -359,17 +359,23 @@ public class QuestManager : MonoBehaviour
             liraQuestAccepted = true;
             puzzleObject.SetActive(true);     // activate puzzle
             NotifUIManager.Instance.NotifyQuestAccepted("Forest Sprite");
+            NewHatalougeManager.Instance.quest1Found = true;   // unlock quest page 1
+            NewHatalougeManager.Instance.UpdateQuestScreen();
         }
         else if (npcName == "Mallow")
         {
             mallowQuestAccepted = true;
             NotifUIManager.Instance.NotifyQuestAccepted("Sickly Stranger");
+            NewHatalougeManager.Instance.quest1Found = true;   // unlock quest page 1
+            NewHatalougeManager.Instance.UpdateQuestScreen();
         }
         else if (npcName == "Tulip")
         {
             tulipQuestAccepted = true;
             lostHat.SetActive(true);    
             NotifUIManager.Instance.NotifyQuestAccepted("Lost Hat");
+            NewHatalougeManager.Instance.quest1Found = true;   // unlock quest page 1
+            NewHatalougeManager.Instance.UpdateQuestScreen();
         }
         else if (npcName == "Headmaster")
         {

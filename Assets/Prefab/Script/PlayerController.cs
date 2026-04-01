@@ -170,6 +170,15 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         if (PuzzleManagerUI.Instance != null && PuzzleManagerUI.Instance.isOpen) uiBlocked = true;
         if (NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.isOpen) uiBlocked = true;
 
+        // ✅ ADD THIS BLOCK
+        if (PauseManager.Instance != null &&
+            PauseManager.Instance.isOpenPause &&
+            NewHatalougeManager.Instance != null &&
+            NewHatalougeManager.Instance.notTutorial == false)
+        {
+            uiBlocked = true;
+        }
+
         if (uiBlocked)
         {
             moveInput = Vector2.zero;
