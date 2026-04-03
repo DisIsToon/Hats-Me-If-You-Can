@@ -7272,6 +7272,7 @@ MonoBehaviour:
   questDone: 0
   npcName: Lou
   isSimpleNPC: 1
+  isSnowmanNPC: 0
   quests:
   - questName: Just talk with Lou
     questGiver: Lou
@@ -51199,6 +51200,7 @@ MonoBehaviour:
   questDone: 0
   npcName: Ivy
   isSimpleNPC: 1
+  isSnowmanNPC: 0
   quests:
   - questName: Just talk
     questGiver: Ivy
@@ -56907,6 +56909,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1a11aea0b17280942933748b1c168454, type: 3}
   m_PrefabInstance: {fileID: 193963003}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &691709922 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2576255033664045148, guid: 1970b59751db9d44082aaddc0f3e4d59, type: 3}
+  m_PrefabInstance: {fileID: 3069327892317018572}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &692345275
 GameObject:
@@ -85922,6 +85929,7 @@ MonoBehaviour:
   questDone: 0
   npcName: Chase
   isSimpleNPC: 1
+  isSnowmanNPC: 0
   quests:
   - questName: Just talk with Chase
     questGiver: Chase
@@ -87480,7 +87488,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3414051963871501263, guid: e60cf650a4ffd8a4b9d1bd89ab032aa8, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3518832461134070390, guid: e60cf650a4ffd8a4b9d1bd89ab032aa8, type: 3}
       propertyPath: m_AnchorMax.x
@@ -118530,7 +118538,8 @@ MonoBehaviour:
   isOpen: 0
   questDone: 0
   npcName: Snowman
-  isSimpleNPC: 1
+  isSimpleNPC: 0
+  isSnowmanNPC: 1
   quests:
   - questName: Just talk
     questGiver: Snowman
@@ -154459,6 +154468,10 @@ PrefabInstance:
       propertyPath: position
       value: 
       objectReference: {fileID: 372550112}
+    - target: {fileID: 2265038226195537072, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: lumiShroom
+      value: 
+      objectReference: {fileID: 691709922}
     - target: {fileID: 2265038226195537072, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: cottonPrefab
       value: 
