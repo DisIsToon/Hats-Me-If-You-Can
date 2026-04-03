@@ -35,6 +35,7 @@ public class QuestManager : MonoBehaviour
     public GameObject cotton;
     public GameObject cottonPrefab;
     public GameObject position;
+    public GameObject lumiShroom;
 
     public GameObject jumpHat;
     public GameObject fastHat;
@@ -82,6 +83,7 @@ public class QuestManager : MonoBehaviour
         liraPuzzleQuest.questDescription = "Complete the old puzzle Lira found.";
         liraPuzzleQuest.accepted = false;
         liraPuzzleQuest.isCompleted = false;
+        lumiShroom.SetActive(false);
 
         // Hide the RawImage at start
         if (videoRawImage != null)
@@ -372,6 +374,7 @@ public class QuestManager : MonoBehaviour
             NewHatalougeManager.Instance.DiscoverCharMallow();
             NewHatalougeManager.Instance.UpdateQuestScreen();
             NewHatalougeManager.Instance.UpdateCharacterScreen();
+            lumiShroom.SetActive(true);
         }
         else if (npcName == "Tulip")
         {

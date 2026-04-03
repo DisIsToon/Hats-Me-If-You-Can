@@ -91,6 +91,44 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
         }
     }
 
+    public void ConsumeSelectedItem()
+    {
+        if (selectedItem == null) return;
+
+        string itemName = selectedItem.name.Replace("(Clone)", "");
+
+        TextMeshProUGUI stackText = selectedItem.transform.Find("StackText")?.GetComponent<TextMeshProUGUI>();
+
+        int currentStack = 1;
+
+        if (stackText != null && !string.IsNullOrEmpty(stackText.text))
+            int.TryParse(stackText.text, out currentStack);
+
+        currentStack--;
+
+        if (currentStack > 0)
+        {
+            // Update quickslot stack
+            if (stackText != null)
+                stackText.text = currentStack.ToString();
+        }
+        else
+        {
+            // Destroy from quickslot
+            Destroy(selectedItem);
+            selectedItem = null;
+            selectedNumber = -1;
+
+            if (selectedItemModel != null)
+            {
+                Destroy(selectedItemModel);
+                selectedItemModel = null;
+            }
+        }
+
+        // ALSO remove from inventory
+        InventorySystem.Instance.RemoveItem(itemName, 1);
+    }
 
     void Update()
     {

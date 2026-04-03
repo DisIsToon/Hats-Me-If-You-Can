@@ -220,6 +220,8 @@ public class Throw : MonoBehaviour
         heldCol = null;
         heldEquippable = null;
 
+        
+
         arcRenderer.enabled = false;
         if (landingMarker) landingMarker.SetActive(false);
     }
@@ -486,6 +488,8 @@ public class ThrowableImpact : MonoBehaviour
             Vector3 soundPos = Camera.main != null ? Camera.main.transform.position : hitPoint;
             AudioSource.PlayClipAtPoint(impactSFX, soundPos, impactSFXVolume);
         }
+
+        EquipSystem.Instance.ConsumeSelectedItem();
 
         Destroy(gameObject, destroyDelay);
     }

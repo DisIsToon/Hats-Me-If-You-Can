@@ -22,6 +22,7 @@ public class NPC : MonoBehaviour
 
     [Header("Simple NPC Settings")]
     public bool isSimpleNPC = false;
+    public bool isSnowmanNPC = false;
     private bool hasTalkedSimpleNPC = false;
 
     [Header("NPC & Quest Data")]
@@ -184,6 +185,11 @@ public class NPC : MonoBehaviour
             return;
         }
 
+        if(isSnowmanNPC)
+        {
+            StartSnowmanDialogue();
+            return;
+        }
         // --- First-time interaction ---
         if (firstTimeInteraction)
         {
@@ -349,6 +355,65 @@ public class NPC : MonoBehaviour
                 // Mark as talked AFTER finishing dialogue
                 hasTalkedSimpleNPC = true;
 
+                npcDialogText.text = quests[0].info.finalWords;
+
+                nextButton.gameObject.SetActive(false);
+
+                optionButton1.gameObject.SetActive(true);
+                optionButton1Text.text = "Close";
+                optionButton1.onClick.RemoveAllListeners();
+                optionButton1.onClick.AddListener(() =>
+                {
+                    DialogSystem.Instance.CloseDialogUI();
+                    isTalkingWithPlayer = false;
+                });
+            }
+        });
+    }
+
+    private void StartSnowmanDialogue()
+    {
+        DialogSystem.Instance.OpenDialogUI();
+
+        // If already talked → go straight to final words
+        if (hasTalkedSimpleNPC)
+        {
+            npcDialogText.text = quests[0].info.finalWords;
+
+            optionButton1.gameObject.SetActive(true);
+            optionButton1Text.text = "Close";
+            optionButton1.onClick.RemoveAllListeners();
+            optionButton1.onClick.AddListener(() =>
+            {
+                DialogSystem.Instance.CloseDialogUI();
+                isTalkingWithPlayer = false;
+            });
+
+            optionButton2.gameObject.SetActive(false);
+            nextButton.gameObject.SetActive(false);
+
+            return;
+        }
+
+        // FIRST TIME DIALOGUE
+        currentDialog = 0;
+        npcDialogText.text = quests[0].info.initialDialog[currentDialog];
+
+        optionButton1.gameObject.SetActive(false);
+        optionButton2.gameObject.SetActive(false);
+
+        nextButton.gameObject.SetActive(true);
+        nextButton.onClick.RemoveAllListeners();
+        nextButton.onClick.AddListener(() =>
+        {
+            currentDialog++;
+
+            if (currentDialog < quests[0].info.initialDialog.Count)
+            {
+                npcDialogText.text = quests[0].info.initialDialog[currentDialog];
+            }
+            else
+            {
                 npcDialogText.text = quests[0].info.finalWords;
 
                 nextButton.gameObject.SetActive(false);
