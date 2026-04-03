@@ -7,7 +7,9 @@ public class PlayerReactionController : MonoBehaviour
         None,
         Miss,
         Hit,
-        Close
+        Close,
+        ForestBiome,
+        SnowBiome
     }
 
     [Header("Display")]
@@ -18,10 +20,15 @@ public class PlayerReactionController : MonoBehaviour
     public Sprite hitPotionReaction;
     public Sprite closeToAIReaction;
 
+    [Header("Biome Sprites")]
+    public Sprite forestBiomeReaction;
+    public Sprite snowBiomeReaction;
+
     [Header("Durations")]
     public float missDuration = 1.2f;
     public float hitDuration = 1.2f;
     public float closeDuration = 1.0f;
+    public float biomeDuration = 1.3f;
 
     [Header("Spam Control")]
     public float reactionCooldown = 0.15f;
@@ -42,6 +49,16 @@ public class PlayerReactionController : MonoBehaviour
     public void ShowCloseReaction(bool force = false)
     {
         ShowReaction(ReactionType.Close, closeToAIReaction, closeDuration, force);
+    }
+
+    public void ShowForestBiomeReaction(bool force = true)
+    {
+        ShowReaction(ReactionType.ForestBiome, forestBiomeReaction, biomeDuration, force);
+    }
+
+    public void ShowSnowBiomeReaction(bool force = true)
+    {
+        ShowReaction(ReactionType.SnowBiome, snowBiomeReaction, biomeDuration, force);
     }
 
     public void HideReaction()

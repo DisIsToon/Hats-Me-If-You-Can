@@ -90,32 +90,39 @@ public class ShyHatMinigameTrigger : MonoBehaviour
         if (!hitObject.CompareTag(throwableTag))
             return;
 
+        PotionReactionTracker potionTracker = hitObject.GetComponent<PotionReactionTracker>();
+
         if (requireEnableFromAI && !canTrigger)
         {
             Debug.Log("ShyHatMinigameTrigger: Hit, but capture not enabled by AI yet.");
+
+            // It hit, but this was NOT a valid minigame hit
+            if (potionTracker != null)
+                potionTracker.ShowMissReaction();
+
             return;
         }
 
         hasTriggered = true;
 
+        // Mark potion as valid so it won't show miss on destroy
+        if (potionTracker != null)
+            potionTracker.MarkValidHit();
+
         Debug.Log("ShyHatMinigameTrigger: Hit by throwable, stopping AI and starting minigame.");
 
-        // Player successfully hit the hat
         if (playerReactionController != null)
             playerReactionController.ShowHitReaction(true);
 
-        // Hat getting hit reaction
         if (aiReactionController != null)
             aiReactionController.ShowGettingHitReaction(true);
 
-        // Stop Shy Hat movement immediately
         if (shyHatAI != null)
         {
             Debug.Log("ShyHatMinigameTrigger: Disabling ShyHatAI.");
             shyHatAI.enabled = false;
         }
 
-        // Focus camera on THIS hat
         if (focusCamera != null)
         {
             focusCamera.Follow = transform;
@@ -123,7 +130,6 @@ public class ShyHatMinigameTrigger : MonoBehaviour
             focusCamera.Priority = focusPriority;
         }
 
-        // Start minigame after short delay
         if (minigamePanel != null)
         {
             if (SoundManager.Instance != null)
