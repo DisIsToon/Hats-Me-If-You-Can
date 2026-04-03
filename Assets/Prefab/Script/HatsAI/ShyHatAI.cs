@@ -1,60 +1,68 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class ShyHatAI : MonoBehaviour
 {
+    public enum HatState
+    {
+        Idle,
+        NearPlayer,
+        PreparingMove,
+        Moving,
+        Capturable,
+        Finished
+    }
+
     [Header("References")]
     public Transform player;
+    public AIReactionController aiReactionController;
 
     [Header("Flee Points (in order)")]
-    public Transform fleePoint1; // start
+    public Transform fleePoint1;
     public Transform fleePoint2;
     public Transform fleePoint3;
     public Transform fleePoint4;
     public Transform fleePoint5;
     public Transform fleePoint6;
-    public Transform fleePoint7; // final stop
+    public Transform fleePoint7;
 
     private Transform[] fleePoints;
 
     [Header("Behavior Settings")]
-    public float detectDistance = 6f;      // Distance to trigger moving to NEXT point
-    public float moveSpeed = 10f;          // Movement speed
-    public float rotationSpeed = 10f;      // Turn speed
-    public float arrivalDistance = 0.3f;   // How close counts as "arrived"
+    public float detectDistance = 6f;
+    public float nearReactionDistance = 2.5f;
+    public float moveSpeed = 10f;
+    public float rotationSpeed = 10f;
+    public float arrivalDistance = 0.3f;
 
     [Header("Options")]
-    public bool lockY = true;              // Keep on ground (XZ only)
-    public bool snapToFirstPoint = true;   // Snap hat to point 1 at start
+    public bool lockY = true;
+    public bool snapToFirstPoint = true;
 
     [Header("Minigame / Capture")]
-    [Tooltip("Trigger on this hat that handles minigame + camera.")]
     public ShyHatMinigameTrigger minigameTrigger;
+    public int capturePointIndex = 6;
 
-    [Tooltip("0-based index of the capture point: 0=point1 ... 6=point7.")]
-    public int capturePointIndex = 6;      // 6 = 7th point
-
-    [Header("Animation (visual child)")]
-    [Tooltip("Animator on the visual child object (HatVisual).")]
+    [Header("Animation")]
     public Animator animator;
-
-    [Tooltip("Name of the trigger parameter that plays the shocked animation.")]
     public string shockedTriggerName = "Shocked";
-
-    [Tooltip("How long to wait after playing the shocked animation before moving.")]
     public float shockedDelay = 0.4f;
-
-    private int currentIndex = 0;          // Which point we are currently "on"
-    private int targetIndex = 0;           // Which point we are moving toward
-    private bool isMoving = false;         // Are we currently moving to a point?
-    private bool finished = false;         // Reached final point and done
-    private bool isPreparingMove = false;  // waiting during shocked anim
 
     [Header("Tutorial Float")]
     public bool floatDuringTutorial = true;
-    public float floatAmplitude = 0.2f;   // How high it moves
-    public float floatSpeed = 2f;         // How fast it moves
+    public float floatAmplitude = 0.2f;
+    public float floatSpeed = 2f;
 
     private Vector3 startPosition;
+
+    private int currentIndex = 0;
+    private int targetIndex = 0;
+    private bool isMoving = false;
+    private bool finished = false;
+    private bool isPreparingMove = false;
+
+    private bool playerWasNear = false;
+    private HatState currentState = HatState.Idle;
 
     bool IsTutorialActive()
     {
@@ -78,12 +86,7 @@ public class ShyHatAI : MonoBehaviour
         };
 
         if (snapToFirstPoint && fleePoints[0] != null)
-        {
             transform.position = fleePoints[0].position;
-        }
-
-        currentIndex = 0;
-        targetIndex = 0;
 
         if (player == null)
         {
@@ -94,23 +97,22 @@ public class ShyHatAI : MonoBehaviour
         if (minigameTrigger == null)
             minigameTrigger = GetComponent<ShyHatMinigameTrigger>();
 
-        // Try to auto-grab animator from child if not set
         if (animator == null)
-        {
             animator = GetComponentInChildren<Animator>();
-        }
+
+        if (aiReactionController == null)
+            aiReactionController = GetComponent<AIReactionController>();
+
+        currentIndex = 0;
+        targetIndex = 0;
 
         UpdateCaptureState();
+        SetState(HatState.Idle, true);
     }
 
     void Update()
     {
-        bool tutorialActive =
-     NewHatalougeManager.Instance != null &&
-     NewHatalougeManager.Instance.notTutorial == false;
-
-        // 🔹 During tutorial: disable AI movement but allow floating
-        if (tutorialActive)
+        if (IsTutorialActive())
         {
             if (floatDuringTutorial)
             {
@@ -124,13 +126,14 @@ public class ShyHatAI : MonoBehaviour
                 );
             }
 
-            return; // Skip AI movement logic
+            return;
         }
 
-        if (finished) return;
-        if (player == null) return;
+        if (finished || player == null)
+            return;
 
-        // --- Decide to start shocked + move ---
+        HandleNearReaction();
+
         if (!isMoving && !isPreparingMove && currentIndex < fleePoints.Length - 1)
         {
             float playerDist = DistanceToPlayer();
@@ -139,24 +142,19 @@ public class ShyHatAI : MonoBehaviour
             {
                 int nextIndex = currentIndex + 1;
                 if (fleePoints[nextIndex] != null)
-                {
                     StartCoroutine(PlayShockedThenMove(nextIndex));
-                }
                 else
-                {
-                    finished = true;
-                    return;
-                }
+                    FinishHat();
             }
         }
 
-        // --- Handle actual movement ---
         if (isMoving)
         {
             Transform targetPoint = fleePoints[targetIndex];
             if (targetPoint == null)
             {
                 isMoving = false;
+                SetState(HatState.Idle);
                 return;
             }
 
@@ -184,14 +182,13 @@ public class ShyHatAI : MonoBehaviour
         }
     }
 
-    System.Collections.IEnumerator PlayShockedThenMove(int nextIndex)
+    IEnumerator PlayShockedThenMove(int nextIndex)
     {
         isPreparingMove = true;
+        SetState(HatState.PreparingMove);
 
         if (animator != null && !string.IsNullOrEmpty(shockedTriggerName))
-        {
             animator.SetTrigger(shockedTriggerName);
-        }
 
         if (shockedDelay > 0f)
             yield return new WaitForSeconds(shockedDelay);
@@ -199,6 +196,23 @@ public class ShyHatAI : MonoBehaviour
         targetIndex = nextIndex;
         isMoving = true;
         isPreparingMove = false;
+        SetState(HatState.Moving);
+    }
+
+    void HandleNearReaction()
+    {
+        if (player == null || aiReactionController == null || isMoving || isPreparingMove)
+            return;
+
+        bool playerIsNear = DistanceToPlayer() <= nearReactionDistance;
+
+        if (playerIsNear && !playerWasNear)
+            SetState(HatState.NearPlayer);
+
+        if (!playerIsNear && playerWasNear && !finished)
+            SetState(HatState.Idle);
+
+        playerWasNear = playerIsNear;
     }
 
     float DistanceToPlayer()
@@ -211,38 +225,91 @@ public class ShyHatAI : MonoBehaviour
     void ArriveAtPoint()
     {
         if (fleePoints[targetIndex] != null)
-        {
             transform.position = fleePoints[targetIndex].position;
-        }
 
         currentIndex = targetIndex;
         isMoving = false;
 
+        UpdateCaptureState();
+
         if (currentIndex >= fleePoints.Length - 1)
         {
-            finished = true;
+            FinishHat();
+            return;
         }
 
-        UpdateCaptureState();
+        if (currentIndex == capturePointIndex)
+            SetState(HatState.Capturable);
+        else
+            SetState(HatState.Idle);
+    }
+
+    void FinishHat()
+    {
+        finished = true;
+        SetState(HatState.Finished);
     }
 
     void UpdateCaptureState()
     {
-        if (minigameTrigger == null) return;
+        if (minigameTrigger == null)
+            return;
 
         if (currentIndex == capturePointIndex)
-        {
             minigameTrigger.EnableCapture();
-        }
         else
-        {
             minigameTrigger.DisableCapture();
+    }
+
+    void SetState(HatState newState, bool force = false)
+    {
+        if (!force && currentState == newState)
+            return;
+
+        currentState = newState;
+
+        if (aiReactionController == null)
+            return;
+
+        switch (newState)
+        {
+            case HatState.Idle:
+                aiReactionController.ShowIdleReaction();
+                break;
+
+            case HatState.NearPlayer:
+                aiReactionController.ShowPlayerNearReaction();
+                break;
+
+            case HatState.PreparingMove:
+                aiReactionController.ShowDifferentReaction(true);
+                break;
+
+            case HatState.Moving:
+                break;
+
+            case HatState.Capturable:
+                aiReactionController.ShowDifferentReaction(true);
+                break;
+
+            case HatState.Finished:
+                aiReactionController.HideReaction();
+                break;
         }
+    }
+
+    void OnDisable()
+    {
+        if (aiReactionController != null)
+            aiReactionController.HideReaction();
     }
 
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, detectDistance);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, nearReactionDistance);
     }
 }

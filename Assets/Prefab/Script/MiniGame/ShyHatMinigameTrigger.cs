@@ -16,6 +16,13 @@ public class ShyHatMinigameTrigger : MonoBehaviour
     [Tooltip("Assign the ShyHatAI script here so it stops moving when hit.")]
     public MonoBehaviour shyHatAI;  // e.g. ShyHatAI
 
+    [Header("Reaction System")]
+    [Tooltip("Reaction controller on this hat.")]
+    public AIReactionController aiReactionController;
+
+    [Tooltip("Reaction controller on the player.")]
+    public PlayerReactionController playerReactionController;
+
     [Header("Cinemachine Focus")]
     [Tooltip("Cinemachine 3 camera that should focus on this hat when the minigame starts.")]
     public CinemachineCamera focusCamera;
@@ -34,6 +41,9 @@ public class ShyHatMinigameTrigger : MonoBehaviour
     // gating controlled by AI
     private bool canTrigger = false;
 
+    // prevent double triggering
+    private bool hasTriggered = false;
+
     // original camera state so we can restore it
     private int originalPriority;
     private Transform originalFollow;
@@ -50,6 +60,16 @@ public class ShyHatMinigameTrigger : MonoBehaviour
             originalFollow = focusCamera.Follow;
             originalLookAt = focusCamera.LookAt;
         }
+
+        if (aiReactionController == null)
+            aiReactionController = GetComponent<AIReactionController>();
+
+        if (playerReactionController == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+                playerReactionController = playerObj.GetComponent<PlayerReactionController>();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -64,26 +84,38 @@ public class ShyHatMinigameTrigger : MonoBehaviour
 
     void CheckHit(GameObject hitObject)
     {
+        if (hasTriggered)
+            return;
+
         if (!hitObject.CompareTag(throwableTag))
             return;
 
         if (requireEnableFromAI && !canTrigger)
         {
-            // AI hasn't allowed capture yet (e.g., not at final spot)
             Debug.Log("ShyHatMinigameTrigger: Hit, but capture not enabled by AI yet.");
             return;
         }
 
+        hasTriggered = true;
+
         Debug.Log("ShyHatMinigameTrigger: Hit by throwable, stopping AI and starting minigame.");
 
-        // 1) Stop Shy Hat movement immediately
+        // Player successfully hit the hat
+        if (playerReactionController != null)
+            playerReactionController.ShowHitReaction(true);
+
+        // Hat getting hit reaction
+        if (aiReactionController != null)
+            aiReactionController.ShowGettingHitReaction(true);
+
+        // Stop Shy Hat movement immediately
         if (shyHatAI != null)
         {
             Debug.Log("ShyHatMinigameTrigger: Disabling ShyHatAI.");
             shyHatAI.enabled = false;
         }
 
-        // 2) Focus camera on THIS hat
+        // Focus camera on THIS hat
         if (focusCamera != null)
         {
             focusCamera.Follow = transform;
@@ -91,10 +123,12 @@ public class ShyHatMinigameTrigger : MonoBehaviour
             focusCamera.Priority = focusPriority;
         }
 
-        // 3) Start minigame after a short delay (camera settles)
+        // Start minigame after short delay
         if (minigamePanel != null)
         {
-            SoundManager.Instance.PlayHatCaptureMusic();
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayHatCaptureMusic();
+
             StartCoroutine(StartMinigameAfterDelay());
         }
         else
@@ -105,7 +139,6 @@ public class ShyHatMinigameTrigger : MonoBehaviour
 
     IEnumerator StartMinigameAfterDelay()
     {
-        // Wait in unscaled time so pausing Time.timeScale later doesn't matter
         float elapsed = 0f;
         while (elapsed < minigameStartDelay)
         {
@@ -114,7 +147,7 @@ public class ShyHatMinigameTrigger : MonoBehaviour
         }
 
         Debug.Log("ShyHatMinigameTrigger: Activating ShyHatMinigame UI.");
-        minigamePanel.SetActive(true); // ShyHatMinigame.OnEnable()
+        minigamePanel.SetActive(true);
     }
 
     /// <summary>
@@ -136,11 +169,12 @@ public class ShyHatMinigameTrigger : MonoBehaviour
     /// </summary>
     public void OnShyHatMinigameEnd(bool success)
     {
-        SoundManager.Instance.ReturnToBiomeMusic();
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.ReturnToBiomeMusic();
+
         Debug.Log("ShyHatMinigameTrigger: OnShyHatMinigameEnd(" + success + ")");
 
         // Restore camera
-                
         if (focusCamera != null)
         {
             focusCamera.Priority = originalPriority;
@@ -150,19 +184,24 @@ public class ShyHatMinigameTrigger : MonoBehaviour
 
         if (success)
         {
-            // SUCCESS: ShyHatBarrier handles disabling / capture via TestShyHatBarrier
-            // No need to re-enable AI here; hat is effectively done.
+            // On success, optional different reaction
+            if (aiReactionController != null)
+                aiReactionController.ShowDifferentReaction(true);
+
+            // Hat is considered captured / done
         }
         else
         {
-            // FAIL: give another chance → re-enable AI so Shy Hat can move again
             Debug.Log("ShyHatMinigameTrigger: Minigame failed, re-enabling ShyHatAI for another try.");
+
+            hasTriggered = false;
 
             if (shyHatAI != null)
                 shyHatAI.enabled = true;
 
-            // Keep canTrigger = true so you can hit it again without re-waiting,
-            // or leave capture logic to AI if you want it to re-gate.
+            // Optional fail reaction
+            if (aiReactionController != null)
+                aiReactionController.ShowIdleReaction(true);
         }
     }
 }
