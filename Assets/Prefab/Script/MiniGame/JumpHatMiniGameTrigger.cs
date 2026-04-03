@@ -23,6 +23,10 @@ public class JumpHatMinigameTrigger : MonoBehaviour
     [Tooltip("Assign the JumpHatAI script here so it stops moving when hit.")]
     public MonoBehaviour hatAI;  // e.g. JumpHatAI
 
+    [Header("Reaction System")]
+    public AIReactionController aiReactionController;
+    public PlayerReactionController playerReactionController;
+
     [Header("Timing")]
     [Tooltip("Delay after camera focuses on hat before minigame UI appears.")]
     public float startMinigameDelay = 0.6f;
@@ -35,7 +39,8 @@ public class JumpHatMinigameTrigger : MonoBehaviour
     [Tooltip("Main hat object to hide when minigame ends successfully. If empty, uses this GameObject.")]
     public GameObject hatRoot;
 
-    Coroutine pendingStart;
+    private Coroutine pendingStart;
+    private bool hasTriggered;
 
     void Awake()
     {
@@ -44,6 +49,16 @@ public class JumpHatMinigameTrigger : MonoBehaviour
 
         if (hatRoot == null)
             hatRoot = gameObject;
+
+        if (aiReactionController == null)
+            aiReactionController = GetComponent<AIReactionController>();
+
+        if (playerReactionController == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+                playerReactionController = playerObj.GetComponent<PlayerReactionController>();
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -66,7 +81,19 @@ public class JumpHatMinigameTrigger : MonoBehaviour
 
     void TriggerSequence()
     {
+        if (hasTriggered)
+            return;
+
+        hasTriggered = true;
+
         Debug.Log("JumpHatMinigameTrigger: TriggerSequence called.");
+
+        // Reactions
+        if (playerReactionController != null)
+            playerReactionController.ShowHitReaction(true);
+
+        if (aiReactionController != null)
+            aiReactionController.ShowGettingHitReaction(true);
 
         // 1) Stop hat movement immediately
         if (hatAI != null)
@@ -85,7 +112,8 @@ public class JumpHatMinigameTrigger : MonoBehaviour
             pendingStart = null;
         }
 
-        SoundManager.Instance.PlayHatCaptureMusic();
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayHatCaptureMusic();
 
         pendingStart = StartCoroutine(StartMinigameAfterDelay());
     }
@@ -98,7 +126,6 @@ public class JumpHatMinigameTrigger : MonoBehaviour
             return;
         }
 
-        // CM3: Follow + LookAt (same pattern as FastHat)
         jumpHatCamera.Follow = hatFocusTarget;
         jumpHatCamera.LookAt = hatFocusTarget;
 
@@ -127,7 +154,7 @@ public class JumpHatMinigameTrigger : MonoBehaviour
             if (!jumpHatMinigameUI.activeSelf)
             {
                 Debug.Log("JumpHatMinigameTrigger: Activating JumpHatMinigame UI.");
-                jumpHatMinigameUI.SetActive(true);   // triggers JumpHatMinigame.OnEnable()
+                jumpHatMinigameUI.SetActive(true);
             }
         }
         else
@@ -136,10 +163,12 @@ public class JumpHatMinigameTrigger : MonoBehaviour
         }
     }
 
-    // 🔹 Called by JumpHatMinigame when it ends
+    // Called by JumpHatMinigame when it ends
     public void OnJumpHatMinigameEnd(bool success)
     {
-        SoundManager.Instance.ReturnToBiomeMusic();
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.ReturnToBiomeMusic();
+
         Debug.Log("JumpHatMinigameTrigger: OnJumpHatMinigameEnd(" + success + ")");
 
         // 1) Camera back to player
@@ -156,7 +185,9 @@ public class JumpHatMinigameTrigger : MonoBehaviour
         // 2) Handle success vs fail
         if (success)
         {
-            // ✅ SUCCESS: hide the hat (capture handled by TestJumpHatBarrier)
+            if (aiReactionController != null)
+                aiReactionController.ShowDifferentReaction(true);
+
             if (hatRoot != null)
                 hatRoot.SetActive(false);
             else
@@ -164,11 +195,15 @@ public class JumpHatMinigameTrigger : MonoBehaviour
         }
         else
         {
-            // ❌ FAIL: give another chance → re-enable AI
             Debug.Log("JumpHatMinigameTrigger: Minigame failed, re-enabling JumpHatAI for another try.");
+
+            hasTriggered = false;
 
             if (hatAI != null)
                 hatAI.enabled = true;
+
+            if (aiReactionController != null)
+                aiReactionController.ShowIdleReaction(true);
         }
     }
 }
