@@ -125,9 +125,24 @@ public class NPC : MonoBehaviour
         {
             isOpen = false;
             CloseDialogUI();
+        }
 
+        // -------------------------------------------------
+        // SPACE KEY = NEXT BUTTON
+        // -------------------------------------------------
+        if (dialogUI != null && dialogUI.activeSelf)
+        {
+            // Only trigger if next button is visible
+            if (nextButton != null && nextButton.gameObject.activeSelf)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    nextButton.onClick.Invoke();
+                }
+            }
         }
     }
+
 
     private void HideOption2()
     {

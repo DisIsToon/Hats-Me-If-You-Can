@@ -111,6 +111,9 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
             // Update quickslot stack
             if (stackText != null)
                 stackText.text = currentStack.ToString();
+
+            //  RE-EQUIP AGAIN
+            StartCoroutine(ReEquipDelay());
         }
         else
         {
@@ -128,6 +131,20 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
 
         // ALSO remove from inventory
         InventorySystem.Instance.RemoveItem(itemName, 1);
+    }
+
+    void ReEquipCurrentItem()
+    {
+        if (selectedItem == null) return;
+
+        // Recreate the model in hand
+        SetEquippedModel(selectedItem);
+    }
+
+    IEnumerator ReEquipDelay()
+    {
+        yield return new WaitForSeconds(0.05f);
+        ReEquipCurrentItem();
     }
 
     void Update()

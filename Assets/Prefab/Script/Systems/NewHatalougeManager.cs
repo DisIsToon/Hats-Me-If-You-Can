@@ -146,7 +146,44 @@ public class NewHatalougeManager : MonoBehaviour
             OpenJournal();
         else if (Input.GetKeyDown(KeyCode.H) && isOpen)
             CloseJournal();
+
+        // -------------------------------------------------
+        // KEYBINDS FOR NAVIGATION (Q/E or Arrow Keys)
+        // -------------------------------------------------
+        if (!isOpen) return;
+
+        bool prevPressed = Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow);
+        bool nextPressed = Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow);
+
+        // HAT SECTION
+        if (hatSection != null && hatSection.activeSelf)
+        {
+            if (prevPressed) PrevHat();
+            if (nextPressed) NextHat();
+        }
+
+        // QUEST SECTION
+        if (questSection != null && questSection.activeSelf)
+        {
+            if (prevPressed) PrevQuest();
+            if (nextPressed) NextQuest();
+        }
+
+        // CHARACTER SECTION
+        if (characterSection != null && characterSection.activeSelf)
+        {
+            if (prevPressed) PrevCharacter();
+            if (nextPressed) NextCharacter();
+        }
+
+        // INFO SECTION
+        if (infoSection != null && infoSection.activeSelf)
+        {
+            if (prevPressed) PrevInfo();
+            if (nextPressed) NextInfo();
+        }
     }
+
 
     IEnumerator ShowPopupAfterDelay()
     {

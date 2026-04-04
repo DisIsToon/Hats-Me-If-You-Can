@@ -165,12 +165,13 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     {
         // UI / menu gating with null checks
         bool uiBlocked = false;
+        bool isTalking = false;
+
         if (CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen) uiBlocked = true;
         if (InventorySystem.Instance != null && InventorySystem.Instance.isOpen) uiBlocked = true;
         if (PuzzleManagerUI.Instance != null && PuzzleManagerUI.Instance.isOpen) uiBlocked = true;
         if (NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.isOpen) uiBlocked = true;
-
-        // ✅ ADD THIS BLOCK
+        // ADD THIS BLOCK
         if (PauseManager.Instance != null &&
             PauseManager.Instance.isOpenPause &&
             NewHatalougeManager.Instance != null &&
@@ -190,6 +191,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
 
             return;
         }
+
 
         // 1) Read input
         moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -289,6 +291,21 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
 
     void HandleJump()
     {
+        // 🚫 Don't allow jumping while talking
+       //f (NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.isTalkingWithPlayer)
+        if (CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen)
+        if (InventorySystem.Instance != null && InventorySystem.Instance.isOpen)
+        if (PuzzleManagerUI.Instance != null && PuzzleManagerUI.Instance.isOpen)
+        if (NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.isOpen)
+        if (DialogSystem.Instance != null && DialogSystem.Instance.dialogUIActive)
+                            return;
+
+        bool isTalking = currentInteractingNPC != null && currentInteractingNPC.isTalkingWithPlayer;
+
+        if (isTalking)
+            return;
+
+
         if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps && !isCrouching)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
@@ -442,6 +459,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     {
         if (other.CompareTag("NPC"))
         {
+            Debug.Log("NPC Detected");
             currentInteractingNPC = other.GetComponent<NPC>();
         }
     }
@@ -450,6 +468,7 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
     {
         if (other.CompareTag("NPC") && currentInteractingNPC != null)
         {
+            Debug.Log("NPC out of distace");
             currentInteractingNPC = null;
         }
     }

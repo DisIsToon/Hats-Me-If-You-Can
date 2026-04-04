@@ -25,6 +25,8 @@ public class InventorySystem : MonoBehaviour, IDataPersistence
     //public bool isFull;
 
     public bool isOpen;
+    private bool tabPressedWhileOpen = false;
+
 
     //Pickup Popup
     public GameObject pickupAlert;
@@ -147,22 +149,51 @@ public class InventorySystem : MonoBehaviour, IDataPersistence
             }
         }
     }
- 
- 
+
+
     void Update()
     {
- 
-        if (Input.GetKeyDown(KeyCode.Tab) && !isOpen)
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
- 
-			OpenInventory();
- 
+            if (!isOpen)
+            {
+                OpenInventory();
+            }
+            else
+            {
+                // Mark that Tab was pressed while open
+                tabPressedWhileOpen = true;
+
+                // Optional: also close immediately if you still want toggle behavior
+                CloseInventory();
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.Tab) && isOpen)
+    }
+
+    public void OnInventoryButtonClicked()
+    {
+        // If inventory is open AND Tab was pressed → force close
+        if (isOpen && tabPressedWhileOpen)
+        {
+            CloseInventory();
+            tabPressedWhileOpen = false;
+            return;
+        }
+
+        // Normal behavior
+        if (!isOpen)
+        {
+            OpenInventory();
+        }
+        else
         {
             CloseInventory();
         }
+
+        tabPressedWhileOpen = false;
     }
+
+
 
     public void OpenInventory()
     {

@@ -428,7 +428,7 @@ public class QuestManager : MonoBehaviour
             questCompleteMallow = true;
             GameTracker.Instance.CompleteQuest("Mallow");
             QuestCompleteNotif.Instance.ShowMallowComplete();
-
+            questCompleteMallow = true;
             yield return new WaitForSeconds(2.5f);
 
             if (jumpHat != null)
@@ -443,7 +443,7 @@ public class QuestManager : MonoBehaviour
             questCompleteTulip = true;
             GameTracker.Instance.CompleteQuest("Tulip");
             QuestCompleteNotif.Instance.ShowTulipComplete();
-
+            questCompleteTulip = true;
             yield return new WaitForSeconds(2.5f);
 
             if (fastHat != null)
