@@ -19,8 +19,10 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
 
     public GameObject toolHolder;
     public GameObject selectedItemModel;
- 
-   
+
+    public GameObject equipmentHintUI;
+
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -121,9 +123,11 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
             Destroy(selectedItem);
             selectedItem = null;
             selectedNumber = -1;
+            equipmentHintUI.SetActive(false);
 
             if (selectedItemModel != null)
             {
+                equipmentHintUI.SetActive(false);
                 Destroy(selectedItemModel);
                 selectedItemModel = null;
             }
@@ -200,6 +204,8 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
         {
             if(selectedNumber != number)
             {
+                equipmentHintUI.SetActive(true);
+
                 selectedNumber = number; 
 
                 // Unselect Previously selected item
@@ -229,6 +235,8 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
             }
             else // We are trying to select the same slot
             {
+                equipmentHintUI.SetActive(false);
+
                 selectedNumber = -1; //null
 
                 // Unselect Previously selected item

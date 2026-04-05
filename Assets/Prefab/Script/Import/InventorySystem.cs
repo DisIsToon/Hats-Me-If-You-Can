@@ -21,7 +21,8 @@ public class InventorySystem : MonoBehaviour, IDataPersistence
     private GameObject itemToAdd;
 
     private GameObject whatSlotToEquip;
-    
+    public GameObject inventoryKeybindHint;
+
     //public bool isFull;
 
     public bool isOpen;
@@ -155,16 +156,17 @@ public class InventorySystem : MonoBehaviour, IDataPersistence
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
+            //  BLOCK if crafting is open
+            if (CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen)
+                return;
+
             if (!isOpen)
             {
                 OpenInventory();
             }
             else
             {
-                // Mark that Tab was pressed while open
                 tabPressedWhileOpen = true;
-
-                // Optional: also close immediately if you still want toggle behavior
                 CloseInventory();
             }
         }
@@ -197,17 +199,25 @@ public class InventorySystem : MonoBehaviour, IDataPersistence
 
     public void OpenInventory()
     {
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
-            inventoryScreenUI.SetActive(true);
-            isOpen = true;
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
+        inventoryScreenUI.SetActive(true);
+        isOpen = true;
 
-        // Only trigger tutorial if tutorial is active
+        // Only show hint if crafting is NOT open
+        if (CraftingSystem.Instance == null || !CraftingSystem.Instance.isOpen)
+        {
+            inventoryKeybindHint.SetActive(true);
+        }
+        else
+        {
+            inventoryKeybindHint.SetActive(false);
+        }
+
         if (NewHatalougeManager.Instance != null &&
             NewHatalougeManager.Instance.notTutorial == false)
         {
             TutorialManager.Instance.OnInventoryOpened();
         }
-
     }
 
     public void CloseInventory()
@@ -215,15 +225,22 @@ public class InventorySystem : MonoBehaviour, IDataPersistence
         inventoryScreenUI.SetActive(false);
         SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
 
-
         isOpen = false;
 
+        // Always hide hint when closing
+        inventoryKeybindHint.SetActive(false);
+
+        // Also close crafting if open
+        if (CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen)
+        {
+            CraftingSystem.Instance.CraftingScreenOff();
+        }
+
         if (NewHatalougeManager.Instance != null &&
-    NewHatalougeManager.Instance.notTutorial == false)
+            NewHatalougeManager.Instance.notTutorial == false)
         {
             TutorialManager.Instance.OnInventoryClosed();
         }
-
     }
 
     public void AddToInventory(string itemName)

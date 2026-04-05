@@ -7,6 +7,12 @@ public class NewHatalougeManager : MonoBehaviour
 {
     public static NewHatalougeManager Instance { get; private set; }
 
+    bool hasNewEntry;
+
+    [Header("Journal Button UI")]
+    public GameObject journalButtonDefault;
+    public GameObject journalButtonNotif;
+
     [Header("Main Journal Panel")]
     public GameObject journalPanel;
     public bool isOpen = false;
@@ -139,6 +145,26 @@ public class NewHatalougeManager : MonoBehaviour
 
     }
 
+    void MarkNewEntry()
+    {
+        hasNewEntry = true;
+        UpdateJournalButtonUI();
+    }
+
+    void UpdateJournalButtonUI()
+    {
+        if (hasNewEntry)
+        {
+            journalButtonDefault.SetActive(false);
+            journalButtonNotif.SetActive(true);
+        }
+        else
+        {
+            journalButtonDefault.SetActive(true);
+            journalButtonNotif.SetActive(false);
+        }
+    }
+
     public void Update()
     {
         // Toggle journal with H key
@@ -217,11 +243,16 @@ public class NewHatalougeManager : MonoBehaviour
         SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         SoundManager.Instance.ReturnToBiomeMusic();
         hatScreen.SetActive(true);
+
         if (journalPanel != null) journalPanel.SetActive(false);
         isOpen = false;
 
+        // ✅ CLEAR NOTIFICATION
+        hasNewEntry = false;
+        UpdateJournalButtonUI();
+
         if (NewHatalougeManager.Instance != null &&
-        NewHatalougeManager.Instance.notTutorial == false)
+            NewHatalougeManager.Instance.notTutorial == false)
         {
             TutorialManager.Instance.OnHatalogueClosed();
         }
@@ -353,9 +384,9 @@ public class NewHatalougeManager : MonoBehaviour
     }
 
     // Public unlockers for hats
-    public void DiscoverShyHat() { shyFound = true; UpdateHatScreen(); }
-    public void DiscoverLazyHat() { lazyFound = true; UpdateHatScreen(); }
-    public void DiscoverFastHat() { fastFound = true; UpdateHatScreen(); }
+    public void DiscoverShyHat() { shyFound = true; MarkNewEntry(); UpdateHatScreen(); }
+    public void DiscoverLazyHat() { lazyFound = true; MarkNewEntry(); UpdateHatScreen(); }
+    public void DiscoverFastHat() { fastFound = true; MarkNewEntry(); UpdateHatScreen(); }
 
     // ---------------------------------------------------------
     // QUEST ENCYCLOPEDIA (3 pages) - same behavior as Hat
@@ -406,9 +437,9 @@ public class NewHatalougeManager : MonoBehaviour
             questHiddenScreens[questIndex].SetActive(true);
     }
 
-    public void DiscoverQuest1() { quest1Found = true; UpdateQuestScreen(); }
-    public void DiscoverQuest2() { quest2Found = true; UpdateQuestScreen(); }
-    public void DiscoverQuest3() { quest3Found = true; UpdateQuestScreen(); }
+    public void DiscoverQuest1() { quest1Found = true; MarkNewEntry(); UpdateQuestScreen(); }
+    public void DiscoverQuest2() { quest2Found = true; MarkNewEntry(); UpdateQuestScreen(); }
+    public void DiscoverQuest3() { quest3Found = true; MarkNewEntry(); UpdateQuestScreen(); }
 
     // ---------------------------------------------------------
     // CHARACTER ENCYCLOPEDIA (8 pages) - same system
@@ -472,14 +503,14 @@ public class NewHatalougeManager : MonoBehaviour
         }
     }
 
-    public void DiscoverCharHeadMaster() { headMasterFound = true; UpdateCharacterScreen(); }
-    public void DiscoverCharClumsi() { clumsiFound = true; UpdateCharacterScreen(); }
-    public void DiscoverCharIvy() { ivyFound = true; UpdateCharacterScreen(); }
-    public void DiscoverCharChase() { chaseFound = true; UpdateCharacterScreen(); }
-    public void DiscoverCharLouire() { louierFound = true; UpdateCharacterScreen(); }
-    public void DiscoverCharLira() { liraFound = true; UpdateCharacterScreen(); }
-    public void DiscoverCharMallow() { mallowFound = true; UpdateCharacterScreen(); }
-    public void DiscoverCharTulip() { tulipFound = true; UpdateCharacterScreen(); }
+    public void DiscoverCharHeadMaster() { headMasterFound = true; MarkNewEntry(); UpdateCharacterScreen(); }
+    public void DiscoverCharClumsi() { clumsiFound = true; MarkNewEntry(); UpdateCharacterScreen(); }
+    public void DiscoverCharIvy() { ivyFound = true; MarkNewEntry(); UpdateCharacterScreen(); }
+    public void DiscoverCharChase() { chaseFound = true; MarkNewEntry(); UpdateCharacterScreen(); }
+    public void DiscoverCharLouire() { louierFound = true; MarkNewEntry(); UpdateCharacterScreen(); }
+    public void DiscoverCharLira() { liraFound = true; MarkNewEntry(); UpdateCharacterScreen(); }
+    public void DiscoverCharMallow() { mallowFound = true; MarkNewEntry(); UpdateCharacterScreen(); }
+    public void DiscoverCharTulip() { tulipFound = true; MarkNewEntry(); UpdateCharacterScreen(); }
 
     // ---------------------------------------------------------
     // INFO ENCYCLOPEDIA (5 pages) - show only one, update left/right buttons
@@ -528,18 +559,21 @@ public class NewHatalougeManager : MonoBehaviour
     {
         reachedForest = true;
         UpdateMapScreen();
+        MarkNewEntry();
     }
 
     public void ReachWinter()
     {
         reachedWinter = true;
         UpdateMapScreen();
+        MarkNewEntry();
     }
 
     public void ReachCastle()
     {
         reachedCastle = true;
         UpdateMapScreen();
+        MarkNewEntry();
     }
 
     public void UpdateMapScreen()
