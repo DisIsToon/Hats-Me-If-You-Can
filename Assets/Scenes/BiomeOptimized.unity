@@ -48314,7 +48314,9 @@ GameObject:
   - component: {fileID: 544391525}
   - component: {fileID: 544391527}
   - component: {fileID: 544391529}
+  - component: {fileID: 544391531}
   - component: {fileID: 544391526}
+  - component: {fileID: 544391530}
   m_Layer: 0
   m_Name: WBCamera
   m_TagString: Untagged
@@ -48483,6 +48485,38 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!114 &544391530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 544391524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37ae3076f51bf8d40961d9c5bc2dfd93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shakeAmplitude: 2
+  shakeFrequency: 2
+  shakeDuration: 0.15
+--- !u!114 &544391531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 544391524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  PivotOffset: {x: 0, y: 0, z: 0}
+  AmplitudeGain: 1
+  FrequencyGain: 1
+  m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!4 &544577012 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1473260661853491144, guid: 0ba97dd2e943bbe448faae88c0ec6b97, type: 3}
@@ -114200,6 +114234,18 @@ MonoBehaviour:
         - m_Target: {fileID: 1938147696}
           m_TargetAssemblyTypeName: ClickerBarrier, Assembly-CSharp
           m_MethodName: OnClickBarrier
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 544391530}
+          m_TargetAssemblyTypeName: ClickShakeCameraCM3, Assembly-CSharp
+          m_MethodName: ShakeCamera
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
