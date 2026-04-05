@@ -25,6 +25,7 @@ public class TaskManagerUI : MonoBehaviour
 
         tasks = new List<Task>()
         {
+       
             // 1. Capture Shy Hat
             new Task {
                 description = "Capture Shy Hat",
@@ -45,14 +46,14 @@ public class TaskManagerUI : MonoBehaviour
                 isCompleted = () => qm.puzzleComplete,
                 canShow = () => qm.liraQuestAccepted && !qm.puzzleComplete
             },
-/*
+
             // 4. Go to Winter Forest (LOCK after Tulip)
             new Task {
                 description = "Go to the Winter Forest",
-                isCompleted = () => gt.currentBiome == "Winter",
+                isCompleted = () => gt.visitedWinterForest,
                 canShow = () => qm.winterForestPass && !qm.questCompleteTulip
             },
-*/
+       
             // 5. Talk to Tulip
             new Task {
                 description = "Help Tulip",
@@ -66,14 +67,14 @@ public class TaskManagerUI : MonoBehaviour
                 isCompleted = () => qm.questCompleteTulip,
                 canShow = () => qm.tulipQuestAccepted && !qm.questCompleteTulip
             },
-/*
+
             // 7. Go to Castle (LOCK after Mallow)
             new Task {
                 description = "Go to the Castle Ruins",
-                isCompleted = () => gt.currentBiome == "CastleRuin",
+                isCompleted = () => gt.visitedCastleRuin,
                 canShow = () => qm.questCompleteTulip && !qm.questCompleteMallow
             },
-*/
+
             // 8. Talk to Mallow
             new Task {
                 description = "Help Mallow",

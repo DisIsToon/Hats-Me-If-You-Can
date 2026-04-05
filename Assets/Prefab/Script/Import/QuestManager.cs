@@ -403,7 +403,8 @@ public class QuestManager : MonoBehaviour
         UnTrackQuest(quest);
         RefreshQuestList(); 
 
-        string npcName = DialogSystem.Instance.GetSpeakerName();
+       // string npcName = DialogSystem.Instance.GetSpeakerName();
+        string npcName = quest.questGiver;
 
         // Reward only for Lira
         if (npcName == "Lira" && puzzleComplete)
@@ -438,12 +439,13 @@ public class QuestManager : MonoBehaviour
         }
 
         // Reward only for Tulip
-        if (npcName == "Tulip")
+  if (npcName == "Tulip")
         {
             questCompleteTulip = true;
+
             GameTracker.Instance.CompleteQuest("Tulip");
             QuestCompleteNotif.Instance.ShowTulipComplete();
-            questCompleteTulip = true;
+
             yield return new WaitForSeconds(2.5f);
 
             if (fastHat != null)

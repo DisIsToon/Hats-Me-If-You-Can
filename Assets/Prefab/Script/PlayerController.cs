@@ -298,7 +298,8 @@ public class RigidbodyPlayerWithSprintAndStamina : MonoBehaviour, IDataPersisten
         if (PuzzleManagerUI.Instance != null && PuzzleManagerUI.Instance.isOpen)
         if (NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.isOpen)
         if (DialogSystem.Instance != null && DialogSystem.Instance.dialogUIActive)
-                            return;
+        if (DialogSystem.Instance != null && DialogSystem.Instance.isSpeaking)
+                                return;
 
         bool isTalking = currentInteractingNPC != null && currentInteractingNPC.isTalkingWithPlayer;
 

@@ -14,6 +14,7 @@ public class DialogSystem : MonoBehaviour
     public TMPro.TextMeshProUGUI speakerNameText;
     public string currentSpeakerName = "";
 
+    public bool isSpeaking = false;
     private bool nextClicked = false;
     public Button nextBTN;
     public Button option1BTN;
@@ -84,6 +85,9 @@ public class DialogSystem : MonoBehaviour
 
     public void ShowNPCImage(string npcName)
     {
+        isSpeaking = true;
+        currentSpeakerName = npcName; //  ADD THIS LINE
+
         liraImage.SetActive(npcName == "Lira");
         mallowImage.SetActive(npcName == "Mallow");
         tulipImage.SetActive(npcName == "Tulip");
@@ -104,6 +108,9 @@ public class DialogSystem : MonoBehaviour
 
     public void ClearSpeakerName()
     {
+        isSpeaking = false;
+        currentSpeakerName = ""; //  ADD THIS
+
         if (speakerNameText != null)
             speakerNameText.text = "";
     }

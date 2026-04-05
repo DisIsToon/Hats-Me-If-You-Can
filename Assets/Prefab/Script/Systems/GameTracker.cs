@@ -48,6 +48,8 @@ public class GameTracker : MonoBehaviour, IDataPersistence
     private bool castleRuinNotified = false;
     private bool winterBiomeNotified = false;
     private bool springGardenNotified = false;
+    public bool visitedWinterForest = false;
+    public bool visitedCastleRuin = false;
 
     [Header("Potions")]
     public bool cakePotionUnlocked = false;
@@ -174,13 +176,15 @@ public class GameTracker : MonoBehaviour, IDataPersistence
 
         if (castleRuinAlreadyDiscovered)
         {
-            castleRuinNotified = true;
+            castleRuinNotified = true; 
+            visitedCastleRuin = true;
             NewHatalougeManager.Instance.ReachCastle();
         }
 
         if (winterBiomeAlreadyDiscovered)
         {
             winterBiomeNotified = true;
+            visitedWinterForest = true;
             NewHatalougeManager.Instance.ReachWinter();
         }
     }
@@ -411,6 +415,7 @@ public class GameTracker : MonoBehaviour, IDataPersistence
                 
                 castleRuinNotified = true;
                 NotifUIManager.Instance.NotifyBiomeDiscovered("Castle Ruins");
+                visitedCastleRuin = true;
                 NewHatalougeManager.Instance.ReachCastle();
             }
             return;
@@ -429,6 +434,7 @@ public class GameTracker : MonoBehaviour, IDataPersistence
                 
                 winterBiomeNotified = true;
                 NotifUIManager.Instance.NotifyBiomeDiscovered("Winter Forest");
+                visitedWinterForest = true;
                 NewHatalougeManager.Instance.ReachWinter();
             }
             return;
