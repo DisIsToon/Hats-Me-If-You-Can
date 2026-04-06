@@ -2656,7 +2656,7 @@ PrefabInstance:
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 361728835}
+      objectReference: {fileID: 414621059}
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
@@ -2691,7 +2691,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: OnClick
+      value: OnLoadGameClicked
       objectReference: {fileID: 0}
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
@@ -2711,7 +2711,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: MainMenuButton, Assembly-CSharp
+      value: MainMenuTest, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
@@ -15395,7 +15395,7 @@ PrefabInstance:
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 2023900709}
+      objectReference: {fileID: 414621059}
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
@@ -15422,7 +15422,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: OnClick
+      value: OnNewGameClicked
       objectReference: {fileID: 0}
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
@@ -15438,7 +15438,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: MainMenuButton, Assembly-CSharp
+      value: MainMenuTest, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
@@ -15602,17 +15602,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6756467099110858937, guid: a3e7c246a19472846a61647da1d94840, type: 3}
   m_PrefabInstance: {fileID: 2023900706}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2023900709 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5278165082786288193, guid: a3e7c246a19472846a61647da1d94840, type: 3}
-  m_PrefabInstance: {fileID: 2023900706}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30dfaa08d4ae5664384372eaf3f11925, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2023900711 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5712897562638050152, guid: a3e7c246a19472846a61647da1d94840, type: 3}

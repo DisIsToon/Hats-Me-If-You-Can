@@ -7,6 +7,9 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance { get; set; }
 
+    private Coroutine fadeInCoroutine;
+    private Coroutine fadeOutCoroutine;
+
     [Header("SFX Player")]
     public AudioSource sfxSource;
 
@@ -230,20 +233,27 @@ public class SoundManager : MonoBehaviour
         sfxSource.PlayOneShot(clip, sfxVolume);
     }
 
-
-
     public void PlayBGMusic(AudioSource newMusic)
     {
         if (currentBGMusic == newMusic)
             return;
 
-        // Fade out previous
+        // Stop previous fade coroutines
+        if (fadeInCoroutine != null)
+            StopCoroutine(fadeInCoroutine);
+
+        if (fadeOutCoroutine != null)
+            StopCoroutine(fadeOutCoroutine);
+
+        // Fade out current
         if (currentBGMusic != null)
-            StartCoroutine(FadeOut(currentBGMusic));
+            fadeOutCoroutine = StartCoroutine(FadeOut(currentBGMusic));
+
+        // Switch reference FIRST
+        currentBGMusic = newMusic;
 
         // Fade in new
-        currentBGMusic = newMusic;
-        StartCoroutine(FadeIn(newMusic));
+        fadeInCoroutine = StartCoroutine(FadeIn(newMusic));
     }
 
 
@@ -254,9 +264,12 @@ public class SoundManager : MonoBehaviour
         if (!audio.isPlaying)
             audio.Play();
 
-        while (audio.volume < bgmVolume)
+        float timer = 0f;
+
+        while (timer < fadeDuration)
         {
-            audio.volume += Time.unscaledDeltaTime * 0.5f;
+            timer += Time.unscaledDeltaTime;
+            audio.volume = Mathf.Lerp(0f, bgmVolume, timer / fadeDuration);
             yield return null;
         }
 
@@ -266,9 +279,13 @@ public class SoundManager : MonoBehaviour
 
     public IEnumerator FadeOut(AudioSource audio)
     {
-        while (audio.volume > 0f)
+        float startVolume = audio.volume;
+        float timer = 0f;
+
+        while (timer < fadeDuration)
         {
-            audio.volume -= Time.unscaledDeltaTime * 0.5f;
+            timer += Time.unscaledDeltaTime;
+            audio.volume = Mathf.Lerp(startVolume, 0f, timer / fadeDuration);
             yield return null;
         }
 

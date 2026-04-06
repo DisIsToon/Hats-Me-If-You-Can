@@ -30,6 +30,8 @@ public class CraftingSystem : MonoBehaviour
 
     public bool canCraft = false;
 
+    public GameObject inventoryKeybindHint;
+
     public List<string> inventoryItemList = new List<string>();
 
     Button craftCakePotionBTN;
@@ -195,6 +197,7 @@ public class CraftingSystem : MonoBehaviour
 
         craftingScreenUI.SetActive(true);
         inventoryScreenUI.SetActive(true);
+        inventoryKeybindHint.SetActive(false);
 
         RefreshNeededItem();
 

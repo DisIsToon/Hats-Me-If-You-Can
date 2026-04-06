@@ -13,6 +13,14 @@ public class IntroCutscenePlayer : MonoBehaviour
         videoPlayer.loopPointReached += OnVideoFinished;
     }
 
+    public void StopCutscene()
+    {
+        if (videoPlayer != null)
+        {
+            videoPlayer.Stop(); // completely stops video + audio
+        }
+    }
+
     private void OnVideoFinished(VideoPlayer vp)
     {
         if (menuManager != null) {

@@ -8,6 +8,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject tutorialPopupUI;
     [SerializeField] private float tutorialPopupDelay = 2f;
 
+    public IntroCutscenePlayer cutscenePlayer;
+
     // PUBLIC function you can assign to a Button
     public void ShowTutorialPopupAfterDelay()
     {
@@ -26,18 +28,26 @@ public class MenuManager : MonoBehaviour
 
     public void OnTutorialYesClicked()
     {
-        if (SoundManager.Instance != null && SoundManager.Instance.clickedSound != null) {
+        if (SoundManager.Instance != null && SoundManager.Instance.clickedSound != null)
+        {
             SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         }
+
+        cutscenePlayer?.StopCutscene(); // STOP VIDEO
+
         tutorialPopupUI?.SetActive(false);
         //SceneManager.LoadScene("TutorialScene");
     }
 
     public void OnTutorialSkipClicked()
     {
-        if (SoundManager.Instance != null && SoundManager.Instance.clickedSound != null) {
+        if (SoundManager.Instance != null && SoundManager.Instance.clickedSound != null)
+        {
             SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         }
+
+        cutscenePlayer?.StopCutscene(); // STOP VIDEO
+
         tutorialPopupUI?.SetActive(false);
         //SceneManager.LoadScene("BiomeOptimized");
     }
