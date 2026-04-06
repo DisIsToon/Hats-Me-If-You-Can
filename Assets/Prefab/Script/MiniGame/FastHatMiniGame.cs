@@ -254,6 +254,14 @@ public class FastHatMinigame : MonoBehaviour
             SoundManager.Instance.PlaySFX(SoundManager.Instance.fastHatCaptureSound.clip);
             GameTracker.Instance.CaptureHat("FastHat");
             GameTracker.Instance.fastHatAlreadyCaptured = true;
+
+            // ✅ Trigger Tutorial Step 17 ONLY if in tutorial mode
+            if (NewHatalougeManager.Instance != null &&
+                NewHatalougeManager.Instance.notTutorial == false &&
+                TutorialManager.Instance != null)
+            {
+                TutorialManager.Instance.ShowTutorialUI17();
+            }
         }
 
         // ✅ On success, show Chase

@@ -22,6 +22,24 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
 
     public GameObject equipmentHintUI;
 
+    bool IsAnyMinigameMainScreenOpen()
+    {
+        if (fastHatMinigame != null && fastHatMinigame.mainScreen.activeSelf)
+            return true;
+
+        if (jumpHatMinigame != null && jumpHatMinigame.mainScreen.activeSelf)
+            return true;
+
+        if (shyHatMinigame != null && shyHatMinigame.mainScreen.activeSelf)
+            return true;
+
+        return false;
+    }
+
+    [Header("Minigame References")]
+    public FastHatMinigame fastHatMinigame;
+    public JumpHatMinigame jumpHatMinigame;
+    public ShyHatMinigame shyHatMinigame;
 
     private void Awake()
     {
@@ -165,6 +183,33 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
         {
             SelectQuickSlot(3);
         }
+
+        HandleEquipmentHintVisibility();
+    }
+
+    void HandleEquipmentHintVisibility()
+    {
+        // If any minigame main screen is open → ALWAYS hide hint
+        if (IsAnyMinigameMainScreenOpen())
+        {
+            if (equipmentHintUI.activeSelf)
+                equipmentHintUI.SetActive(false);
+
+            return;
+        }
+
+        // If no minigame UI is open
+        // Show hint ONLY if player is selecting an item
+        if (selectedItem != null && selectedNumber != -1)
+        {
+            if (!equipmentHintUI.activeSelf)
+                equipmentHintUI.SetActive(true);
+        }
+        else
+        {
+            if (equipmentHintUI.activeSelf)
+                equipmentHintUI.SetActive(false);
+        }
     }
 
     public GameObject FindSlotWithItem(string itemName)
@@ -204,7 +249,7 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
         {
             if(selectedNumber != number)
             {
-                equipmentHintUI.SetActive(true);
+               
 
                 selectedNumber = number; 
 
@@ -235,7 +280,7 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
             }
             else // We are trying to select the same slot
             {
-                equipmentHintUI.SetActive(false);
+        
 
                 selectedNumber = -1; //null
 

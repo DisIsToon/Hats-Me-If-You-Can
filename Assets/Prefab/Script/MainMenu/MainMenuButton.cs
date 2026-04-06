@@ -102,6 +102,7 @@ public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void TogglePanels(GameObject activePanel)
     {
+        Debug.Log("TogglePanelsTogglePanelsTogglePanelsTogglePanelsTogglePanels");
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         if (settingsPanel != null) settingsPanel.SetActive(false);
         if (creditsPanel != null) creditsPanel.SetActive(false);

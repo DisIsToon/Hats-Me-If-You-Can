@@ -256,9 +256,9 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &466024426 stripped
+--- !u!114 &618705579 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2545932802143843150, guid: 3bd07fc3e170ab74b8c53c5c235c0379, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5514558639533685447, guid: 3bd07fc3e170ab74b8c53c5c235c0379, type: 3}
   m_PrefabInstance: {fileID: 2646951676332054180}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -388,17 +388,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!114 &1695696490 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2282789990042494787, guid: 3bd07fc3e170ab74b8c53c5c235c0379, type: 3}
-  m_PrefabInstance: {fileID: 2646951676332054180}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1955352180 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6685298877686101059, guid: 3bd07fc3e170ab74b8c53c5c235c0379, type: 3}
@@ -464,11 +453,11 @@ PrefabInstance:
     - target: {fileID: 5467018053412032190, guid: 1d9c91689d669cc4cbdeb801f5f8f87e, type: 3}
       propertyPath: bgmSlider
       value: 
-      objectReference: {fileID: 1695696490}
+      objectReference: {fileID: 618705579}
     - target: {fileID: 5467018053412032190, guid: 1d9c91689d669cc4cbdeb801f5f8f87e, type: 3}
       propertyPath: sfxSlider
       value: 
-      objectReference: {fileID: 466024426}
+      objectReference: {fileID: 618705579}
     - target: {fileID: 5467018053412032190, guid: 1d9c91689d669cc4cbdeb801f5f8f87e, type: 3}
       propertyPath: menuScreen
       value: 
@@ -569,6 +558,10 @@ PrefabInstance:
     - target: {fileID: 7620106322593596739, guid: 3bd07fc3e170ab74b8c53c5c235c0379, type: 3}
       propertyPath: m_Name
       value: Canvas Old Menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 9204965077985844564, guid: 3bd07fc3e170ab74b8c53c5c235c0379, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -32,9 +32,11 @@ public class SaveSlot : MonoBehaviour
             hasData = false;
             noDataContent.SetActive(true);
             hasDataContent.SetActive(false);
+            Debug.Log("SetData and data == null");
         }
         else
         {
+            Debug.Log("SetData and data is not null");
             hasData = true;
             noDataContent.SetActive(false);
             hasDataContent.SetActive(true);

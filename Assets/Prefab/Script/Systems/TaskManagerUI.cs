@@ -5,6 +5,10 @@ using TMPro;
 public class TaskManagerUI : MonoBehaviour
 {
     public TextMeshProUGUI taskText;
+    public GameObject taskBG;      // drag your Task background here
+    public GameObject taskTextObj; // drag the Text (or parent) here
+
+    private bool isVisible = true;
 
     private List<Task> tasks = new List<Task>();
 
@@ -16,6 +20,14 @@ public class TaskManagerUI : MonoBehaviour
     void Update()
     {
         UpdateCurrentTask();
+    }
+
+    public void ToggleTaskUI()
+    {
+        isVisible = !isVisible;
+
+        taskBG.SetActive(isVisible);
+        taskTextObj.SetActive(isVisible);
     }
 
     void SetupTasks()

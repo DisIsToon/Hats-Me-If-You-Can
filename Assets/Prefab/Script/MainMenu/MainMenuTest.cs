@@ -24,7 +24,7 @@ public class MainMenuTest : Menu
         if (!DataPersistenceManager.instance.HasGameData())
         {
             continuegameButton.interactable = false;
-            loadGameButton.interactable = false;
+         
         }
     }
 
@@ -35,7 +35,7 @@ public class MainMenuTest : Menu
     }
     public void OnNewGameClicked()
     {
-        Debug.Log("OnNewGameClicked Clicked");
+        Debug.LogWarning("OnNewGameClicked Clicked");
         saveSlotsMenu.ActivateMenu(false);
         this.DeactivateMenu();
     }
