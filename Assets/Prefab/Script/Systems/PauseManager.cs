@@ -15,9 +15,6 @@ public class PauseManager : MonoBehaviour
     public bool isOpenPause;   // Tracks pause screen
     public bool isOpenSetting; // Tracks settings screen
 
-
-    public GameData data = new GameData();
-
     [Header("Save Popup Settings")]
     public GameObject savedPopup; // Assign in Inspector
     public float popupFadeDuration = 1f; // how long it fades out
@@ -31,6 +28,14 @@ public class PauseManager : MonoBehaviour
             Destroy(gameObject);
         }
         else Instance = this;
+    }
+
+    void Start()
+    {
+        if (GameDataManager2.Instance.currentData != null)
+        {
+            OnLoadButton();
+        }
     }
 
     void Update()
@@ -142,22 +147,55 @@ NewHatalougeManager.Instance.notTutorial == false)
     {
         Debug.Log("Save Clicked");
         SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
-        CardsController.Instance.SaveData(data);
-        WinterBarrierSystem.Instance.SaveData(data);
-        RealWinterBarrierSystem.Instance.SaveData(data);
-        GameTracker.Instance.SaveData(data);
 
-        // Start the popup coroutine
+        // Only allow saving in BiomeOptimized
+        if (SceneManager.GetActiveScene().name != "BiomeOptimized")
+        {
+            Debug.LogWarning("Saving only allowed in BiomeOptimized scene!");
+            return;
+        }
+
+        // Use GameDataManager2's data
+        GameData2 saveData = GameDataManager2.Instance.currentData;
+
+        if (saveData == null)
+        {
+            Debug.LogError("No GameData2 found! Did you start/load a slot?");
+            return;
+        }
+
+       
+        // Transfer your current systems into saveData
+        CardsController.Instance.SaveData(saveData);
+        WinterBarrierSystem.Instance.SaveData(saveData);
+        RealWinterBarrierSystem.Instance.SaveData(saveData);
+        GameTracker.Instance.SaveData(saveData);
+        
+        // SAVE TO SLOT
+        GameDataManager2.Instance.SaveGame();
+
+        // Show popup
         StartCoroutine(ShowSavePopup());
     }
 
     public void OnLoadButton()
     {
         SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
-        CardsController.Instance.LoadData(data);
-        WinterBarrierSystem.Instance.LoadData(data);
-        RealWinterBarrierSystem.Instance.LoadData(data);
-        GameTracker.Instance.LoadData(data);
+
+        GameData2 loadData = GameDataManager2.Instance.currentData;
+
+        if (loadData == null)
+        {
+            Debug.LogError("No GameData2 loaded!");
+            return;
+        }
+
+      
+        CardsController.Instance.LoadData(loadData);
+        WinterBarrierSystem.Instance.LoadData(loadData);
+        RealWinterBarrierSystem.Instance.LoadData(loadData);
+        GameTracker.Instance.LoadData(loadData);
+        
     }
 
     public void OnSettingButton()

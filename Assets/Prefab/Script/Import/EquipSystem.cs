@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class EquipSystem : MonoBehaviour, IDataPersistence
+public class EquipSystem : MonoBehaviour
 {
     public static EquipSystem Instance { get; set; }
  
@@ -59,7 +59,7 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
         PopulateSlotList();
     }
 
-    public void SaveData(GameData data)
+    public void SaveData(GameData2 data)
     {
         data.equippedItems.Clear();
         data.equippedStacks.Clear();
@@ -71,7 +71,8 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
                 GameObject item = slot.transform.GetChild(0).gameObject;
                 string itemName = item.name.Replace("(Clone)", "");
 
-                TextMeshProUGUI stackText = item.transform.Find("StackText")?.GetComponent<TextMeshProUGUI>();
+                TextMeshProUGUI stackText =
+                    item.transform.Find("StackText")?.GetComponent<TextMeshProUGUI>();
 
                 int stack = 1;
                 if (stackText != null)
@@ -80,10 +81,16 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
                 data.equippedItems.Add(itemName);
                 data.equippedStacks.Add(stack);
             }
+            else
+            {
+                // IMPORTANT: preserve empty slot
+                data.equippedItems.Add("");
+                data.equippedStacks.Add(0);
+            }
         }
     }
 
-    public void LoadData(GameData data)
+    public void LoadData(GameData2 data)
     {
         // CLEAR
         foreach (GameObject slot in quickSlotsList)
@@ -94,18 +101,24 @@ public class EquipSystem : MonoBehaviour, IDataPersistence
             }
         }
 
-        // REBUILD
+        // REBUILD EXACT SLOT INDEX
         for (int i = 0; i < data.equippedItems.Count; i++)
         {
+            if (i >= quickSlotsList.Count) break;
+
             string itemName = data.equippedItems[i];
             int stack = data.equippedStacks[i];
 
-            GameObject slot = FindNextEmptySlot();
+            if (string.IsNullOrEmpty(itemName)) continue;
+
+            GameObject slot = quickSlotsList[i];
 
             GameObject item = Instantiate(Resources.Load<GameObject>(itemName),
                 slot.transform);
 
-            TextMeshProUGUI stackText = item.transform.Find("StackText")?.GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI stackText =
+                item.transform.Find("StackText")?.GetComponent<TextMeshProUGUI>();
+
             if (stackText != null)
                 stackText.text = stack.ToString();
         }

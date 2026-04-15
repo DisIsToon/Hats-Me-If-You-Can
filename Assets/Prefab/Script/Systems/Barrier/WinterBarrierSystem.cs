@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using Unity.Cinemachine;
 
-public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
+public class WinterBarrierSystem : MonoBehaviour
 {
     public static WinterBarrierSystem Instance { get; private set; }
 
@@ -49,15 +49,24 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         }
     }
 
-    public void LoadData(GameData data)
+    public void LoadData(GameData2 data)
     {
         WBBarrierAlreadyOpened = data.WBBarrierAlreadyOpened;
 
-        if (WBBarrierAlreadyOpened)
+        // NEW: check biome discovery
+        if (data.castleRuinAlreadyDiscovered)
+        {
             DisableBarrier();
+        }
+
+        // Existing logic (optional)
+        if (WBBarrierAlreadyOpened)
+        {
+            DisableBarrier();
+        }
     }
 
-    public void SaveData(GameData data)
+    public void SaveData(GameData2 data)
     {
         data.WBBarrierAlreadyOpened = WBBarrierAlreadyOpened;
     }
@@ -72,6 +81,11 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
         // keep puzzle camera inactive at start
         if (puzzleCamera)
             puzzleCamera.Priority = 0;
+
+        if (GameDataManager2.Instance.currentData != null)
+        {
+            LoadData(GameDataManager2.Instance.currentData);
+        }
     }
 
     public void PlayerHitBarrier()
@@ -159,7 +173,7 @@ public class WinterBarrierSystem : MonoBehaviour, IDataPersistence
             puzzleCamera.Priority = 0;
     }
 
-    private void DisableBarrier()
+    public void DisableBarrier()
     {
         if (boxCollider) boxCollider.enabled = false;
         if (meshRenderer) meshRenderer.enabled = false;

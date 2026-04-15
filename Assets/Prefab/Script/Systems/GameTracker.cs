@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 using TMPro;
 
-public class GameTracker : MonoBehaviour, IDataPersistence
+public class GameTracker : MonoBehaviour
 {
     public static GameTracker Instance { get; set; }
 
@@ -19,6 +19,11 @@ public class GameTracker : MonoBehaviour, IDataPersistence
     public bool jumpHatCaptured = false;
     public bool openedFrozenGate = false;
     public bool puzzleComplete = false;
+
+    [Header("Hat GameObjects in Scene")]
+    public GameObject shyHatObject;
+    public GameObject fastHatObject;
+    public GameObject jumpHatObject;
 
     [Header("Quest Completion Bools")]
     public bool questCompleteLira = false;
@@ -71,6 +76,10 @@ public class GameTracker : MonoBehaviour, IDataPersistence
     public bool winterBiomeAlreadyDiscovered;
     public bool springGardenAlreadyDiscovered;
 
+    public bool castleRuinDiscovered;
+    public bool winterBiomeDiscovered;
+    public bool springGardenDiscovered;
+
     public GameObject allHatsCapturedObject; // assign in inspector
     public GameObject endingHintScreen;
 
@@ -98,124 +107,117 @@ public class GameTracker : MonoBehaviour, IDataPersistence
                NewHatalougeManager.Instance.notTutorial == false;
     }
 
-    public void LoadData(GameData data)
+    public void LoadData(GameData2 data)
     {
-        if (IsTutorial()) return; // skip loading in tutorial
+        if (IsTutorial()) return;
 
-        // ----- LOAD RAW BOOLS -----
-        this.shyHatAlreadyCaptured = data.shyHatAlreadyCaptured;
-        this.fastHatAlreadyCaptured = data.fastHatAlreadyCaptured;
-        this.jumpHatAlreadyCaptured = data.jumpHatAlreadyCaptured;
+        Debug.Log("GameTracker: Loading Data...");
 
-        this.questAlreadyCompleteLira = data.questAlreadyCompleteLira;
-        this.questAlreadyCompleteMallow = data.questAlreadyCompleteMallow;
-        this.questAlreadyCompleteTulip = data.questAlreadyCompleteTulip;
+        // LOAD FROM SAVE - INTO GAME
+        shyHatCaptured = data.shyHatAlreadyCaptured;
+        fastHatCaptured = data.fastHatAlreadyCaptured;
+        jumpHatCaptured = data.jumpHatAlreadyCaptured;
 
-        this.castleRuinAlreadyDiscovered = data.castleRuinAlreadyDiscovered;
-        this.winterBiomeAlreadyDiscovered = data.winterBiomeAlreadyDiscovered;
-        this.springGardenAlreadyDiscovered = data.springGardenAlreadyDiscovered;
+        questCompleteLira = data.questAlreadyCompleteLira;
+        questCompleteMallow = data.questAlreadyCompleteMallow;
+        questCompleteTulip = data.questAlreadyCompleteTulip;
 
+        castleRuinDiscovered = data.castleRuinAlreadyDiscovered;
+        winterBiomeDiscovered = data.winterBiomeAlreadyDiscovered;
+        springGardenDiscovered = data.springGardenAlreadyDiscovered;
 
-        // ============================================
-        // --- APPLY EFFECTS BASED ON LOADED DATA ------
-        // ============================================
+        ApplyLoadedData();
+    }
 
-
-        // ----- HATS -----
-        if (shyHatAlreadyCaptured)
+    private void ApplyLoadedData()
+    {
+        // HATS
+        if (shyHatCaptured)
         {
-            shyHatCaptured = true;
             NewHatalougeManager.Instance.DiscoverShyHat();
-            // ADD LINE TO REMOVE THE HAT FROM THE SCENE
+
+            if (shyHatObject != null)
+                shyHatObject.SetActive(false); // 🔥 hide in scene
         }
 
-        if (fastHatAlreadyCaptured)
+        if (fastHatCaptured)
         {
-            fastHatCaptured = true;
             NewHatalougeManager.Instance.DiscoverFastHat();
-            // ADD LINE TO REMOVE THE HAT FROM THE SCENE
+
+            if (fastHatObject != null)
+                fastHatObject.SetActive(false);
         }
 
-        if (jumpHatAlreadyCaptured)
+        if (jumpHatCaptured)
         {
-            jumpHatCaptured = true;
             NewHatalougeManager.Instance.DiscoverLazyHat();
-            // ADD LINE TO REMOVE THE HAT FROM THE SCENE
+
+            if (jumpHatObject != null)
+                jumpHatObject.SetActive(false);
         }
 
-
-        // ----- QUESTS -----
-        if (questAlreadyCompleteLira)
-        {
-            questCompleteLira = true;
+        // QUESTS
+        if (questCompleteLira)
             NewHatalougeManager.Instance.quest1Found = true;
-            NewHatalougeManager.Instance.UpdateQuestScreen();
-        }
 
-        if (questAlreadyCompleteMallow)
-        {
-            questCompleteMallow = true;
+        if (questCompleteMallow)
             NewHatalougeManager.Instance.quest2Found = true;
-            NewHatalougeManager.Instance.UpdateQuestScreen();
-        }
 
-        if (questAlreadyCompleteTulip)
-        {
-            questCompleteTulip = true;
+        if (questCompleteTulip)
             NewHatalougeManager.Instance.quest3Found = true;
-            NewHatalougeManager.Instance.UpdateQuestScreen();
-        }
 
+        NewHatalougeManager.Instance.UpdateQuestScreen();
 
-        // ----- BIOMES -----
-        if (springGardenAlreadyDiscovered)
-        {
-            springGardenNotified = true;
+        // BIOMES
+        if (springGardenDiscovered)
             NewHatalougeManager.Instance.ReachForest();
-        }
 
-        if (castleRuinAlreadyDiscovered)
-        {
-            castleRuinNotified = true; 
-            visitedCastleRuin = true;
+        if (castleRuinDiscovered)
             NewHatalougeManager.Instance.ReachCastle();
-        }
 
-        if (winterBiomeAlreadyDiscovered)
-        {
-            winterBiomeNotified = true;
-            visitedWinterForest = true;
+        if (winterBiomeDiscovered)
             NewHatalougeManager.Instance.ReachWinter();
-        }
     }
 
 
-    public void SaveData(GameData data)
+    public void SaveData(GameData2 data)
     {
-        if (IsTutorial()) return; // skip saving in tutorial
+        if (IsTutorial()) return;
 
-        data.shyHatAlreadyCaptured = this.shyHatAlreadyCaptured;
-        data.fastHatAlreadyCaptured = this.fastHatAlreadyCaptured;
-        data.jumpHatAlreadyCaptured = this.jumpHatAlreadyCaptured;
+        Debug.Log("GameTracker: Saving Data...");
 
-        data.questAlreadyCompleteLira = this.questAlreadyCompleteLira;
-        data.questAlreadyCompleteMallow = this.questAlreadyCompleteMallow;
-        data.questAlreadyCompleteTulip = this.questAlreadyCompleteTulip;
+        // SAVE FROM GAME → INTO DATA
+        data.shyHatAlreadyCaptured = shyHatCaptured;
+        data.fastHatAlreadyCaptured = fastHatCaptured;
+        data.jumpHatAlreadyCaptured = jumpHatCaptured;
 
-        data.castleRuinAlreadyDiscovered = this.castleRuinAlreadyDiscovered;
-        data.winterBiomeAlreadyDiscovered = this.winterBiomeAlreadyDiscovered;
-        data.springGardenAlreadyDiscovered = this.springGardenAlreadyDiscovered;
+        data.questAlreadyCompleteLira = questCompleteLira;
+        data.questAlreadyCompleteMallow = questCompleteMallow;
+        data.questAlreadyCompleteTulip = questCompleteTulip;
+
+        data.castleRuinAlreadyDiscovered = castleRuinDiscovered;
+        data.winterBiomeAlreadyDiscovered = winterBiomeDiscovered;
+        data.springGardenAlreadyDiscovered = springGardenDiscovered;
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
-        if (player == null)
-            Debug.LogError("Player GameObject not assigned in GameManager!");
-
         // Hide the RawImage at start
         if (videoRawImage != null)
             videoRawImage.gameObject.SetActive(false);
 
+        // wait 1 frame to ensure GameDataManager2 is ready
+        yield return null;
+
+        if (GameDataManager2.Instance != null &&
+            GameDataManager2.Instance.currentData != null)
+        {
+            LoadData(GameDataManager2.Instance.currentData);
+        }
+        else
+        {
+            Debug.LogWarning("GameTracker: No data found on start");
+        }
     }
 
     public void Update()
@@ -391,13 +393,18 @@ public class GameTracker : MonoBehaviour, IDataPersistence
             SoundManager.Instance.SwitchBiomeMusic("Forest");
 
 
-            // forest can notify multiple times � but only first time plays discovery
+            // forest can notify multiple times — but only first time plays discovery
             if (!springGardenNotified)
             {
-                
                 springGardenNotified = true;
+
+                // ✅ ADD THIS
+                springGardenDiscovered = true;
+
                 NotifUIManager.Instance.NotifyBiomeDiscovered("Spring Garden");
                 NewHatalougeManager.Instance.ReachForest();
+
+                GameDataManager2.Instance.SaveGame();
             }
             return;
         }
@@ -412,11 +419,16 @@ public class GameTracker : MonoBehaviour, IDataPersistence
 
             if (!castleRuinNotified)
             {
-                
                 castleRuinNotified = true;
+
+                // ✅ ADD THIS
+                castleRuinDiscovered = true;
+
                 NotifUIManager.Instance.NotifyBiomeDiscovered("Castle Ruins");
                 visitedCastleRuin = true;
                 NewHatalougeManager.Instance.ReachCastle();
+
+                GameDataManager2.Instance.SaveGame();
             }
             return;
         }
@@ -431,20 +443,30 @@ public class GameTracker : MonoBehaviour, IDataPersistence
 
             if (!winterBiomeNotified)
             {
-                
                 winterBiomeNotified = true;
+
+                // ✅ ADD THIS
+                winterBiomeDiscovered = true;
+
                 NotifUIManager.Instance.NotifyBiomeDiscovered("Winter Forest");
                 visitedWinterForest = true;
                 NewHatalougeManager.Instance.ReachWinter();
+
+                GameDataManager2.Instance.SaveGame();
             }
             return;
         }
+
+        // AUTO SAVE
+        GameDataManager2.Instance.SaveGame();
     }
 
     public void SetPuzzleComplete(bool value)
     {
         puzzleComplete = value;
         Debug.Log("Puzzle Complete Status Updated: " + value);
+        // AUTO SAVE
+        GameDataManager2.Instance.SaveGame();
     }
 
     public bool IsPuzzleComplete()
@@ -511,6 +533,9 @@ public class GameTracker : MonoBehaviour, IDataPersistence
             allHatsCapturedObject.SetActive(true);
             StartCoroutine(ShowAllHatsCapturedPopup());
         }
+
+        // AUTO SAVE
+        GameDataManager2.Instance.SaveGame();
     }
 
     // --- Complete a quest ---
@@ -522,6 +547,7 @@ public class GameTracker : MonoBehaviour, IDataPersistence
                 questCompleteLira = true;
                 NewHatalougeManager.Instance.quest1Found = true;   // unlock quest page 1
                 NewHatalougeManager.Instance.UpdateQuestScreen();
+                GameDataManager2.Instance.SaveGame();
                 Debug.Log("Lira's quest completed!");
                 break;
 
@@ -529,6 +555,7 @@ public class GameTracker : MonoBehaviour, IDataPersistence
                 questCompleteMallow = true;
                 NewHatalougeManager.Instance.quest2Found = true;   // unlock quest page 2
                 NewHatalougeManager.Instance.UpdateQuestScreen();
+                GameDataManager2.Instance.SaveGame();
                 Debug.Log("Mallow's quest completed!");
                 break;
 
@@ -536,6 +563,7 @@ public class GameTracker : MonoBehaviour, IDataPersistence
                 questCompleteTulip = true;
                 NewHatalougeManager.Instance.quest3Found = true;   // unlock quest page 3
                 NewHatalougeManager.Instance.UpdateQuestScreen();
+                GameDataManager2.Instance.SaveGame();
                 Debug.Log("Tulip's quest completed!");
                 break;
 

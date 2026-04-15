@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using Unity.Cinemachine;
 
-public class RealWinterBarrierSystem : MonoBehaviour, IDataPersistence
+public class RealWinterBarrierSystem : MonoBehaviour
 {
     public static RealWinterBarrierSystem Instance { get; private set; }
 
@@ -53,15 +53,25 @@ public class RealWinterBarrierSystem : MonoBehaviour, IDataPersistence
     // -------------------------------------------------------
     //  SAVE / LOAD
     // -------------------------------------------------------
-    public void LoadData(GameData data)
+
+    public void LoadData(GameData2 data)
     {
         WBBarrierAlreadyOpened = data.WBBarrierAlreadyOpened;
 
-        if (WBBarrierAlreadyOpened)
+        // NEW: check biome discovery
+        if (data.winterBiomeAlreadyDiscovered)
+        {
             DisableBarrier();
+        }
+
+        // Existing logic (optional)
+        if (WBBarrierAlreadyOpened)
+        {
+            DisableBarrier();
+        }
     }
 
-    public void SaveData(GameData data)
+    public void SaveData(GameData2 data)
     {
         data.WBBarrierAlreadyOpened = WBBarrierAlreadyOpened;
     }
@@ -78,6 +88,11 @@ public class RealWinterBarrierSystem : MonoBehaviour, IDataPersistence
 
         // Keep puzzle Cinemachine camera lower priority at start
         if (puzzleCamera) puzzleCamera.Priority = 0;
+
+        if (GameDataManager2.Instance.currentData != null)
+        {
+            LoadData(GameDataManager2.Instance.currentData);
+        }
     }
 
     // -------------------------------------------------------
@@ -187,7 +202,7 @@ public class RealWinterBarrierSystem : MonoBehaviour, IDataPersistence
     // -------------------------------------------------------
     //  DISABLE BARRIER OBJECT
     // -------------------------------------------------------
-    private void DisableBarrier()
+    public void DisableBarrier()
     {
         if (boxCollider) boxCollider.enabled = false;
         if (meshRenderer) meshRenderer.enabled = false;

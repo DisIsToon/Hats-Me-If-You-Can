@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class CardsController : MonoBehaviour, IDataPersistence
+public class CardsController : MonoBehaviour
 {
     public static CardsController Instance { get; set; }
 
@@ -59,7 +59,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
         }
     }
 
-    public void LoadData(GameData data)
+    public void LoadData(GameData2 data)
     {
         this.mirrorClaimed = data.mirrorClaimed;
 
@@ -71,7 +71,7 @@ public class CardsController : MonoBehaviour, IDataPersistence
         }
     }
 
-    public void SaveData(GameData data)
+    public void SaveData(GameData2 data)
     {
         data.mirrorClaimed = this.mirrorClaimed;
     }
@@ -83,6 +83,11 @@ public class CardsController : MonoBehaviour, IDataPersistence
         CreateCards();
         PuzzleScreen.SetActive(false);
         timerText.gameObject.SetActive(false);
+
+        if (GameDataManager2.Instance.currentData != null)
+        {
+            LoadData(GameDataManager2.Instance.currentData);
+        }
     }
 
     private void Update()

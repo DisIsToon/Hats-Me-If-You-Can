@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class InventorySystem : MonoBehaviour, IDataPersistence
+public class InventorySystem : MonoBehaviour
 {
     public GameObject ItemInfoUI;
 
@@ -75,10 +75,9 @@ public class InventorySystem : MonoBehaviour, IDataPersistence
                 Destroy(child.gameObject);
             }
         }
-
     }
 
-    public void SaveData(GameData data)
+    public void SaveData(GameData2 data)
     {
         if (NewHatalougeManager.Instance != null &&
             NewHatalougeManager.Instance.notTutorial == false)
@@ -102,10 +101,16 @@ public class InventorySystem : MonoBehaviour, IDataPersistence
                 data.inventoryItems.Add(itemName);
                 data.inventoryStacks.Add(stack);
             }
+            else
+            {
+                // 🔥 ADD EMPTY SLOT PLACEHOLDER
+                data.inventoryItems.Add("");
+                data.inventoryStacks.Add(0);
+            }
         }
     }
 
-    public void LoadData(GameData data)
+    public void LoadData(GameData2 data)
     {
         if (NewHatalougeManager.Instance != null &&
             NewHatalougeManager.Instance.notTutorial == false)
@@ -120,19 +125,34 @@ public class InventorySystem : MonoBehaviour, IDataPersistence
             }
         }
 
-        // REBUILD
+        // REBUILD PROPERLY
         for (int i = 0; i < data.inventoryItems.Count; i++)
         {
+            if (i >= slotList.Count) break;
+
             string itemName = data.inventoryItems[i];
             int stack = data.inventoryStacks[i];
 
-            GameObject slot = FindNextEmptySlot();
+            if (string.IsNullOrEmpty(itemName))
+                continue;
 
-            GameObject item = Instantiate(Resources.Load<GameObject>(itemName),
-                slot.transform);
+            GameObject slot = slotList[i];
 
-            TextMeshProUGUI stackText = item.transform.Find("StackText").GetComponent<TextMeshProUGUI>();
-            stackText.text = stack.ToString();
+            GameObject prefab = Resources.Load<GameObject>(itemName);
+
+            if (prefab == null)
+            {
+                Debug.LogError("Missing prefab in Resources: " + itemName);
+                continue;
+            }
+
+            GameObject item = Instantiate(prefab, slot.transform);
+
+            TextMeshProUGUI stackText = item.transform.Find("StackText")
+                ?.GetComponent<TextMeshProUGUI>();
+
+            if (stackText != null)
+                stackText.text = stack.ToString();
         }
 
         ReCalculateList();
