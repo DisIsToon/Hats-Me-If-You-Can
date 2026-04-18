@@ -121,9 +121,9 @@ public class EquipSystem : MonoBehaviour
             rt.localScale = Vector3.one;
             rt.anchoredPosition = Vector2.zero;
 
-            rt.anchorMin = new Vector2(0.5f, 0.5f);
-            rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.anchorMin = new Vector2(0.25f, 0.25f);
+            rt.anchorMax = new Vector2(0.25f, 0.25f);
+            rt.pivot = new Vector2(0.25f, 0.25f);
 
             rt.sizeDelta = new Vector2(32, 32);
 

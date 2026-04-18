@@ -415,7 +415,7 @@ public class TutorialManager : MonoBehaviour
 
     public void ShowTutorialUI17()
     {
-        if (currentStep != 16) return;
+        if (!tutorialActive) return;
 
         StartCoroutine(Show17AfterDelay());
     }
@@ -423,6 +423,13 @@ public class TutorialManager : MonoBehaviour
     IEnumerator Show17AfterDelay()
     {
         yield return new WaitForSecondsRealtime(1f);
+
+        // Force progression safely
+        if (currentStep < 16)
+        {
+            CompleteStep(15);
+            currentStep = 16;
+        }
 
         CompleteStep(16);
         ShowStep(17);

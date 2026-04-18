@@ -109,7 +109,7 @@ public class CardsController : MonoBehaviour
 
             if (currentTime <= 0f)
             {
-                SoundManager.Instance.PlaySFX(SoundManager.Instance.puzzleGameOverSound.clip);
+                //SoundManager.Instance.PlaySFX(SoundManager.Instance.puzzleGameOverSound.clip);
                 //Debug.Log("Card Controller Time off");
                 timerRunning = false;
                 PuzzleScreenOff();
