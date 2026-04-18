@@ -34,8 +34,12 @@ public class ClickerBarrier : MonoBehaviour
     public Vector2 randomSpawnOffset = new Vector2(300f, 150f);
     public float fallSpeed = 100f;
 
+    public static bool IsAnyBarrierGameActive = false;
+
     public void StartGame()
     {
+        IsAnyBarrierGameActive = true;
+
         MainScreen.SetActive(false);
         InventoryBTN.SetActive(false);
         QuickSlotScreen.SetActive(false);
@@ -158,6 +162,7 @@ public class ClickerBarrier : MonoBehaviour
 
     public void Victory()
     {
+
         SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound.clip);
         gameEnded = true;
 
@@ -171,6 +176,8 @@ public class ClickerBarrier : MonoBehaviour
         QuickSlotScreen.SetActive(true);
         InventoryBTN.SetActive(true);
         StartCoroutine(ShowVictoryPopup());
+
+        IsAnyBarrierGameActive = false;
     }
 
     public void GameOver()
@@ -187,5 +194,7 @@ public class ClickerBarrier : MonoBehaviour
         QuickSlotScreen.SetActive(true);
         InventoryBTN.SetActive(true);
         StartCoroutine(ShowGameOverPopup());
+
+        IsAnyBarrierGameActive = false;
     }
 }

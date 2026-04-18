@@ -161,6 +161,9 @@ public class Throw : MonoBehaviour
             uiBlocked = true;
         }
 
+        if (ClickerBarrier.IsAnyBarrierGameActive)
+            uiBlocked = true;
+
         if (!uiBlocked && Input.GetMouseButtonDown(0))
         {
             ThrowHeldItem();

@@ -197,9 +197,22 @@ public class NewHatalougeManager : MonoBehaviour
     {
         // Toggle journal with H key
         if (Input.GetKeyDown(KeyCode.H) && !isOpen)
+        {
+            //  BLOCK if crafting is open
+            if (CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen)
+                return;
+
+            //  BLOCK if inventory is open
+            if (InventorySystem.Instance != null && InventorySystem.Instance.isOpen)
+                return;
+
             OpenJournal();
+        }
         else if (Input.GetKeyDown(KeyCode.H) && isOpen)
+        {
             CloseJournal();
+        }
+            
 
         // -------------------------------------------------
         // KEYBINDS FOR NAVIGATION (Q/E or Arrow Keys)

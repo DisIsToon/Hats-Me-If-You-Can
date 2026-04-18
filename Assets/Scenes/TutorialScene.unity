@@ -5472,7 +5472,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1578.0687, y: 254}
+  m_SizeDelta: {x: 1578.0687, y: 489}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &80696853
 MonoBehaviour:
@@ -13488,7 +13488,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3203827199919509835, guid: d68330b65ad164b41bbba2f00683fe8b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.06
+      value: 0.58
       objectReference: {fileID: 0}
     - target: {fileID: 3203827199919509835, guid: d68330b65ad164b41bbba2f00683fe8b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -38786,7 +38786,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 7.4, y: -0.15}
-  m_SizeDelta: {x: 603, y: 112}
+  m_SizeDelta: {x: 851.69, y: 161.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &455748261
 MonoBehaviour:
@@ -39381,7 +39381,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 7.4, y: -0.15}
-  m_SizeDelta: {x: 603, y: 112}
+  m_SizeDelta: {x: 851.69, y: 161.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &468084129
 MonoBehaviour:
@@ -40519,29 +40519,6 @@ MonoBehaviour:
   isOpen: 0
   isOpenPause: 0
   isOpenSetting: 0
-  data:
-    shyHatAlreadyCaptured: 0
-    fastHatAlreadyCaptured: 0
-    jumpHatAlreadyCaptured: 0
-    CRBarrierAlreadyOpened: 0
-    WBBarrierAlreadyOpened: 0
-    mirrorClaimed: 0
-    questAlreadyCompleteLira: 0
-    questAlreadyCompleteMallow: 0
-    questAlreadyCompleteTulip: 0
-    castleRuinAlreadyDiscovered: 0
-    winterBiomeAlreadyDiscovered: 0
-    springGardenAlreadyDiscovered: 0
-    lastUpdated: 0
-    playTime: 0
-    playerPosition: {x: 16, y: -0.8, z: -2}
-    potionsCollected:
-      keys: []
-      values: 
-    inventoryItems: []
-    inventoryStacks: 
-    equippedItems: []
-    equippedStacks: 
   savedPopup: {fileID: 301845191}
   popupFadeDuration: 1
   popupDelay: 1
@@ -69800,8 +69777,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 24, y: -250}
-  m_SizeDelta: {x: 392.4, y: 61.7}
+  m_AnchoredPosition: {x: 46.4, y: -76.2}
+  m_SizeDelta: {x: 392.4, y: 82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &786754207
 MonoBehaviour:
@@ -95356,17 +95333,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1066296835}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0.03141073, w: 0.9995066}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1891526877}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -3.6}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 7.4, y: -0.15}
-  m_SizeDelta: {x: 435, y: 136}
+  m_SizeDelta: {x: 648.7, y: 179.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1066296837
 MonoBehaviour:
@@ -107224,6 +107201,10 @@ MonoBehaviour:
   jumpHatCaptured: 0
   openedFrozenGate: 0
   puzzleComplete: 0
+  rotatingPuzzleComplete: 0
+  shyHatObject: {fileID: 0}
+  fastHatObject: {fileID: 0}
+  jumpHatObject: {fileID: 0}
   questCompleteLira: 0
   questCompleteMallow: 0
   questCompleteTulip: 0
@@ -107253,6 +107234,9 @@ MonoBehaviour:
   castleRuinAlreadyDiscovered: 0
   winterBiomeAlreadyDiscovered: 0
   springGardenAlreadyDiscovered: 0
+  castleRuinDiscovered: 0
+  winterBiomeDiscovered: 0
+  springGardenDiscovered: 0
   allHatsCapturedObject: {fileID: 8445372978987238726}
   endingHintScreen: {fileID: 1621817605}
   hatsPopupDuration: 3
@@ -109007,7 +108991,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1578.0687, y: 254}
+  m_SizeDelta: {x: 1511.066, y: 488}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1222899712
 MonoBehaviour:
@@ -109029,7 +109013,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1513102277, guid: 27406d8b93deacf45881b2c03f4e6e75, type: 3}
+  m_Sprite: {fileID: -1253072337, guid: 27406d8b93deacf45881b2c03f4e6e75, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -110229,7 +110213,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 24, y: -340}
+  m_AnchoredPosition: {x: 28.3, y: -307.8}
   m_SizeDelta: {x: 392.4, y: 61.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1242069537
@@ -114215,17 +114199,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1304590558}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0.03141073, w: 0.9995066}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1222899711}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -3.6}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 7.4, y: -0.15}
-  m_SizeDelta: {x: 435, y: 136}
+  m_SizeDelta: {x: 648.7, y: 179.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1304590560
 MonoBehaviour:
@@ -141806,7 +141790,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1578.0687, y: 254}
+  m_SizeDelta: {x: 1578.0687, y: 488}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1651122514
 MonoBehaviour:
@@ -145233,7 +145217,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1695379035
 RectTransform:
   m_ObjectHideFlags: 0
@@ -167850,7 +167834,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1578.0687, y: 254}
+  m_SizeDelta: {x: 1510.066, y: 489}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1891526878
 MonoBehaviour:
@@ -167872,7 +167856,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1316567129, guid: 27406d8b93deacf45881b2c03f4e6e75, type: 3}
+  m_Sprite: {fileID: -12202171, guid: 27406d8b93deacf45881b2c03f4e6e75, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

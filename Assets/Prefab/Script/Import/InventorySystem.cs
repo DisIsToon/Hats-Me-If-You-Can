@@ -198,6 +198,10 @@ public class InventorySystem : MonoBehaviour
             if (CraftingSystem.Instance != null && CraftingSystem.Instance.isOpen)
                 return;
 
+            //  BLOCK if hatalogue is open
+            if (NewHatalougeManager.Instance != null && NewHatalougeManager.Instance.isOpen)
+                return;
+
             if (!isOpen)
             {
                 OpenInventory();

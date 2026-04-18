@@ -58,7 +58,7 @@ public class NotifUIManager : MonoBehaviour
 
     public void NotifyBarrierComplete()
     {
-        ShowNotification($"Barrier Oppened");
+        ShowNotification($"Barrier Opened");
     }
 
     public void NotifyMeetHeadMaster()
