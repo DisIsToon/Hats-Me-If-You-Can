@@ -106,7 +106,7 @@ public class PuzzleManagerUI : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && canPlayPuzzle && !isOpen && !puzzleComplete)
+        if (Input.GetKeyDown(KeyCode.E) && canPlayPuzzle && !isOpen && !puzzleComplete && !GameTracker.Instance.rotatingPuzzleComplete)
         {
             SelectionManager.Instance.puzzleDetected = false;
             StartCoroutine(OpenPuzzleSequence());
@@ -222,7 +222,9 @@ public class PuzzleManagerUI : MonoBehaviour
         if (timerText != null)
             timerText.text = "";
 
-        GameTracker.Instance.SetPuzzleComplete(true);
+        //GameTracker.Instance.SetPuzzleComplete(true);
+        GameTracker.Instance.rotatingPuzzleComplete = true;
+        GameDataManager2.Instance.SaveGame();
 
         yield return new WaitForSeconds(3f);
 

@@ -10,14 +10,12 @@ public static class SaveSystem2
 
     public static void SaveGame(GameData2 data, int slot)
     {
-        Debug.LogError("Saving data");
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(GetPath(slot), json);
     }
 
     public static GameData2 LoadGame(int slot)
     {
-        Debug.LogError("Loading data");
         string path = GetPath(slot);
 
         if (File.Exists(path))

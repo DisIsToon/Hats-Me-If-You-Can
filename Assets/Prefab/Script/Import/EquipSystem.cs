@@ -113,8 +113,19 @@ public class EquipSystem : MonoBehaviour
 
             GameObject slot = quickSlotsList[i];
 
-            GameObject item = Instantiate(Resources.Load<GameObject>(itemName),
-                slot.transform);
+            GameObject item = Instantiate(Resources.Load<GameObject>(itemName));
+            item.transform.SetParent(slot.transform, false); // 🔥 IMPORTANT
+
+            RectTransform rt = item.GetComponent<RectTransform>();
+
+            rt.localScale = Vector3.one;
+            rt.anchoredPosition = Vector2.zero;
+
+            rt.anchorMin = new Vector2(0.5f, 0.5f);
+            rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+
+            rt.sizeDelta = new Vector2(32, 32);
 
             TextMeshProUGUI stackText =
                 item.transform.Find("StackText")?.GetComponent<TextMeshProUGUI>();

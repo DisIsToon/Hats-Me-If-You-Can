@@ -61,19 +61,12 @@ public class CardsController : MonoBehaviour
 
     public void LoadData(GameData2 data)
     {
-        this.mirrorClaimed = data.mirrorClaimed;
-
-        if (mirrorClaimed)
-        {
-            // Destroy the mirror
-            if (mirror != null)
-                Destroy(mirror);
-        }
+     //
     }
 
     public void SaveData(GameData2 data)
     {
-        data.mirrorClaimed = this.mirrorClaimed;
+        //
     }
 
 
@@ -311,6 +304,7 @@ public class CardsController : MonoBehaviour
         gridContainer.SetActive(false);
         completePuzzlePopup.SetActive(true);
 
+
         // Spawn the mirror shard at mirror's position and rotation
         if (mirrorShardPrefab != null && mirror != null)
         {
@@ -320,6 +314,9 @@ public class CardsController : MonoBehaviour
         // Destroy the mirror
         if (mirror != null)
             Destroy(mirror);
+
+
+        GameTracker.Instance.SetPuzzleComplete(true);
 
         // Close the puzzle screen after 1 second
         StartCoroutine(CompleteSequence());

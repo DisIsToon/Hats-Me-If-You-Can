@@ -7457,6 +7457,7 @@ MonoBehaviour:
   isOpen: 0
   questDone: 0
   npcName: Lou
+  npcID: Lou
   isSimpleNPC: 1
   isSnowmanNPC: 0
   quests:
@@ -43672,29 +43673,6 @@ MonoBehaviour:
   isOpen: 0
   isOpenPause: 0
   isOpenSetting: 0
-  data:
-    shyHatAlreadyCaptured: 0
-    fastHatAlreadyCaptured: 0
-    jumpHatAlreadyCaptured: 0
-    CRBarrierAlreadyOpened: 0
-    WBBarrierAlreadyOpened: 0
-    mirrorClaimed: 0
-    questAlreadyCompleteLira: 0
-    questAlreadyCompleteMallow: 0
-    questAlreadyCompleteTulip: 0
-    castleRuinAlreadyDiscovered: 0
-    winterBiomeAlreadyDiscovered: 0
-    springGardenAlreadyDiscovered: 0
-    lastUpdated: 0
-    playTime: 0
-    playerPosition: {x: 16, y: -0.8, z: -2}
-    potionsCollected:
-      keys: []
-      values: 
-    inventoryItems: []
-    inventoryStacks: 
-    equippedItems: []
-    equippedStacks: 
   savedPopup: {fileID: 203022089}
   popupFadeDuration: 2
   popupDelay: 0.8
@@ -51716,6 +51694,7 @@ MonoBehaviour:
   isOpen: 0
   questDone: 0
   npcName: Ivy
+  npcID: Ivy
   isSimpleNPC: 1
   isSnowmanNPC: 0
   quests:
@@ -86502,6 +86481,7 @@ MonoBehaviour:
   isOpen: 0
   questDone: 0
   npcName: Chase
+  npcID: Chase
   isSimpleNPC: 1
   isSnowmanNPC: 0
   quests:
@@ -114108,7 +114088,11 @@ MonoBehaviour:
   jumpHatCaptured: 0
   openedFrozenGate: 0
   puzzleComplete: 0
-  questCompleteLira: 0
+  rotatingPuzzleComplete: 0
+  shyHatObject: {fileID: 145276715}
+  fastHatObject: {fileID: 299638553}
+  jumpHatObject: {fileID: 235525004}
+  questCompleteLira: 1
   questCompleteMallow: 0
   questCompleteTulip: 0
   videoRawImage: {fileID: 1118308846}
@@ -114137,6 +114121,9 @@ MonoBehaviour:
   castleRuinAlreadyDiscovered: 0
   winterBiomeAlreadyDiscovered: 0
   springGardenAlreadyDiscovered: 0
+  castleRuinDiscovered: 0
+  winterBiomeDiscovered: 0
+  springGardenDiscovered: 0
   allHatsCapturedObject: {fileID: 8445372978987238726}
   endingHintScreen: {fileID: 1621817605}
   hatsPopupDuration: 3
@@ -119471,6 +119458,7 @@ MonoBehaviour:
   isOpen: 0
   questDone: 0
   npcName: Snowman
+  npcID: Snowman
   isSimpleNPC: 0
   isSnowmanNPC: 1
   quests:
@@ -142943,6 +142931,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: npcID
+      value: Lira
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: cotton
       value: 
       objectReference: {fileID: 4242553970714623831, guid: 1a9cffa938c7a784191a8d9563a47f18, type: 3}
@@ -155104,6 +155096,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: npcID
+      value: Mallow
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: npcName
       value: Mallow
       objectReference: {fileID: 0}
@@ -156659,6 +156655,10 @@ PrefabInstance:
       propertyPath: cotton
       value: 
       objectReference: {fileID: 4242553970714623831, guid: 1a9cffa938c7a784191a8d9563a47f18, type: 3}
+    - target: {fileID: 7817259013772116429, guid: affd2c763e2186144aeb379980eab745, type: 3}
+      propertyPath: liraNPC
+      value: 
+      objectReference: {fileID: 2122600657}
     - target: {fileID: 7817259013772116429, guid: affd2c763e2186144aeb379980eab745, type: 3}
       propertyPath: position
       value: 
@@ -176518,6 +176518,10 @@ PrefabInstance:
     - target: {fileID: 792052581637130043, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: m_Center.y
       value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
+      propertyPath: npcID
+      value: Tulip
       objectReference: {fileID: 0}
     - target: {fileID: 2140004886051808143, guid: 63a738a815ab722478b6705d1998fc84, type: 3}
       propertyPath: cotton
@@ -196976,6 +196980,10 @@ PrefabInstance:
     - target: {fileID: 2089111360088296539, guid: 8696eac9282508a48aeb2fdc5ceda8aa, type: 3}
       propertyPath: m_TagString
       value: NPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 2221107561560502487, guid: 8696eac9282508a48aeb2fdc5ceda8aa, type: 3}
+      propertyPath: npcID
+      value: Headmaster
       objectReference: {fileID: 0}
     - target: {fileID: 2221107561560502487, guid: 8696eac9282508a48aeb2fdc5ceda8aa, type: 3}
       propertyPath: dialogUI

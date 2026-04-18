@@ -80,6 +80,18 @@ public class DialogSystem : MonoBehaviour
             case "Lou":
                 NewHatalougeManager.Instance.DiscoverCharLouire();
                 break;
+
+            case "Lira":
+                NewHatalougeManager.Instance.DiscoverCharLira();
+                break;
+
+            case "Mallow":
+                NewHatalougeManager.Instance.DiscoverCharMallow();
+                break;
+
+            case "Tulip":
+                NewHatalougeManager.Instance.DiscoverCharTulip();
+                break;
         }
     }
 

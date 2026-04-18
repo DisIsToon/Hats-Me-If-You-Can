@@ -114,6 +114,32 @@ public class NewHatalougeManager : MonoBehaviour
             Instance = this;
     }
 
+    public void SaveData(GameData2 data)
+    {
+        data.headMasterFound = headMasterFound;
+        data.clumsiFound = clumsiFound;
+        data.ivyFound = ivyFound;
+        data.chaseFound = chaseFound;
+        data.louierFound = louierFound;
+        data.liraFound = liraFound;
+        data.mallowFound = mallowFound;
+        data.tulipFound = tulipFound;
+    }
+
+    public void LoadData(GameData2 data)
+    {
+        headMasterFound = data.headMasterFound;
+        clumsiFound = data.clumsiFound;
+        ivyFound = data.ivyFound;
+        chaseFound = data.chaseFound;
+        louierFound = data.louierFound;
+        liraFound = data.liraFound;
+        mallowFound = data.mallowFound;
+        tulipFound = data.tulipFound;
+
+        UpdateCharacterScreen();
+    }
+
     public void Start()
     {
         // Ensure initial UI state is correct if journal is active or not

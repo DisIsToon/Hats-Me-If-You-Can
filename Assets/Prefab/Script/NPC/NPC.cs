@@ -20,6 +20,9 @@ public class NPC : MonoBehaviour
     [Header("NPC Name")]
     public string npcName;
 
+    [Header("Save ID")]
+    public string npcID;
+
     [Header("Simple NPC Settings")]
     public bool isSimpleNPC = false;
     public bool isSnowmanNPC = false;
@@ -67,6 +70,11 @@ public class NPC : MonoBehaviour
 
     void Start()
     {
+        if (GameDataManager2.Instance != null && GameDataManager2.Instance.currentData != null)
+        {
+            LoadData(GameDataManager2.Instance.currentData);
+        }
+
         if (DialogSystem.Instance == null)
         {
             Debug.LogError("DialogSystem.Instance is NULL! Make sure DialogSystem exists in the scene.");
@@ -106,6 +114,71 @@ public class NPC : MonoBehaviour
         // Find player
         GameObject found = GameObject.FindGameObjectWithTag("Player");
         if (found != null) player = found.transform;
+
+        foreach (var q in quests)
+        {
+            if (q.info == null)
+            {
+                Debug.LogError($"{npcName}: A quest is missing QuestInfo!");
+            }
+        }
+    }
+
+    private bool ValidateCurrentQuest()
+    {
+        if (quests == null || quests.Count == 0)
+        {
+            Debug.LogError($"NPC {npcName}: No quests assigned!");
+            return false;
+        }
+
+        if (activeQuestIndex < 0 || activeQuestIndex >= quests.Count)
+        {
+            Debug.LogError($"NPC {npcName}: activeQuestIndex out of range!");
+            return false;
+        }
+
+        currentActiveQuest = quests[activeQuestIndex];
+
+        if (currentActiveQuest == null)
+        {
+            Debug.LogError($"NPC {npcName}: currentActiveQuest is NULL!");
+            return false;
+        }
+
+        if (currentActiveQuest.info == null)
+        {
+            Debug.LogError($"NPC {npcName}: Quest INFO is NULL");
+            return false;
+        }
+
+        // STEP 5 SAFETY
+        if (currentActiveQuest.info.initialDialog == null || currentActiveQuest.info.initialDialog.Count == 0)
+        {
+            Debug.LogWarning($"NPC {npcName}: initialDialog missing — auto-fixing");
+            currentActiveQuest.info.initialDialog = new List<string> { "..." };
+        }
+
+        return true;
+    }
+
+
+    public void ValidateAllNPCs()
+    {
+        foreach (var npc in NPC.allNPCs)
+        {
+            if (npc.quests == null || npc.quests.Count == 0)
+            {
+                Debug.LogWarning($"NPC {npc.npcName} missing quests");
+                continue;
+            }
+
+            foreach (var q in npc.quests)
+            {
+                if (q.info == null)
+                    Debug.LogWarning($"NPC {npc.npcName} has quest missing info");
+            }
+        }
     }
 
     void Update()
@@ -143,6 +216,67 @@ public class NPC : MonoBehaviour
         }
     }
 
+    public void SaveData(GameData2 data)
+    {
+        if (string.IsNullOrEmpty(npcID))
+        {
+            Debug.LogError($"NPC '{npcName}' has NO npcID! Cannot save.");
+            return;
+        }
+
+        if (data.npcData == null)
+            data.npcData = new SerializableDictionary<string, GameData2.NPCSaveData>();
+
+        if (!data.npcData.ContainsKey(npcID))
+            data.npcData[npcID] = new GameData2.NPCSaveData();
+
+        var npcSave = data.npcData[npcID];
+
+        npcSave.firstTimeInteraction = firstTimeInteraction;
+        npcSave.questDone = questDone;
+        npcSave.activeQuestIndex = activeQuestIndex;
+
+        if (currentActiveQuest != null)
+        {
+            npcSave.accepted = currentActiveQuest.accepted;
+            npcSave.completed = currentActiveQuest.isCompleted;
+        }
+    }
+
+    public void LoadData(GameData2 data)
+    {
+        if (string.IsNullOrEmpty(npcID))
+        {
+            Debug.LogError($"NPC '{npcName}' has NO npcID! Cannot load.");
+            return;
+        }
+
+        if (data == null || data.npcData == null)
+            return;
+
+        if (!data.npcData.ContainsKey(npcID))
+            return;
+
+        var npcSave = data.npcData[npcID];
+
+        firstTimeInteraction = npcSave.firstTimeInteraction;
+        questDone = npcSave.questDone;
+        activeQuestIndex = npcSave.activeQuestIndex;
+
+        // SAFETY CHECK
+        if (quests == null || quests.Count == 0)
+        {
+            currentActiveQuest = null;
+            return;
+        }
+
+        // Clamp index to avoid crashes
+        activeQuestIndex = Mathf.Clamp(activeQuestIndex, 0, quests.Count - 1);
+
+        currentActiveQuest = quests[activeQuestIndex];
+        currentActiveQuest.accepted = npcSave.accepted;
+        currentActiveQuest.isCompleted = npcSave.completed;
+    }
 
     private void HideOption2()
     {
@@ -208,7 +342,11 @@ public class NPC : MonoBehaviour
         // --- First-time interaction ---
         if (firstTimeInteraction)
         {
-            currentActiveQuest = quests[activeQuestIndex];
+            if (!ValidateCurrentQuest())
+            {
+                Debug.LogWarning($"NPC {npcName}: Quest validation failed. Dialogue blocked.");
+                return;
+            }
 
             // Check bool requirement
             if (!CheckBoolRequirement(currentActiveQuest.info))
@@ -218,6 +356,10 @@ public class NPC : MonoBehaviour
             }
 
             firstTimeInteraction = false;
+            if (GameDataManager2.Instance != null)
+            {
+                SaveData(GameDataManager2.Instance.currentData);
+            }
             currentDialog = 0;
             StartQuestInitialDialog();
             return;
@@ -547,14 +689,40 @@ public class NPC : MonoBehaviour
 
     private void StartQuestInitialDialog()
     {
+        if (currentActiveQuest == null)
+        {
+            Debug.LogError($"NPC {npcName}: currentActiveQuest is NULL");
+            return;
+        }
+
+        if (currentActiveQuest.info == null)
+        {
+            Debug.LogError($"NPC {npcName}: Quest info is NULL");
+            return;
+        }
+
+        // STEP 5 SAFETY FIX (corrected typo here)
+        if (currentActiveQuest.info.initialDialog == null || currentActiveQuest.info.initialDialog.Count == 0)
+        {
+            Debug.LogError($"NPC {npcName}: initialDialog is EMPTY");
+            currentActiveQuest.info.initialDialog = new List<string> { "..." };
+        }
+
+        if (currentDialog >= currentActiveQuest.info.initialDialog.Count)
+        {
+            Debug.LogError($"NPC {npcName}: currentDialog index OUT OF RANGE");
+            currentDialog = 0;
+        }
+
         DialogSystem.Instance.OpenDialogUI();
+
+        currentDialog = Mathf.Clamp(currentDialog, 0, currentActiveQuest.info.initialDialog.Count - 1);
+
         npcDialogText.text = currentActiveQuest.info.initialDialog[currentDialog];
 
-        // Hide Accept/Decline buttons during dialogue
         optionButton1.gameObject.SetActive(false);
         optionButton2.gameObject.SetActive(false);
 
-        // Show Next button
         DialogSystem.Instance.ResetUI();
         DialogSystem.Instance.nextBTN.onClick.RemoveAllListeners();
         DialogSystem.Instance.nextBTN.onClick.AddListener(() =>
@@ -562,9 +730,6 @@ public class NPC : MonoBehaviour
             currentDialog++;
             CheckIfDialogDone();
         });
-        if (!disableOption2)
-            optionButton2.gameObject.SetActive(false);
-
     }
 
     private void CheckIfDialogDone()
@@ -588,6 +753,11 @@ public class NPC : MonoBehaviour
         QuestManager.Instance.AddActiveQuest(currentActiveQuest);
         currentActiveQuest.accepted = true;
         currentActiveQuest.declined = false;
+
+        if (GameDataManager2.Instance != null)
+        {
+            SaveData(GameDataManager2.Instance.currentData);
+        }
 
         if (currentActiveQuest.hasNoRequirements)
         {
@@ -632,6 +802,11 @@ public class NPC : MonoBehaviour
     private void ReceiveRewardAndCompleteQuest()
     {
         StartCoroutine(QuestManager.Instance.MarkQuestCompleted(currentActiveQuest));
+
+        if (GameDataManager2.Instance != null)
+        {
+            SaveData(GameDataManager2.Instance.currentData);
+        }
 
         if (!string.IsNullOrEmpty(currentActiveQuest.info.rewardItem1))
             InventorySystem.Instance.AddToInventory(currentActiveQuest.info.rewardItem1);

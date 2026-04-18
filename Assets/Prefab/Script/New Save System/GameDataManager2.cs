@@ -82,6 +82,14 @@ public class GameDataManager2 : MonoBehaviour
         if (RealWinterBarrierSystem.Instance != null)
             RealWinterBarrierSystem.Instance.SaveData(currentData);
 
+        if (NewHatalougeManager.Instance != null)
+            NewHatalougeManager.Instance.SaveData(currentData);
+
+        foreach (NPC npc in NPC.allNPCs)
+        {
+            npc.SaveData(currentData);
+        }
+
         // THEN SAVE
         SaveSystem2.SaveGame(currentData, currentSlot);
 
@@ -118,6 +126,13 @@ public class GameDataManager2 : MonoBehaviour
         if (RealWinterBarrierSystem.Instance != null)
             RealWinterBarrierSystem.Instance.LoadData(currentData);
 
-        
+        if (NewHatalougeManager.Instance != null)
+            NewHatalougeManager.Instance.LoadData(currentData);
+
+        foreach (NPC npc in NPC.allNPCs)
+        {
+            npc.LoadData(currentData);
+        }
+
     }
 }

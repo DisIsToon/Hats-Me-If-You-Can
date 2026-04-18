@@ -29,9 +29,24 @@ public class GameData2
     public long lastUpdated;
     public float playTime;
 
+    public bool puzzleComplete; // Mirror
+    public bool rotatingPuzzleComplete;
+
+    // CHARACTER DISCOVERY
+    public bool headMasterFound;
+    public bool clumsiFound;
+    public bool ivyFound;
+    public bool chaseFound;
+    public bool louierFound;
+    public bool liraFound;
+    public bool mallowFound;
+    public bool tulipFound;
+
     //public Vector3 playerPosition;
 
     public SerializableDictionary<string, bool> potionsCollected;
+
+    public SerializableDictionary<string, NPCSaveData> npcData;
 
     //  MOVE HERE (CLASS LEVEL)
     public List<string> inventoryItems;
@@ -39,6 +54,16 @@ public class GameData2
 
     public List<string> equippedItems;
     public List<int> equippedStacks;
+
+    [Serializable]
+    public class NPCSaveData
+    {
+        public bool firstTimeInteraction;
+        public bool questDone;
+        public int activeQuestIndex;
+        public bool accepted;
+        public bool completed;
+    }
 
     public GameData2()
     {
@@ -73,5 +98,21 @@ public class GameData2
         castleRuinAlreadyDiscovered = false;
         winterBiomeAlreadyDiscovered = false;
         springGardenAlreadyDiscovered = false;
+
+        puzzleComplete = false;
+        rotatingPuzzleComplete = false;
+
+        headMasterFound = false;
+        clumsiFound = false;
+        ivyFound = false;
+        chaseFound = false;
+        louierFound = false;
+        liraFound = false;
+        mallowFound = false;
+        tulipFound = false;
+
+        npcData = new SerializableDictionary<string, NPCSaveData>();
+
     }
 }
+

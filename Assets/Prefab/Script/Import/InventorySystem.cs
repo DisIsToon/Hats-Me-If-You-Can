@@ -110,6 +110,18 @@ public class InventorySystem : MonoBehaviour
         }
     }
 
+    private void FixIcon(RectTransform rt)
+    {
+        rt.localScale = Vector3.one;
+        rt.anchoredPosition = Vector2.zero;
+
+        rt.anchorMin = new Vector2(0.5f, 0.5f);
+        rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+
+        rt.sizeDelta = new Vector2(32, 32);
+    }
+
     public void LoadData(GameData2 data)
     {
         if (NewHatalougeManager.Instance != null &&
@@ -146,7 +158,13 @@ public class InventorySystem : MonoBehaviour
                 continue;
             }
 
-            GameObject item = Instantiate(prefab, slot.transform);
+            GameObject item = Instantiate(prefab);
+            item.transform.SetParent(slot.transform, false); // IMPORTANT
+            FixIcon(item.GetComponent<RectTransform>());
+
+            RectTransform rt = item.GetComponent<RectTransform>();
+            rt.localScale = Vector3.one;
+            rt.anchoredPosition = Vector2.zero;
 
             TextMeshProUGUI stackText = item.transform.Find("StackText")
                 ?.GetComponent<TextMeshProUGUI>();
@@ -288,7 +306,7 @@ public class InventorySystem : MonoBehaviour
             return;
         }
 
-        // ✅ 1) Check INVENTORY
+        // 1) Check INVENTORY
         GameObject existingSlot = FindSlotWithItem(itemName);
 
         if (existingSlot != null)
@@ -304,14 +322,17 @@ public class InventorySystem : MonoBehaviour
             return;
         }
 
-        // ❗ 2) Create NEW
+        // 2) Create NEW
         whatSlotToEquip = FindNextEmptySlot();
 
-        itemToAdd = Instantiate(Resources.Load<GameObject>(itemName),
-            whatSlotToEquip.transform.position,
-            whatSlotToEquip.transform.rotation);
+        itemToAdd = Instantiate(Resources.Load<GameObject>(itemName));
+        itemToAdd.transform.SetParent(whatSlotToEquip.transform, false);
 
-        itemToAdd.transform.SetParent(whatSlotToEquip.transform);
+        FixIcon(itemToAdd.GetComponent<RectTransform>());
+
+
+        itemToAdd.SetActive(true);
+
         itemList.Add(itemName);
 
         TriggerPickupPopUp(itemName, itemToAdd.GetComponent<Image>().sprite);

@@ -19,6 +19,7 @@ public class GameTracker : MonoBehaviour
     public bool jumpHatCaptured = false;
     public bool openedFrozenGate = false;
     public bool puzzleComplete = false;
+    public bool rotatingPuzzleComplete = false;
 
     [Header("Hat GameObjects in Scene")]
     public GameObject shyHatObject;
@@ -126,6 +127,10 @@ public class GameTracker : MonoBehaviour
         winterBiomeDiscovered = data.winterBiomeAlreadyDiscovered;
         springGardenDiscovered = data.springGardenAlreadyDiscovered;
 
+        puzzleComplete = data.puzzleComplete;
+        rotatingPuzzleComplete = data.rotatingPuzzleComplete;
+
+
         ApplyLoadedData();
     }
 
@@ -177,6 +182,41 @@ public class GameTracker : MonoBehaviour
 
         if (winterBiomeDiscovered)
             NewHatalougeManager.Instance.ReachWinter();
+
+        // PUZZLE (Mirror)
+        if (puzzleComplete)
+        {
+            if (CardsController.Instance != null && CardsController.Instance.mirror != null)
+            {
+                Destroy(CardsController.Instance.mirror);
+            }
+        }
+
+        // Tree Root
+        if (questCompleteLira)
+        {
+            if (QuestManager.Instance != null && QuestManager.Instance.puzzleObject != null)
+            {
+                QuestManager.Instance.puzzleObject.SetActive(true);
+            }
+        }
+
+        // ROTATING PUZZLE STATE
+        if (rotatingPuzzleComplete)
+        {
+            if (PuzzleManagerUI.Instance != null)
+            {
+                PuzzleManagerUI.Instance.puzzleComplete = true;
+                PuzzleManagerUI.Instance.canPlayPuzzle = false;
+
+                if (PuzzleManagerUI.Instance.puzzleObject != null)
+                {
+                    BoxCollider col = PuzzleManagerUI.Instance.puzzleObject.GetComponent<BoxCollider>();
+                    if (col != null)
+                        col.enabled = false;
+                }
+            }
+        }
     }
 
 
@@ -198,6 +238,9 @@ public class GameTracker : MonoBehaviour
         data.castleRuinAlreadyDiscovered = castleRuinDiscovered;
         data.winterBiomeAlreadyDiscovered = winterBiomeDiscovered;
         data.springGardenAlreadyDiscovered = springGardenDiscovered;
+
+        data.puzzleComplete = puzzleComplete;
+        data.rotatingPuzzleComplete = rotatingPuzzleComplete;
     }
 
     private IEnumerator Start()
