@@ -56089,6 +56089,13 @@ MonoBehaviour:
   taskText: {fileID: 1601563931}
   taskBG: {fileID: 1542818709}
   taskTextObj: {fileID: 1601563930}
+  taskBGRect: {fileID: 1542818710}
+  taskTextRect: {fileID: 1601563933}
+  slideDuration: 0.5
+  hiddenX: 800
+  visibleX: 0
+  taskBGVisiblePos: {x: -633.4, y: 342.3}
+  taskTextVisiblePos: {x: -742.46, y: 342.4}
 --- !u!1 &664631900
 GameObject:
   m_ObjectHideFlags: 0
@@ -143677,7 +143684,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1542818710
 RectTransform:
   m_ObjectHideFlags: 0
@@ -147480,7 +147487,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1601563931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191902,9 +191909,9 @@ RectTransform:
   - {fileID: 1601563933}
   m_Father: {fileID: 113056135}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50, y: -50}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2091259943

@@ -102,7 +102,7 @@ public class RealWinterBarrierSystem : MonoBehaviour
     {
         if (isShowing) return;
 
-        if (gt != null && gt.IsPuzzleComplete())
+        if (gt != null && gt.IsRotatingPuzzleComplete())
             StartCoroutine(ShowAndStartGame(messageObject2));
         else
             StartCoroutine(ShowAndFade(messageObject));

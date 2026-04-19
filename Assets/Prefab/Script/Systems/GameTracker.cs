@@ -89,7 +89,6 @@ public class GameTracker : MonoBehaviour
     public float fadeOutDuration = 1f;
 
     private bool allHatsPopupShown = false;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -444,7 +443,7 @@ public class GameTracker : MonoBehaviour
                 // ✅ ADD THIS
                 springGardenDiscovered = true;
 
-                NotifUIManager.Instance.NotifyBiomeDiscovered("Spring Garden");
+                //NotifUIManager.Instance.NotifyBiomeDiscovered("Spring Garden");
                 NewHatalougeManager.Instance.ReachForest();
 
                 GameDataManager2.Instance.SaveGame();
@@ -511,12 +510,25 @@ public class GameTracker : MonoBehaviour
         // AUTO SAVE
         GameDataManager2.Instance.SaveGame();
     }
-
+    
     public bool IsPuzzleComplete()
     {
         return puzzleComplete;
     }
 
+    public void SetRotatingPuzzleComplete(bool value)
+    {
+        rotatingPuzzleComplete = value;
+        Debug.Log("Rotating Puzzle Complete Status Updated: " + value);
+        // AUTO SAVE
+        GameDataManager2.Instance.SaveGame();
+    }
+
+    public bool IsRotatingPuzzleComplete()
+    {
+        return rotatingPuzzleComplete;
+
+    }
     // --- Capture a hat ---
     public void CaptureHat(string hatName)
     {
@@ -538,7 +550,7 @@ public class GameTracker : MonoBehaviour
 
                 Debug.Log("ShyHat captured!");
                 break;
-
+                
             case "FastHat":
                 if (!isTutorial)
                 {
