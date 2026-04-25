@@ -212,6 +212,19 @@ public class PuzzleManagerUI : MonoBehaviour
             BoxCollider col = puzzleObject.GetComponent<BoxCollider>();
             if (col != null)
                 col.enabled = false;
+
+            // Stop ALL particle systems in children
+            ParticleSystem[] particles = puzzleObject.GetComponentsInChildren<ParticleSystem>();
+            foreach (ParticleSystem ps in particles)
+            {
+                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            }
+
+            ParticleSystem parentPS = puzzleObject.GetComponentInParent<ParticleSystem>();
+            if (parentPS != null)
+            {
+                parentPS.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            }
         }
 
         canPlayPuzzle = false;

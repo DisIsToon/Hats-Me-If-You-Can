@@ -213,6 +213,18 @@ public class GameTracker : MonoBehaviour
                     BoxCollider col = PuzzleManagerUI.Instance.puzzleObject.GetComponent<BoxCollider>();
                     if (col != null)
                         col.enabled = false;
+
+                    ParticleSystem ps = PuzzleManagerUI.Instance.puzzleObject.GetComponent<ParticleSystem>();
+                    if (ps != null)
+                    {
+                        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                    }
+
+                    ParticleSystem parentPS = PuzzleManagerUI.Instance.puzzleObject.GetComponentInParent<ParticleSystem>();
+                    if (parentPS != null)
+                    {
+                        parentPS.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                    }
                 }
             }
         }

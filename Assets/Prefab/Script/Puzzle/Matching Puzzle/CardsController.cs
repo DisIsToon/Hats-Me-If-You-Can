@@ -94,7 +94,6 @@ public class CardsController : MonoBehaviour
         {
             if (Time.time - openTime < openCooldown)
             {
-                //Debug.Log("[Puzzle] Prevented instant close");
                 return;
             }
 

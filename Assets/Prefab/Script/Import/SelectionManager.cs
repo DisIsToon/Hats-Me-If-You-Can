@@ -29,6 +29,7 @@ public class SelectionManager : MonoBehaviour
     public bool readableNoteDetected;
     public bool cauldronDetected;
     public bool puzzleDetected;
+    public bool puzzleMirrorDetected;
     public bool interactableNpcDetected;
 
 
@@ -140,6 +141,16 @@ public class SelectionManager : MonoBehaviour
 
         // Puzzle Rotating
         if (puzzleDetected == true && PuzzleManagerUI.Instance != null && !PuzzleManagerUI.Instance.puzzleComplete)
+        {
+            playRotatingPuzzleUI.SetActive(true);
+        }
+        else
+        {
+            playRotatingPuzzleUI.SetActive(false);
+        }
+
+        // Puzzle Rotating
+        if (puzzleMirrorDetected == true)
         {
             playRotatingPuzzleUI.SetActive(true);
         }

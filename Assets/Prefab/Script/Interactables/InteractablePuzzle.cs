@@ -11,7 +11,7 @@ public class InteractablePuzzle : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SelectionManager.Instance.puzzleDetected = true;
+            SelectionManager.Instance.puzzleMirrorDetected = true;
             playerInRange = true;
             isOpen = true;
         }
@@ -21,7 +21,7 @@ public class InteractablePuzzle : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SelectionManager.Instance.puzzleDetected = false;
+            SelectionManager.Instance.puzzleMirrorDetected = false;
             playerInRange = false;
             isOpen = false;
 
@@ -33,7 +33,7 @@ public class InteractablePuzzle : MonoBehaviour
         // Player presses E while inside trigger
         if (playerInRange && Input.GetKeyDown(KeyCode.E) && isOpen)
         {
-            SelectionManager.Instance.puzzleDetected = false;
+            SelectionManager.Instance.puzzleMirrorDetected = false;
             playerInRange = false;
         }
     }
