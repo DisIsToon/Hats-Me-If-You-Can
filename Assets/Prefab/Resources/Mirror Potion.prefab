@@ -10,12 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 4242553970714623830}
   - component: {fileID: 6152767141033159895}
-  - component: {fileID: 6012361181009011871}
+  - component: {fileID: 6507433233206778607}
   - component: {fileID: 7666629063617430412}
   - component: {fileID: 4242553970714623833}
-  - component: {fileID: -6745207121342648869}
+  - component: {fileID: -2456476623357724903}
   m_Layer: 5
-  m_Name: Cottonflower
+  m_Name: Mirror Potion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,17 +28,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4242553970714623831}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 4482707030925119432}
+  - {fileID: 7313674706301808326}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -2, y: -2}
   m_SizeDelta: {x: 64, y: 64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6152767141033159895
@@ -49,7 +49,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4242553970714623831}
   m_CullTransparentMesh: 1
---- !u!114 &6012361181009011871
+--- !u!114 &6507433233206778607
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1839956432, guid: d1fde8f09d5fdcd488143b9a87e99e77, type: 3}
+  m_Sprite: {fileID: 591275285, guid: 346004b671fa11b45b9a4a3a776516b0, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -103,7 +103,7 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &-6745207121342648869
+--- !u!114 &-2456476623357724903
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,18 +127,18 @@ MonoBehaviour:
   itemInfoUI_itemIcon: {fileID: 0}
   craftingItemInfoUI_itemIcon: {fileID: 0}
   iconForThisItem: {fileID: 0}
-  thisName: Cottonflower
-  thisDescription: smells very nice
-  thisFunctionality: a material for a potion
+  thisName: Mirror Potion
+  thisDescription: try using it to Fast Hat
+  thisFunctionality: '[Right click] to equip'
   isConsumable: 0
   healthEffect: 0
   hungerEffect: 0
-  isEquippable: 0
+  isEquippable: 1
   isNowInsideQuickSlot: 0
   isSelected: 0
   isUseable: 0
   itemIcons: []
---- !u!1 &9206410554423884171
+--- !u!1 &6657445662261383501
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,9 +146,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4482707030925119432}
-  - component: {fileID: 3476056931242316593}
-  - component: {fileID: 4443961375520213345}
+  - component: {fileID: 7313674706301808326}
+  - component: {fileID: 1494337711801801624}
+  - component: {fileID: 6388500642313195633}
   m_Layer: 5
   m_Name: StackText
   m_TagString: Untagged
@@ -156,13 +156,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &4482707030925119432
+--- !u!224 &7313674706301808326
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9206410554423884171}
+  m_GameObject: {fileID: 6657445662261383501}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -175,21 +175,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 34.7, y: 40.5}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &3476056931242316593
+--- !u!222 &1494337711801801624
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9206410554423884171}
+  m_GameObject: {fileID: 6657445662261383501}
   m_CullTransparentMesh: 1
---- !u!114 &4443961375520213345
+--- !u!114 &6388500642313195633
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9206410554423884171}
+  m_GameObject: {fileID: 6657445662261383501}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}

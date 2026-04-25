@@ -1,5 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
+
 
 public class BrewAnimationManager : MonoBehaviour {
     public CanvasGroup canvasGroup;
@@ -33,5 +36,8 @@ public class BrewAnimationManager : MonoBehaviour {
 
         // Step 5: Disable object
         gameObject.SetActive(false);
+
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.OnPotionCrafted();
     }
 }

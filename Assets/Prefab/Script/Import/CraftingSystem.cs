@@ -44,9 +44,9 @@ public class CraftingSystem : MonoBehaviour
 
     public bool isOpen;
 
-    public ItemBlueprints cakePotionBLP = new ItemBlueprints("CakePotion", 3, 2, "Star", 1, "Glitteroom", 2, "", 0);
-    public ItemBlueprints cottonCrazeBLP = new ItemBlueprints("CottonCraze", 3, 2, "Star", 2, "Glitteroom", 3, "Cottonflower", 1);
-    public ItemBlueprints mirrorPotionBLP = new ItemBlueprints("MirrorPotion", 3, 2, "Star", 3, "Glitteroom", 1, "Mirrorshard", 1);
+    public ItemBlueprints cakePotionBLP = new ItemBlueprints("Cake Potion", 3, 2, "Star", 1, "Glitteroom", 2, "", 0);
+    public ItemBlueprints cottonCrazeBLP = new ItemBlueprints("Cotton Craze", 3, 2, "Star", 2, "Glitteroom", 3, "Cotton Flower", 1);
+    public ItemBlueprints mirrorPotionBLP = new ItemBlueprints("Mirror Potion", 3, 2, "Star", 3, "Glitteroom", 1, "Mirror Shard", 1);
 
     public static CraftingSystem Instance { get; set; }
 
@@ -78,31 +78,34 @@ public class CraftingSystem : MonoBehaviour
             gameplayCamera.Priority = 10;
 
         // CakePotion
-        cakePotionReq1 = craftingScreenUI.transform.Find("CakePotion").transform.Find("req1").GetComponent<TextMeshProUGUI>();
-        cakePotionReq2 = craftingScreenUI.transform.Find("CakePotion").transform.Find("req2").GetComponent<TextMeshProUGUI>();
+        cakePotionReq1 = craftingScreenUI.transform.Find("Cake Potion").transform.Find("req1").GetComponent<TextMeshProUGUI>();
+        cakePotionReq2 = craftingScreenUI.transform.Find("Cake Potion").transform.Find("req2").GetComponent<TextMeshProUGUI>();
 
-        craftCakePotionBTN = craftingScreenUI.transform.Find("CakePotion").transform.Find("Button").GetComponent<Button>();
+        craftCakePotionBTN = craftingScreenUI.transform.Find("Cake Potion").transform.Find("Button").GetComponent<Button>();
         craftCakePotionBTN.onClick.AddListener(delegate { CraftAnyItem(cakePotionBLP); });
 
         // CottonCraze
-        cottonCrazeReq1 = craftingScreenUI.transform.Find("CottonCraze").transform.Find("req1").GetComponent<TextMeshProUGUI>();
-        cottonCrazeReq2 = craftingScreenUI.transform.Find("CottonCraze").transform.Find("req2").GetComponent<TextMeshProUGUI>();
-        cottonCrazeReq3 = craftingScreenUI.transform.Find("CottonCraze").transform.Find("req3").GetComponent<TextMeshProUGUI>();
+        cottonCrazeReq1 = craftingScreenUI.transform.Find("Cotton Craze").transform.Find("req1").GetComponent<TextMeshProUGUI>();
+        cottonCrazeReq2 = craftingScreenUI.transform.Find("Cotton Craze").transform.Find("req2").GetComponent<TextMeshProUGUI>();
+        cottonCrazeReq3 = craftingScreenUI.transform.Find("Cotton Craze").transform.Find("req3").GetComponent<TextMeshProUGUI>();
 
-        craftCottonCrazeBTN = craftingScreenUI.transform.Find("CottonCraze").transform.Find("Button").GetComponent<Button>();
+        craftCottonCrazeBTN = craftingScreenUI.transform.Find("Cotton Craze").transform.Find("Button").GetComponent<Button>();
         craftCottonCrazeBTN.onClick.AddListener(delegate { CraftAnyItem(cottonCrazeBLP); });
 
         // MirrorPotion
-        mirrorPotionReq1 = craftingScreenUI.transform.Find("MirrorPotion").transform.Find("req1").GetComponent<TextMeshProUGUI>();
-        mirrorPotionReq2 = craftingScreenUI.transform.Find("MirrorPotion").transform.Find("req2").GetComponent<TextMeshProUGUI>();
-        mirrorPotionReq3 = craftingScreenUI.transform.Find("MirrorPotion").transform.Find("req3").GetComponent<TextMeshProUGUI>();
+        mirrorPotionReq1 = craftingScreenUI.transform.Find("Mirror Potion").transform.Find("req1").GetComponent<TextMeshProUGUI>();
+        mirrorPotionReq2 = craftingScreenUI.transform.Find("Mirror Potion").transform.Find("req2").GetComponent<TextMeshProUGUI>();
+        mirrorPotionReq3 = craftingScreenUI.transform.Find("Mirror Potion").transform.Find("req3").GetComponent<TextMeshProUGUI>();
 
-        craftMirrorPotionBTN = craftingScreenUI.transform.Find("MirrorPotion").transform.Find("Button").GetComponent<Button>();
+        craftMirrorPotionBTN = craftingScreenUI.transform.Find("Mirror Potion").transform.Find("Button").GetComponent<Button>();
         craftMirrorPotionBTN.onClick.AddListener(delegate { CraftAnyItem(mirrorPotionBLP); });
     }
 
     void CraftAnyItem(ItemBlueprints blueprintToCraft)
     {
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.CloseStep12UI();
+
         SoundManager.Instance.PlaySFX(SoundManager.Instance.clickedSound.clip);
         SoundManager.Instance.PlaySound(SoundManager.Instance.brewPotion);
 
@@ -126,8 +129,6 @@ public class CraftingSystem : MonoBehaviour
 
         StartCoroutine(calculate());
 
-        if (TutorialManager.Instance != null)
-            TutorialManager.Instance.OnPotionCrafted();
     }
 
     public IEnumerator calculate()
@@ -147,6 +148,7 @@ public class CraftingSystem : MonoBehaviour
             InventorySystem.Instance.AddToInventory(blueprintToCraft.itemName);
             NotifUIManager.Instance.NotifyPotionBrewed(blueprintToCraft.itemName);
         }
+
     }
 
     void Update()
@@ -283,10 +285,10 @@ public class CraftingSystem : MonoBehaviour
                 case "Glitteroom":
                     glitteroom_count += 1;
                     break;
-                case "Cottonflower":
+                case "Cotton Flower":
                     cottonflower_count += 1;
                     break;
-                case "Mirrorshard":
+                case "Mirror Shard":
                     mirrorshard_count += 1;
                     break;
                 case "Stone":
@@ -308,7 +310,7 @@ public class CraftingSystem : MonoBehaviour
 
         cottonCrazeReq1.text = "2 Star [" + star_count + "]";
         cottonCrazeReq2.text = "3 Glitteroom [" + glitteroom_count + "]";
-        cottonCrazeReq3.text = "1 Cottonflower [" + cottonflower_count + "]";
+        cottonCrazeReq3.text = "1 Cotton Flower [" + cottonflower_count + "]";
 
         if (star_count >= 2 && glitteroom_count >= 3 && cottonflower_count >= 1 && InventorySystem.Instance.CheckSlotsAvailable(1))
             craftCottonCrazeBTN.gameObject.SetActive(true);
@@ -317,7 +319,7 @@ public class CraftingSystem : MonoBehaviour
 
         mirrorPotionReq1.text = "3 Star [" + star_count + "]";
         mirrorPotionReq2.text = "1 Glitteroom [" + glitteroom_count + "]";
-        mirrorPotionReq3.text = "1 Mirrorshard [" + mirrorshard_count + "]";
+        mirrorPotionReq3.text = "1 Mirror Shard [" + mirrorshard_count + "]";
 
         if (star_count >= 3 && glitteroom_count >= 1 && mirrorshard_count >= 1 && InventorySystem.Instance.CheckSlotsAvailable(1))
             craftMirrorPotionBTN.gameObject.SetActive(true);

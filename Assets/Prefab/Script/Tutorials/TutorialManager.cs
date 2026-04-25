@@ -313,7 +313,7 @@ public class TutorialManager : MonoBehaviour
             collectedStars = Mathf.Min(collectedStars + 1, targetStars);
         else if (itemName == "Glitteroom")
             collectedGlitteroom = Mathf.Min(collectedGlitteroom + 1, targetGlitteroom);
-        else if (itemName == "Mirrorshard")
+        else if (itemName == "Mirror Shard")
             collectedMirrorshard = Mathf.Min(collectedMirrorshard + 1, targetMirrorshard);
         else
             return;
@@ -353,6 +353,14 @@ public class TutorialManager : MonoBehaviour
 
         CompleteStep(11);
         ShowStep(12);
+    }
+
+    public void CloseStep12UI()
+    {
+        if (tutorialSteps[12] != null)
+        {
+            tutorialSteps[12].SetActive(false);
+        }
     }
 
     public void OnPotionCrafted()
@@ -418,6 +426,14 @@ public class TutorialManager : MonoBehaviour
         if (!tutorialActive) return;
 
         StartCoroutine(Show17AfterDelay());
+    }
+
+    public bool IsStep17Showing()
+    {
+        return tutorialActive &&
+               currentStep == 17 &&
+               tutorialSteps[17] != null &&
+               tutorialSteps[17].activeSelf;
     }
 
     IEnumerator Show17AfterDelay()

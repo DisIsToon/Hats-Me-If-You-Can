@@ -161,6 +161,13 @@ public class Throw : MonoBehaviour
             uiBlocked = true;
         }
 
+        // ✅ ADD THIS
+        if (TutorialManager.Instance != null &&
+            TutorialManager.Instance.IsStep17Showing())
+        {
+            uiBlocked = true;
+        }
+
         if (ClickerBarrier.IsAnyBarrierGameActive)
             uiBlocked = true;
 

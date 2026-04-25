@@ -543,7 +543,7 @@ public class GameTracker : MonoBehaviour
                     NewHatalougeManager.Instance.DiscoverShyHat();
                 }
 
-                NotifUIManager.Instance.NotifyHatCaptured("ShyHat");
+                NotifUIManager.Instance.NotifyHatCaptured("Shy Hat");
 
                 if (!isTutorial)
                     PlayShyHatVideoAfterCapture();
@@ -558,7 +558,7 @@ public class GameTracker : MonoBehaviour
                     NewHatalougeManager.Instance.DiscoverFastHat();
                 }
 
-                NotifUIManager.Instance.NotifyHatCaptured("FastHat");
+                NotifUIManager.Instance.NotifyHatCaptured("Fast Hat");
 
                 if (!isTutorial)
                     PlayFastHatVideoAfterCapture();
@@ -573,7 +573,7 @@ public class GameTracker : MonoBehaviour
                     NewHatalougeManager.Instance.DiscoverLazyHat();
                 }
 
-                NotifUIManager.Instance.NotifyHatCaptured("JumpHat");
+                NotifUIManager.Instance.NotifyHatCaptured("Jump Hat");
 
                 if (!isTutorial)
                     PlayJumpHatVideoAfterCapture();
