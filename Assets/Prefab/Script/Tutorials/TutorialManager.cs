@@ -337,7 +337,7 @@ public class TutorialManager : MonoBehaviour
     {
         starCounterText.text = $"[{collectedStars}/{targetStars} Star]";
         glitteroomCounterText.text = $"[{collectedGlitteroom}/{targetGlitteroom} Glitteroom]";
-        mirrorshardCounterText.text = $"[{collectedMirrorshard}/{targetMirrorshard} Mirrorshard]";
+        mirrorshardCounterText.text = $"[{collectedMirrorshard}/{targetMirrorshard} Mirror Shard]";
     }
 
     // =========================================================

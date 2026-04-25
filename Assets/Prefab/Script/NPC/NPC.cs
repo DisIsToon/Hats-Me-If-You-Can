@@ -27,6 +27,7 @@ public class NPC : MonoBehaviour
     public bool isSimpleNPC = false;
     public bool isSnowmanNPC = false;
     private bool hasTalkedSimpleNPC = false;
+    private bool snowmanDialogueFinished = false;
 
     [Header("NPC & Quest Data")]
     public List<Quest> quests;
@@ -532,29 +533,19 @@ public class NPC : MonoBehaviour
     {
         DialogSystem.Instance.OpenDialogUI();
 
-        // If already talked → go straight to final words
-        if (hasTalkedSimpleNPC)
+        var dialogList = quests[0].info.initialDialog;
+
+        // If already finished → restart from beginning
+        if (snowmanDialogueFinished)
         {
-            npcDialogText.text = quests[0].info.finalWords;
-
-            optionButton1.gameObject.SetActive(true);
-            optionButton1Text.text = "Close";
-            optionButton1.onClick.RemoveAllListeners();
-            optionButton1.onClick.AddListener(() =>
-            {
-                DialogSystem.Instance.CloseDialogUI();
-                isTalkingWithPlayer = false;
-            });
-
-            optionButton2.gameObject.SetActive(false);
-            nextButton.gameObject.SetActive(false);
-
-            return;
+            currentDialog = 0;
+            snowmanDialogueFinished = false;
         }
 
-        // FIRST TIME DIALOGUE
-        currentDialog = 0;
-        npcDialogText.text = quests[0].info.initialDialog[currentDialog];
+        // Clamp to avoid crash
+        currentDialog = Mathf.Clamp(currentDialog, 0, dialogList.Count - 1);
+
+        npcDialogText.text = dialogList[currentDialog];
 
         optionButton1.gameObject.SetActive(false);
         optionButton2.gameObject.SetActive(false);
@@ -565,12 +556,14 @@ public class NPC : MonoBehaviour
         {
             currentDialog++;
 
-            if (currentDialog < quests[0].info.initialDialog.Count)
+            if (currentDialog < dialogList.Count)
             {
-                npcDialogText.text = quests[0].info.initialDialog[currentDialog];
+                // Continue where you left off
+                npcDialogText.text = dialogList[currentDialog];
             }
             else
             {
+                // FINAL WORDS reached
                 npcDialogText.text = quests[0].info.finalWords;
 
                 nextButton.gameObject.SetActive(false);
@@ -582,6 +575,9 @@ public class NPC : MonoBehaviour
                 {
                     DialogSystem.Instance.CloseDialogUI();
                     isTalkingWithPlayer = false;
+
+                    // 🔥 Mark as finished ONLY HERE
+                    snowmanDialogueFinished = true;
                 });
             }
         });
