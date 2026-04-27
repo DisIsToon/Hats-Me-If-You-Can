@@ -54592,6 +54592,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 330c8c81c16f4334d972ac0768666673, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5b36951389724184ca8a7de250265ab4, type: 2}
     - target: {fileID: 919132149155446097, guid: 330c8c81c16f4334d972ac0768666673, type: 3}
       propertyPath: m_Name
       value: TREE ROOT PUZZLE (1)
@@ -67186,7 +67190,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -414, y: 44.2}
+  m_AnchoredPosition: {x: -397.5, y: -85.5}
   m_SizeDelta: {x: 73, y: 73}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &767792096
@@ -138285,6 +138289,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 0fdced026d44f6d4ba3cc5f4bd46ae31, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 57001111e8344b84389a59679372ca6a, type: 2}
     - target: {fileID: 919132149155446097, guid: 0fdced026d44f6d4ba3cc5f4bd46ae31, type: 3}
       propertyPath: m_Name
       value: NEW FAST HAT
@@ -140116,8 +140124,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -8.9, y: 4}
-  m_SizeDelta: {x: 1024, y: 1024}
+  m_AnchoredPosition: {x: -8.9, y: 12.750076}
+  m_SizeDelta: {x: 1024, y: 1041.4998}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1487141344
 MonoBehaviour:
@@ -140139,7 +140147,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 45e3fc28dd9564b44bf236618623ae18, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8673b1a4be4259d449b49acf9896ae69, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -151562,7 +151570,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 900, y: -384.5}
+  m_AnchoredPosition: {x: 900, y: 283}
   m_SizeDelta: {x: 73, y: 73}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &1668069763
@@ -175750,15 +175758,15 @@ RectTransform:
   m_GameObject: {fileID: 1845528063}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.11, y: 0.11, z: 0.11}
+  m_LocalScale: {x: 0.09, y: 0.09, z: 0.09}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1472814019}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -8.9, y: 4}
-  m_SizeDelta: {x: 1024, y: 1024}
+  m_AnchoredPosition: {x: -8.9, y: 11.550011}
+  m_SizeDelta: {x: 1024, y: 960.30005}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1845528065
 MonoBehaviour:
@@ -175780,7 +175788,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 102aafa657da535488c07f75c9a185b5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e3afde957f952044b88c5403aed5888d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -197124,6 +197132,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tab
       objectReference: {fileID: 0}
+    - target: {fileID: 736746706711855977, guid: 278cb024cf062f84cac18f0407abf2e4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1086719645045077574, guid: 278cb024cf062f84cac18f0407abf2e4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -197186,7 +197198,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1086719645045077574, guid: 278cb024cf062f84cac18f0407abf2e4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -131.9
+      value: -114.3
       objectReference: {fileID: 0}
     - target: {fileID: 1086719645045077574, guid: 278cb024cf062f84cac18f0407abf2e4, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -198266,6 +198278,10 @@ PrefabInstance:
       propertyPath: BarrierGameScreen
       value: 
       objectReference: {fileID: 1244916714}
+    - target: {fileID: 1512876856583796020, guid: 55365791c2563b94e907895467bc5b86, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3486103618260999272, guid: 55365791c2563b94e907895467bc5b86, type: 3}
       propertyPath: timerText
       value: 
