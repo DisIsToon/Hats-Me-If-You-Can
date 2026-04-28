@@ -41,7 +41,6 @@ public class ShyHatAI : MonoBehaviour
 
     [Header("Minigame / Capture")]
     public ShyHatMinigameTrigger minigameTrigger;
-    public int capturePointIndex = 6;
 
     [Header("Animation")]
     public Animator animator;
@@ -126,12 +125,17 @@ public class ShyHatAI : MonoBehaviour
                 );
             }
 
+            UpdateCaptureState();
             return;
         }
 
         if (finished || player == null)
+        {
+            UpdateCaptureState();
             return;
+        }
 
+        UpdateCaptureState();
         HandleNearReaction();
 
         if (!isMoving && !isPreparingMove && currentIndex < fleePoints.Length - 1)
@@ -154,7 +158,7 @@ public class ShyHatAI : MonoBehaviour
             if (targetPoint == null)
             {
                 isMoving = false;
-                SetState(HatState.Idle);
+                SetState(HatState.Capturable);
                 return;
             }
 
@@ -210,7 +214,7 @@ public class ShyHatAI : MonoBehaviour
             SetState(HatState.NearPlayer);
 
         if (!playerIsNear && playerWasNear && !finished)
-            SetState(HatState.Idle);
+            SetState(HatState.Capturable);
 
         playerWasNear = playerIsNear;
     }
@@ -238,15 +242,13 @@ public class ShyHatAI : MonoBehaviour
             return;
         }
 
-        if (currentIndex == capturePointIndex)
-            SetState(HatState.Capturable);
-        else
-            SetState(HatState.Idle);
+        SetState(HatState.Capturable);
     }
 
     void FinishHat()
     {
         finished = true;
+        UpdateCaptureState();
         SetState(HatState.Finished);
     }
 
@@ -255,7 +257,7 @@ public class ShyHatAI : MonoBehaviour
         if (minigameTrigger == null)
             return;
 
-        if (currentIndex == capturePointIndex)
+        if (!IsTutorialActive() && !finished)
             minigameTrigger.EnableCapture();
         else
             minigameTrigger.DisableCapture();
@@ -302,6 +304,9 @@ public class ShyHatAI : MonoBehaviour
     {
         if (aiReactionController != null)
             aiReactionController.HideReaction();
+
+        if (minigameTrigger != null)
+            minigameTrigger.DisableCapture();
     }
 
     void OnDrawGizmosSelected()
