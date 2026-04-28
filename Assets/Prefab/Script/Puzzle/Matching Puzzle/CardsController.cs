@@ -198,6 +198,10 @@ public class CardsController : MonoBehaviour
         //  THEN disable
         PuzzleScreen.SetActive(false);
 
+        mainScreen.SetActive(true);
+        quickSlots.SetActive(true);
+        inventoryBTN.SetActive(true);
+
         firstSelected = null;
         secondSelected = null;
 
@@ -315,6 +319,7 @@ public class CardsController : MonoBehaviour
             Destroy(mirror);
 
 
+        SelectionManager.Instance.puzzleMirrorDetected = false;
         GameTracker.Instance.SetPuzzleComplete(true);
 
         // Close the puzzle screen after 1 second

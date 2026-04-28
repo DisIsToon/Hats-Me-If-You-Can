@@ -18,6 +18,7 @@ public class SelectionManager : MonoBehaviour
     public GameObject helpInteractNpcUI;
     public GameObject helpTalkUI;
     public GameObject playRotatingPuzzleUI;
+    public GameObject playMemoryPuzzleUI;
 
     public TextMeshProUGUI npcNameText;
     public NPC currentDetectedNPC;   // Assigned by InteractableNPC
@@ -152,11 +153,11 @@ public class SelectionManager : MonoBehaviour
         // Puzzle Rotating
         if (puzzleMirrorDetected == true)
         {
-            playRotatingPuzzleUI.SetActive(true);
+            playMemoryPuzzleUI.SetActive(true);
         }
         else
         {
-            playRotatingPuzzleUI.SetActive(false);
+            playMemoryPuzzleUI.SetActive(false);
         }
 
         //NPC

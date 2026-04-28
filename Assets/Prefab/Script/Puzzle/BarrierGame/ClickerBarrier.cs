@@ -162,7 +162,9 @@ public class ClickerBarrier : MonoBehaviour
 
     public void Victory()
     {
-
+        MainScreen.SetActive(true);
+        QuickSlotScreen.SetActive(true);
+        InventoryBTN.SetActive(true);
         SoundManager.Instance.PlaySFX(SoundManager.Instance.pzzleCompleteSound.clip);
         gameEnded = true;
 
@@ -172,9 +174,7 @@ public class ClickerBarrier : MonoBehaviour
         if (gameOverScreen != null)
             gameOverScreen.SetActive(false);
 
-        MainScreen.SetActive(true);
-        QuickSlotScreen.SetActive(true);
-        InventoryBTN.SetActive(true);
+        
         StartCoroutine(ShowVictoryPopup());
 
         IsAnyBarrierGameActive = false;
@@ -183,16 +183,16 @@ public class ClickerBarrier : MonoBehaviour
     public void GameOver()
     {
         gameEnded = true;
-
+        MainScreen.SetActive(true);
+        QuickSlotScreen.SetActive(true);
+        InventoryBTN.SetActive(true);
 
         if (gameOverScreen != null)
         gameOverScreen.SetActive(true);
 
         if (victoryScreen != null)
             victoryScreen.SetActive(false);
-        MainScreen.SetActive(true);
-        QuickSlotScreen.SetActive(true);
-        InventoryBTN.SetActive(true);
+       
         StartCoroutine(ShowGameOverPopup());
 
         IsAnyBarrierGameActive = false;

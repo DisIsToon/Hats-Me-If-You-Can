@@ -50,7 +50,7 @@ public class InteractableObject : MonoBehaviour
             Destroy(gameObject);
 
             // Check if item is LostHat
-            if (ItemName == "LostHat")
+            if (ItemName == "Lost Hat")
             {
                 foreach (NPC npc in NPC.allNPCs)
                 {

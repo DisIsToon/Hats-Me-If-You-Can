@@ -164,13 +164,11 @@ public class NewHatalougeManager : MonoBehaviour
         // Initialize map screen
         UpdateMapScreen();
 
-        /*
         if (notTutorial)
         {
             StartCoroutine(ShowPopupAfterDelay());
         }
 
-        */
     }
 
     void MarkNewEntry()

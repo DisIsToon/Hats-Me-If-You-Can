@@ -9,9 +9,9 @@ public class InteractablePuzzle : MonoBehaviour
     public bool isOpen;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !PuzzleManagerUI.Instance.puzzleComplete)
         {
-            SelectionManager.Instance.puzzleMirrorDetected = true;
+            SelectionManager.Instance.puzzleDetected = true;
             playerInRange = true;
             isOpen = true;
         }
@@ -19,9 +19,9 @@ public class InteractablePuzzle : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !PuzzleManagerUI.Instance.puzzleComplete)
         {
-            SelectionManager.Instance.puzzleMirrorDetected = false;
+            SelectionManager.Instance.puzzleDetected = false;
             playerInRange = false;
             isOpen = false;
 
@@ -31,9 +31,9 @@ public class InteractablePuzzle : MonoBehaviour
     private void Update()
     {
         // Player presses E while inside trigger
-        if (playerInRange && Input.GetKeyDown(KeyCode.E) && isOpen)
+        if (playerInRange && Input.GetKeyDown(KeyCode.E) && isOpen && !PuzzleManagerUI.Instance.puzzleComplete)
         {
-            SelectionManager.Instance.puzzleMirrorDetected = false;
+            SelectionManager.Instance.puzzleDetected = false;
             playerInRange = false;
         }
     }

@@ -107,9 +107,10 @@ public class TaskManagerUI : MonoBehaviour
         taskTextRect.anchoredPosition = textEnd;
 
         yield return new WaitForSeconds(3f);
-
+        /*
         taskBG.SetActive(false);
         taskTextObj.SetActive(false);
+        */
     }
 
     public void PlaySlideIn()

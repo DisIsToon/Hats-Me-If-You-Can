@@ -326,6 +326,8 @@ public class NPC : MonoBehaviour
 
         DialogSystem.Instance.ShowNPCImage(npcName);
 
+        Debug.Log($"NPC: {npcName} | firstTime: {firstTimeInteraction} | accepted: {currentActiveQuest?.accepted} | completed: {currentActiveQuest?.isCompleted} | puzzleComplete: {QuestManager.Instance.puzzleComplete}");
+
         //  GET NAME FROM DIALOG SYSTEM (optional but you asked for it)
         string speakerName = DialogSystem.Instance.GetSpeakerName();
 
@@ -346,13 +348,6 @@ public class NPC : MonoBehaviour
             if (!ValidateCurrentQuest())
             {
                 Debug.LogWarning($"NPC {npcName}: Quest validation failed. Dialogue blocked.");
-                return;
-            }
-
-            // Check bool requirement
-            if (!CheckBoolRequirement(currentActiveQuest.info))
-            {
-                ShowIncompleteRequirementMessage();
                 return;
             }
 
@@ -395,6 +390,7 @@ public class NPC : MonoBehaviour
                     npcDialogText.text = currentActiveQuest.info.comebackCompleted;
 
                     // --- Reward button uses Option1 ---
+                    nextButton.gameObject.SetActive(false);
                     optionButton1.gameObject.SetActive(true);
                     optionButton1Text.text = "Take Reward";
                     optionButton1.onClick.RemoveAllListeners();
@@ -427,9 +423,12 @@ public class NPC : MonoBehaviour
             }
             else
             {
-                Debug.Log("AreQuestRequirmentsCompleted 3333333333");
+                Debug.Log("Quest NOT completed yet");
+
                 DialogSystem.Instance.OpenDialogUI();
-                npcDialogText.text = currentActiveQuest.info.finalWords;
+                npcDialogText.text = currentActiveQuest.info.comebackInProgress;
+
+                optionButton1.gameObject.SetActive(true);
                 optionButton1Text.text = "Close";
                 optionButton1.onClick.RemoveAllListeners();
                 optionButton1.onClick.AddListener(() =>
@@ -437,6 +436,7 @@ public class NPC : MonoBehaviour
                     DialogSystem.Instance.CloseDialogUI();
                     isTalkingWithPlayer = false;
                 });
+
                 if (!disableOption2)
                     optionButton2.gameObject.SetActive(false);
 
@@ -797,6 +797,7 @@ public class NPC : MonoBehaviour
 
     private void ReceiveRewardAndCompleteQuest()
     {
+        currentActiveQuest.isCompleted = true; 
         StartCoroutine(QuestManager.Instance.MarkQuestCompleted(currentActiveQuest));
 
         if (GameDataManager2.Instance != null)

@@ -6,7 +6,7 @@ public class PuzzleTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (PuzzleManagerUI.Instance != null)
+            if (PuzzleManagerUI.Instance != null && !PuzzleManagerUI.Instance.puzzleComplete)
             {
                 PuzzleManagerUI.Instance.SetCanPlayPuzzle(true);
             }
@@ -18,7 +18,7 @@ public class PuzzleTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (PuzzleManagerUI.Instance != null)
+            if (PuzzleManagerUI.Instance != null && !PuzzleManagerUI.Instance.puzzleComplete)
             {
                 PuzzleManagerUI.Instance.SetCanPlayPuzzle(false);
                 PuzzleManagerUI.Instance.PuzzleScreenOff();
