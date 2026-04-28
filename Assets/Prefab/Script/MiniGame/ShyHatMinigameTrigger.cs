@@ -36,7 +36,7 @@ public class ShyHatMinigameTrigger : MonoBehaviour
 
     [Header("Capture Gating")]
     [Tooltip("If true, the AI must call EnableCapture() before this trigger will work.")]
-    public bool requireEnableFromAI = true;
+    public bool requireEnableFromAI = false;
 
     // gating controlled by AI
     private bool canTrigger = false;
