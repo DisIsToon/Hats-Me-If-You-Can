@@ -45,7 +45,7 @@ public class TaskManagerUI : MonoBehaviour
 
     IEnumerator StartPopup()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(15f);
 
         PlaySlideIn();
         hasShownInitialPopup = true; // mark as already shown
